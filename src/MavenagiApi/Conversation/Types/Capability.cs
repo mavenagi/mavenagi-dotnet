@@ -17,4 +17,7 @@ public enum Capability
 
     [EnumMember(Value = "IMAGES")]
     Images,
+
+    [EnumMember(Value = "CHARTS_HIGHCHARTS_TS")]
+    ChartsHighchartsTs,
 }

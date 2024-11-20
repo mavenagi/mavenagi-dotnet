@@ -14,7 +14,7 @@ public record ActionBase
     public required string Name { get; set; }
 
     /// <summary>
-    /// The description of the action. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user.
+    /// The description of the action. Must be less than 1024 characters. This helps Maven decide if the action is relevant to a conversation and is not displayed directly to the end user. Descriptions are used by the LLM.
     /// </summary>
     [JsonPropertyName("description")]
     public required string Description { get; set; }

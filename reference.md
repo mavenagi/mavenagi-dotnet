@@ -252,18 +252,7 @@ await client.Conversation.InitializeAsync(
     new ConversationRequest
     {
         ConversationId = new EntityIdBase { ReferenceId = "string" },
-        Messages = new List<ConversationMessageRequest>()
-        {
-            new ConversationMessageRequest
-            {
-                ConversationMessageId = new EntityIdBase { ReferenceId = "string" },
-                UserId = new EntityIdBase { ReferenceId = "string" },
-                Text = "string",
-                UserMessageType = UserConversationMessageType.User,
-                CreatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-                UpdatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-            },
-        },
+        Messages = new List<ConversationMessageRequest>() { new ConversationMessageRequest() },
         ResponseConfig = new ResponseConfig
         {
             Capabilities = new List<Capability>() { Capability.Markdown },
@@ -470,11 +459,11 @@ Ask a question
 
 ```csharp
 await client.Conversation.AskAsync(
-    "string",
+    "conversation-0",
     new AskRequest
     {
-        ConversationMessageId = new EntityIdBase { ReferenceId = "message-1" },
-        UserId = new EntityIdBase { ReferenceId = "user-1" },
+        ConversationMessageId = new EntityIdBase { ReferenceId = "message-0" },
+        UserId = new EntityIdBase { ReferenceId = "user-0" },
         Text = "How do I reset my password?",
         Attachments = new List<Attachment>()
         {
@@ -547,8 +536,8 @@ await client.Conversation.AskStreamAsync(
     "conversation-0",
     new AskRequest
     {
-        ConversationMessageId = new EntityIdBase { ReferenceId = "message-1" },
-        UserId = new EntityIdBase { ReferenceId = "user-1" },
+        ConversationMessageId = new EntityIdBase { ReferenceId = "message-0" },
+        UserId = new EntityIdBase { ReferenceId = "user-0" },
         Text = "How do I reset my password?",
         Attachments = new List<Attachment>()
         {
@@ -727,7 +716,7 @@ await client.Conversation.CategorizeAsync("string");
 <dl>
 <dd>
 
-Create feedback
+Update feedback or create it if it doesn't exist
 </dd>
 </dl>
 </dd>
@@ -745,11 +734,11 @@ Create feedback
 await client.Conversation.CreateFeedbackAsync(
     new FeedbackRequest
     {
-        FeedbackId = new EntityIdBase { ReferenceId = "string" },
-        ConversationId = new EntityIdBase { ReferenceId = "string" },
-        ConversationMessageId = new EntityIdBase { ReferenceId = "string" },
+        FeedbackId = new EntityIdBase { ReferenceId = "feedback-0" },
+        ConversationId = new EntityIdBase { ReferenceId = "conversation-0" },
+        ConversationMessageId = new EntityIdBase { ReferenceId = "message-1" },
         Type = FeedbackType.ThumbsUp,
-        Text = "string",
+        Text = "Great answer!",
     }
 );
 ```
