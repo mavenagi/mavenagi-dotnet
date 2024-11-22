@@ -5,7 +5,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record BotChartResponse
+public record AskStreamChartEvent
 {
     /// <summary>
     /// The label of the chart

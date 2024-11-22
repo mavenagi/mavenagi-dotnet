@@ -20,6 +20,13 @@ public record UserMessage
     public string? Language { get; set; }
 
     /// <summary>
+    /// The attachments associated with the message
+    /// </summary>
+    [JsonPropertyName("attachments")]
+    public IEnumerable<UserMessageAttachment> Attachments { get; set; } =
+        new List<UserMessageAttachment>();
+
+    /// <summary>
     /// ID that uniquely identifies the user that created this message
     /// </summary>
     [JsonPropertyName("userId")]
