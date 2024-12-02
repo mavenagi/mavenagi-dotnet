@@ -26,6 +26,18 @@ public record Feedback
     public required EntityId ConversationMessageId { get; set; }
 
     /// <summary>
+    /// The ID of the user who created the feedback
+    /// </summary>
+    [JsonPropertyName("userId")]
+    public EntityId? UserId { get; set; }
+
+    /// <summary>
+    /// The date and time the feedback was created
+    /// </summary>
+    [JsonPropertyName("createdAt")]
+    public DateTime? CreatedAt { get; set; }
+
+    /// <summary>
     /// The type of feedback
     /// </summary>
     [JsonPropertyName("type")]

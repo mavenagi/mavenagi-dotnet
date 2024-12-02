@@ -515,6 +515,7 @@ public partial class ConversationClient
     ///     new FeedbackRequest
     ///     {
     ///         FeedbackId = new EntityIdBase { ReferenceId = "feedback-0" },
+    ///         UserId = new EntityIdBase { ReferenceId = "user-0" },
     ///         ConversationId = new EntityIdBase { ReferenceId = "conversation-0" },
     ///         ConversationMessageId = new EntityIdBase { ReferenceId = "message-1" },
     ///         Type = FeedbackType.ThumbsUp,

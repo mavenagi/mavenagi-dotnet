@@ -26,6 +26,12 @@ public record FeedbackRequest
     public required EntityIdBase ConversationMessageId { get; set; }
 
     /// <summary>
+    /// The ID of the user who is creating the feedback
+    /// </summary>
+    [JsonPropertyName("userId")]
+    public EntityIdBase? UserId { get; set; }
+
+    /// <summary>
     /// The type of feedback
     /// </summary>
     [JsonPropertyName("type")]
