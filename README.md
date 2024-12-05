@@ -22,20 +22,18 @@ var client = new MavenAGI("ORGANIZATION_ID", "AGENT_ID");
 await client.Conversation.InitializeAsync(
     new ConversationRequest
     {
-        ConversationId = new EntityIdBase { ReferenceId = "string" },
-        Messages = new List<ConversationMessageRequest>() { new ConversationMessageRequest() },
-        ResponseConfig = new ResponseConfig
+        ConversationId = new EntityIdBase { ReferenceId = "referenceId" },
+        Messages = new List<ConversationMessageRequest>()
         {
-            Capabilities = new List<Capability>() { Capability.Markdown },
-            IsCopilot = true,
-            ResponseLength = ResponseLength.Short,
+            new ConversationMessageRequest
+            {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+            },
+            new ConversationMessageRequest
+            {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+            },
         },
-        Subject = "string",
-        Url = "string",
-        CreatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-        UpdatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-        Tags = new HashSet<string>() { "string" },
-        Metadata = new Dictionary<string, string>() { { "string", "string" } },
     }
 );
 ```

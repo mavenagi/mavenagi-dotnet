@@ -251,20 +251,18 @@ Initialize a new conversation. Only required if the ask request wishes to supply
 await client.Conversation.InitializeAsync(
     new ConversationRequest
     {
-        ConversationId = new EntityIdBase { ReferenceId = "string" },
-        Messages = new List<ConversationMessageRequest>() { new ConversationMessageRequest() },
-        ResponseConfig = new ResponseConfig
+        ConversationId = new EntityIdBase { ReferenceId = "referenceId" },
+        Messages = new List<ConversationMessageRequest>()
         {
-            Capabilities = new List<Capability>() { Capability.Markdown },
-            IsCopilot = true,
-            ResponseLength = ResponseLength.Short,
+            new ConversationMessageRequest
+            {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+            },
+            new ConversationMessageRequest
+            {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+            },
         },
-        Subject = "string",
-        Url = "string",
-        CreatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-        UpdatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-        Tags = new HashSet<string>() { "string" },
-        Metadata = new Dictionary<string, string>() { { "string", "string" } },
     }
 );
 ```
@@ -320,7 +318,7 @@ Get a conversation
 <dd>
 
 ```csharp
-await client.Conversation.GetAsync("string", new ConversationGetRequest { AppId = "string" });
+await client.Conversation.GetAsync("conversationId", new ConversationGetRequest());
 ```
 </dd>
 </dl>
@@ -383,17 +381,16 @@ Append messages to an existing conversation. The conversation must be initialize
 
 ```csharp
 await client.Conversation.AppendNewMessagesAsync(
-    "string",
+    "conversationId",
     new List<ConversationMessageRequest>()
     {
         new ConversationMessageRequest
         {
-            ConversationMessageId = new EntityIdBase { ReferenceId = "string" },
-            UserId = new EntityIdBase { ReferenceId = "string" },
-            Text = "string",
-            UserMessageType = UserConversationMessageType.User,
-            CreatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-            UpdatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+        },
+        new ConversationMessageRequest
+        {
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
     }
 );
@@ -607,12 +604,13 @@ Generate a response suggestion for each requested message id in a conversation
 
 ```csharp
 await client.Conversation.GenerateMavenSuggestionsAsync(
-    "string",
+    "conversationId",
     new GenerateMavenSuggestionsRequest
     {
         ConversationMessageIds = new List<EntityIdBase>()
         {
-            new EntityIdBase { ReferenceId = "string" },
+            new EntityIdBase { ReferenceId = "referenceId" },
+            new EntityIdBase { ReferenceId = "referenceId" },
         },
     }
 );
@@ -677,7 +675,7 @@ Uses an LLM flow to categorize the conversation. Experimental.
 <dd>
 
 ```csharp
-await client.Conversation.CategorizeAsync("string");
+await client.Conversation.CategorizeAsync("conversationId");
 ```
 </dd>
 </dl>
@@ -796,14 +794,14 @@ Submit a filled out action form
 
 ```csharp
 await client.Conversation.SubmitActionFormAsync(
-    "string",
+    "conversationId",
     new SubmitActionFormRequest
     {
-        ActionFormId = "string",
+        ActionFormId = "actionFormId",
         Parameters = new Dictionary<string, object>()
         {
             {
-                "string",
+                "parameters",
                 new Dictionary<object, object?>() { { "key", "value" } }
             },
         },
@@ -871,7 +869,7 @@ Add metadata to an existing conversation. If a metadata field already exists, it
 
 ```csharp
 await client.Conversation.AddConversationMetadataAsync(
-    "string",
+    "conversationId",
     new Dictionary<string, string>() { { "string", "string" } }
 );
 ```

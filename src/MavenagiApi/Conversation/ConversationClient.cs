@@ -25,20 +25,18 @@ public partial class ConversationClient
     /// await client.Conversation.InitializeAsync(
     ///     new ConversationRequest
     ///     {
-    ///         ConversationId = new EntityIdBase { ReferenceId = "string" },
-    ///         Messages = new List&lt;ConversationMessageRequest&gt;() { new ConversationMessageRequest() },
-    ///         ResponseConfig = new ResponseConfig
+    ///         ConversationId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///         Messages = new List&lt;ConversationMessageRequest&gt;()
     ///         {
-    ///             Capabilities = new List&lt;Capability&gt;() { Capability.Markdown },
-    ///             IsCopilot = true,
-    ///             ResponseLength = ResponseLength.Short,
+    ///             new ConversationMessageRequest
+    ///             {
+    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///             },
+    ///             new ConversationMessageRequest
+    ///             {
+    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///             },
     ///         },
-    ///         Subject = "string",
-    ///         Url = "string",
-    ///         CreatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-    ///         UpdatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-    ///         Tags = new HashSet&lt;string&gt;() { "string" },
-    ///         Metadata = new Dictionary&lt;string, string&gt;() { { "string", "string" } },
     ///     }
     /// );
     /// </code>
@@ -101,7 +99,7 @@ public partial class ConversationClient
     /// </summary>
     /// <example>
     /// <code>
-    /// await client.Conversation.GetAsync("string", new ConversationGetRequest { AppId = "string" });
+    /// await client.Conversation.GetAsync("conversationId", new ConversationGetRequest());
     /// </code>
     /// </example>
     public async Task<ConversationResponse> GetAsync(
@@ -169,17 +167,16 @@ public partial class ConversationClient
     /// <example>
     /// <code>
     /// await client.Conversation.AppendNewMessagesAsync(
-    ///     "string",
+    ///     "conversationId",
     ///     new List&lt;ConversationMessageRequest&gt;()
     ///     {
     ///         new ConversationMessageRequest
     ///         {
-    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "string" },
-    ///             UserId = new EntityIdBase { ReferenceId = "string" },
-    ///             Text = "string",
-    ///             UserMessageType = UserConversationMessageType.User,
-    ///             CreatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
-    ///             UpdatedAt = new DateTime(2024, 01, 15, 09, 30, 00, 000),
+    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///         },
+    ///         new ConversationMessageRequest
+    ///         {
+    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///     }
     /// );
@@ -381,12 +378,13 @@ public partial class ConversationClient
     /// <example>
     /// <code>
     /// await client.Conversation.GenerateMavenSuggestionsAsync(
-    ///     "string",
+    ///     "conversationId",
     ///     new GenerateMavenSuggestionsRequest
     ///     {
     ///         ConversationMessageIds = new List&lt;EntityIdBase&gt;()
     ///         {
-    ///             new EntityIdBase { ReferenceId = "string" },
+    ///             new EntityIdBase { ReferenceId = "referenceId" },
+    ///             new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///     }
     /// );
@@ -451,7 +449,7 @@ public partial class ConversationClient
     /// </summary>
     /// <example>
     /// <code>
-    /// await client.Conversation.CategorizeAsync("string");
+    /// await client.Conversation.CategorizeAsync("conversationId");
     /// </code>
     /// </example>
     public async Task<CategorizationResponse> CategorizeAsync(
@@ -583,14 +581,14 @@ public partial class ConversationClient
     /// <example>
     /// <code>
     /// await client.Conversation.SubmitActionFormAsync(
-    ///     "string",
+    ///     "conversationId",
     ///     new SubmitActionFormRequest
     ///     {
-    ///         ActionFormId = "string",
+    ///         ActionFormId = "actionFormId",
     ///         Parameters = new Dictionary&lt;string, object&gt;()
     ///         {
     ///             {
-    ///                 "string",
+    ///                 "parameters",
     ///                 new Dictionary&lt;object, object?&gt;() { { "key", "value" } }
     ///             },
     ///         },
@@ -658,7 +656,7 @@ public partial class ConversationClient
     /// <example>
     /// <code>
     /// await client.Conversation.AddConversationMetadataAsync(
-    ///     "string",
+    ///     "conversationId",
     ///     new Dictionary&lt;string, string&gt;() { { "string", "string" } }
     /// );
     /// </code>
