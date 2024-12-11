@@ -27,8 +27,8 @@ public enum EntityType
     [EnumMember(Value = "USER")]
     User,
 
-    [EnumMember(Value = "USER_EVENT")]
-    UserEvent,
+    [EnumMember(Value = "EVENT")]
+    Event,
 
     [EnumMember(Value = "EVENT_TRIGGER")]
     EventTrigger,

@@ -19,6 +19,12 @@ public record ActionParameter
     [JsonPropertyName("required")]
     public required bool Required { get; set; }
 
+    /// <summary>
+    /// The parameter type. Values provided to executeAction will conform to this type. Defaults to STRING.
+    /// </summary>
+    [JsonPropertyName("type")]
+    public ActionParameterType? Type { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

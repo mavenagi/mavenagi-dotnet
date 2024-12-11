@@ -20,7 +20,10 @@ public record ActionFormField
     public required bool Required { get; set; }
 
     [JsonPropertyName("suggestion")]
-    public string? Suggestion { get; set; }
+    public object? Suggestion { get; set; }
+
+    [JsonPropertyName("type")]
+    public required ActionParameterType Type { get; set; }
 
     public override string ToString()
     {
