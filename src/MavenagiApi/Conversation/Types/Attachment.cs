@@ -14,7 +14,7 @@ public record Attachment
     public required string Type { get; set; }
 
     /// <summary>
-    /// The attachment data.
+    /// The attachment data, up to 5MB.
     /// </summary>
     [JsonPropertyName("content")]
     public required string Content { get; set; }

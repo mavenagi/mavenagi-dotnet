@@ -31,6 +31,12 @@ public record KnowledgeBaseResponse
     [JsonPropertyName("url")]
     public string? Url { get; set; }
 
+    /// <summary>
+    /// (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
+    /// </summary>
+    [JsonPropertyName("precondition")]
+    public object? Precondition { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

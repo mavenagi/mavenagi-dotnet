@@ -252,6 +252,11 @@ public partial class ConversationClient
     ///         {
     ///             new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
     ///         },
+    ///         TransientData = new Dictionary&lt;string, string&gt;()
+    ///         {
+    ///             { "userToken", "abcdef123" },
+    ///             { "queryApiKey", "foobar456" },
+    ///         },
     ///     }
     /// );
     /// </code>
@@ -325,6 +330,11 @@ public partial class ConversationClient
     ///         Attachments = new List&lt;Attachment&gt;()
     ///         {
     ///             new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
+    ///         },
+    ///         TransientData = new Dictionary&lt;string, string&gt;()
+    ///         {
+    ///             { "userToken", "abcdef123" },
+    ///             { "queryApiKey", "foobar456" },
     ///         },
     ///     }
     /// );

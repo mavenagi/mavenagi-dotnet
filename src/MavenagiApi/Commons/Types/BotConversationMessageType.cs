@@ -14,7 +14,4 @@ public enum BotConversationMessageType
 
     [EnumMember(Value = "BOT_SUGGESTION")]
     BotSuggestion,
-
-    [EnumMember(Value = "ACTION_RESPONSE")]
-    ActionResponse,
 }

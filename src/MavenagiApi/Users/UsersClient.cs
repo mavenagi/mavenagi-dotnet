@@ -102,21 +102,28 @@ public partial class UsersClient
     /// </summary>
     /// <example>
     /// <code>
-    /// await client.Users.GetAsync("user-0");
+    /// await client.Users.GetAsync("user-0", new UserGetRequest());
     /// </code>
     /// </example>
     public async Task<AppUserResponse> GetAsync(
         string userId,
+        UserGetRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
+        var _query = new Dictionary<string, object>();
+        if (request.AppId != null)
+        {
+            _query["appId"] = request.AppId;
+        }
         var response = await _client.MakeRequestAsync(
             new RawClient.JsonApiRequest
             {
                 BaseUrl = _client.Options.BaseUrl,
                 Method = HttpMethod.Get,
                 Path = $"/v1/users/{userId}",
+                Query = _query,
                 Options = options,
             },
             cancellationToken

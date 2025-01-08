@@ -466,6 +466,11 @@ await client.Conversation.AskAsync(
         {
             new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
         },
+        TransientData = new Dictionary<string, string>()
+        {
+            { "userToken", "abcdef123" },
+            { "queryApiKey", "foobar456" },
+        },
     }
 );
 ```
@@ -539,6 +544,11 @@ await client.Conversation.AskStreamAsync(
         Attachments = new List<Attachment>()
         {
             new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
+        },
+        TransientData = new Dictionary<string, string>()
+        {
+            { "userToken", "abcdef123" },
+            { "queryApiKey", "foobar456" },
         },
     }
 );
@@ -1647,7 +1657,7 @@ await client.Users.CreateOrUpdateAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Users.<a href="/src/MavenagiApi/Users/UsersClient.cs">GetAsync</a>(userId) -> AppUserResponse</code></summary>
+<details><summary><code>client.Users.<a href="/src/MavenagiApi/Users/UsersClient.cs">GetAsync</a>(userId, UserGetRequest { ... }) -> AppUserResponse</code></summary>
 <dl>
 <dd>
 
@@ -1674,7 +1684,7 @@ Get a user by its supplied ID
 <dd>
 
 ```csharp
-await client.Users.GetAsync("user-0");
+await client.Users.GetAsync("user-0", new UserGetRequest());
 ```
 </dd>
 </dl>
@@ -1690,6 +1700,14 @@ await client.Users.GetAsync("user-0");
 <dd>
 
 **userId:** `string` — The reference ID of the user to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `UserGetRequest` 
     
 </dd>
 </dl>
