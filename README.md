@@ -19,19 +19,31 @@ Instantiate and use the client with the following:
 using MavenagiApi;
 
 var client = new MavenAGI("ORGANIZATION_ID", "AGENT_ID");
-await client.Conversation.InitializeAsync(
-    new ConversationRequest
+await client.Analytics.GetConversationTableAsync(
+    new ConversationTableRequest
     {
-        ConversationId = new EntityIdBase { ReferenceId = "referenceId" },
-        Messages = new List<ConversationMessageRequest>()
+        ConversationFilter = new ConversationFilter
         {
-            new ConversationMessageRequest
+            Languages = new List<string>() { "en", "es" },
+        },
+        TimeGrouping = TimeInterval.Day,
+        FieldGroupings = new List<GroupBy>() { new GroupBy { Field = ConversationField.Category } },
+        ColumnDefinitions = new List<ColumnDefinition>()
+        {
+            new ColumnDefinition { Header = "count", Metric = new Count() },
+            new ColumnDefinition
             {
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+                Header = "avg_first_response_time",
+                Metric = new Average { TargetField = ConversationField.FirstResponseTime },
             },
-            new ConversationMessageRequest
+            new ColumnDefinition
             {
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+                Header = "percentile_handle_time",
+                Metric = new Percentile
+                {
+                    TargetField = ConversationField.HandleTime,
+                    Percentiles = new List<double>() { 25, 75 },
+                },
             },
         },
     }
@@ -47,7 +59,7 @@ will be thrown.
 using MavenagiApi;
 
 try {
-    var response = await client.Conversation.InitializeAsync(...);
+    var response = await client.Analytics.GetConversationTableAsync(...);
 } catch (MavenAGIApiException e) {
     System.Console.WriteLine(e.Body);
     System.Console.WriteLine(e.StatusCode);
@@ -71,7 +83,7 @@ A request is deemed retriable when any of the following HTTP status codes is ret
 Use the `MaxRetries` request option to configure this behavior.
 
 ```csharp
-var response = await client.Conversation.InitializeAsync(
+var response = await client.Analytics.GetConversationTableAsync(
     ...,
     new RequestOptions {
         MaxRetries: 0 // Override MaxRetries at the request level
@@ -84,7 +96,7 @@ var response = await client.Conversation.InitializeAsync(
 The SDK defaults to a 30 second timeout. Use the `Timeout` option to configure this behavior.
 
 ```csharp
-var response = await client.Conversation.InitializeAsync(
+var response = await client.Analytics.GetConversationTableAsync(
     ...,
     new RequestOptions {
         Timeout: TimeSpan.FromSeconds(3) // Override timeout to 3s
