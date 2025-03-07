@@ -5,13 +5,13 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record Min
+public record ConversationAverage
 {
     /// <summary>
-    /// Field to apply the metric to. The field should be numeric for all metrics except for Count (no field) and DistinctCount.
+    /// Numeric field to apply the metric to.
     /// </summary>
     [JsonPropertyName("targetField")]
-    public required ConversationField TargetField { get; set; }
+    public required NumericConversationField TargetField { get; set; }
 
     public override string ToString()
     {

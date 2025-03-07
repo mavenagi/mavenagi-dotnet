@@ -27,22 +27,28 @@ await client.Analytics.GetConversationTableAsync(
             Languages = new List<string>() { "en", "es" },
         },
         TimeGrouping = TimeInterval.Day,
-        FieldGroupings = new List<GroupBy>() { new GroupBy { Field = ConversationField.Category } },
-        ColumnDefinitions = new List<ColumnDefinition>()
+        FieldGroupings = new List<ConversationGroupBy>()
         {
-            new ColumnDefinition { Header = "count", Metric = new Count() },
-            new ColumnDefinition
+            new ConversationGroupBy { Field = ConversationField.Category },
+        },
+        ColumnDefinitions = new List<ConversationColumnDefinition>()
+        {
+            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+            new ConversationColumnDefinition
             {
                 Header = "avg_first_response_time",
-                Metric = new Average { TargetField = ConversationField.FirstResponseTime },
+                Metric = new ConversationAverage
+                {
+                    TargetField = NumericConversationField.FirstResponseTime,
+                },
             },
-            new ColumnDefinition
+            new ConversationColumnDefinition
             {
                 Header = "percentile_handle_time",
-                Metric = new Percentile
+                Metric = new ConversationPercentile
                 {
-                    TargetField = ConversationField.HandleTime,
-                    Percentiles = new List<double>() { 25, 75 },
+                    TargetField = NumericConversationField.HandleTime,
+                    Percentile = 25,
                 },
             },
         },

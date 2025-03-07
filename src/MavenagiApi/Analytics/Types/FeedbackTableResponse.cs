@@ -5,7 +5,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ConversationTableResponse
+public record FeedbackTableResponse
 {
     /// <summary>
     /// The dataset rows, where each row represents a unique combination of grouping field values.
@@ -13,7 +13,7 @@ public record ConversationTableResponse
     /// The data map contains column headers mapped to their respective metric values.
     /// </summary>
     [JsonPropertyName("rows")]
-    public IEnumerable<ConversationRow> Rows { get; set; } = new List<ConversationRow>();
+    public IEnumerable<FeedbackRow> Rows { get; set; } = new List<FeedbackRow>();
 
     /// <summary>
     /// Column headers in the table, aligning with the column definitions specified in the request.

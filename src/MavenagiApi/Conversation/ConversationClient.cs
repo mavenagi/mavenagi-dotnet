@@ -30,10 +30,16 @@ public partial class ConversationClient
     ///         {
     ///             new ConversationMessageRequest
     ///             {
+    ///                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///                 Text = "text",
+    ///                 UserMessageType = UserConversationMessageType.User,
     ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             },
     ///             new ConversationMessageRequest
     ///             {
+    ///                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///                 Text = "text",
+    ///                 UserMessageType = UserConversationMessageType.User,
     ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             },
     ///         },
@@ -241,10 +247,16 @@ public partial class ConversationClient
     ///     {
     ///         new ConversationMessageRequest
     ///         {
+    ///             UserId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///             Text = "text",
+    ///             UserMessageType = UserConversationMessageType.User,
     ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///         new ConversationMessageRequest
     ///         {
+    ///             UserId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///             Text = "text",
+    ///             UserMessageType = UserConversationMessageType.User,
     ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///     }

@@ -4,7 +4,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record Count
+public record ConversationCount
 {
     public override string ToString()
     {

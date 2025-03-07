@@ -216,22 +216,28 @@ await client.Analytics.GetConversationTableAsync(
             Languages = new List<string>() { "en", "es" },
         },
         TimeGrouping = TimeInterval.Day,
-        FieldGroupings = new List<GroupBy>() { new GroupBy { Field = ConversationField.Category } },
-        ColumnDefinitions = new List<ColumnDefinition>()
+        FieldGroupings = new List<ConversationGroupBy>()
         {
-            new ColumnDefinition { Header = "count", Metric = new Count() },
-            new ColumnDefinition
+            new ConversationGroupBy { Field = ConversationField.Category },
+        },
+        ColumnDefinitions = new List<ConversationColumnDefinition>()
+        {
+            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+            new ConversationColumnDefinition
             {
                 Header = "avg_first_response_time",
-                Metric = new Average { TargetField = ConversationField.FirstResponseTime },
+                Metric = new ConversationAverage
+                {
+                    TargetField = NumericConversationField.FirstResponseTime,
+                },
             },
-            new ColumnDefinition
+            new ConversationColumnDefinition
             {
                 Header = "percentile_handle_time",
-                Metric = new Percentile
+                Metric = new ConversationPercentile
                 {
-                    TargetField = ConversationField.HandleTime,
-                    Percentiles = new List<double>() { 25, 75 },
+                    TargetField = NumericConversationField.HandleTime,
+                    Percentile = 25,
                 },
             },
         },
@@ -252,6 +258,144 @@ await client.Analytics.GetConversationTableAsync(
 <dd>
 
 **request:** `ConversationTableRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetConversationChartAsync</a>(object { ... }) -> object</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetches conversation data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Analytics.GetConversationChartAsync(
+    new PieChartRequest
+    {
+        ConversationFilter = new ConversationFilter
+        {
+            Languages = new List<string>() { "en", "es" },
+        },
+        GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+        Metric = new ConversationCount(),
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `object` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetFeedbackTableAsync</a>(FeedbackTableRequest { ... }) -> FeedbackTableResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured feedback data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Analytics.GetFeedbackTableAsync(
+    new FeedbackTableRequest
+    {
+        FeedbackFilter = new FeedbackFilter
+        {
+            Types = new List<FeedbackType>() { FeedbackType.ThumbsUp, FeedbackType.Insert },
+        },
+        FieldGroupings = new List<FeedbackGroupBy>()
+        {
+            new FeedbackGroupBy { Field = FeedbackField.CreatedBy },
+        },
+        ColumnDefinitions = new List<FeedbackColumnDefinition>()
+        {
+            new FeedbackColumnDefinition
+            {
+                Header = "feedback_count",
+                Metric = new FeedbackCount(),
+            },
+        },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `FeedbackTableRequest` 
     
 </dd>
 </dl>
@@ -339,10 +483,16 @@ await client.Conversation.InitializeAsync(
         {
             new ConversationMessageRequest
             {
+                UserId = new EntityIdBase { ReferenceId = "referenceId" },
+                Text = "text",
+                UserMessageType = UserConversationMessageType.User,
                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
             new ConversationMessageRequest
             {
+                UserId = new EntityIdBase { ReferenceId = "referenceId" },
+                Text = "text",
+                UserMessageType = UserConversationMessageType.User,
                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
         },
@@ -540,10 +690,16 @@ await client.Conversation.AppendNewMessagesAsync(
     {
         new ConversationMessageRequest
         {
+            UserId = new EntityIdBase { ReferenceId = "referenceId" },
+            Text = "text",
+            UserMessageType = UserConversationMessageType.User,
             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
         new ConversationMessageRequest
         {
+            UserId = new EntityIdBase { ReferenceId = "referenceId" },
+            Text = "text",
+            UserMessageType = UserConversationMessageType.User,
             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
     }
@@ -1882,6 +2038,73 @@ await client.Users.GetAsync("user-0", new UserGetRequest());
 <dd>
 
 **request:** `UserGetRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Users.<a href="/src/MavenagiApi/Users/UsersClient.cs">DeleteAsync</a>(userId, UserDeleteRequest { ... })</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deletes all identifiers and user data saved by the specified app. 
+Does not modify data or identifiers saved by other apps.
+
+If this user is linked to a user from another app, it will not be unlinked. Unlinking of users is not yet supported.
+
+<Warning>This is a destructive operation and cannot be undone.</Warning>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Users.DeleteAsync("user-0", new UserDeleteRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**userId:** `string` — The reference ID of the user to delete. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `UserDeleteRequest` 
     
 </dd>
 </dl>

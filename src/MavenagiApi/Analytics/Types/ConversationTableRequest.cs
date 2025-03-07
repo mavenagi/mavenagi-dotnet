@@ -8,8 +8,7 @@ namespace MavenagiApi;
 public record ConversationTableRequest
 {
     /// <summary>
-    /// Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
-    /// Example: If set to "DAY," data will be aggregated by day.
+    /// Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
     /// </summary>
     [JsonPropertyName("timeGrouping")]
     public TimeInterval? TimeGrouping { get; set; }
@@ -20,14 +19,15 @@ public record ConversationTableRequest
     /// If empty, all data is aggregated into a single row.
     /// </summary>
     [JsonPropertyName("fieldGroupings")]
-    public IEnumerable<GroupBy> FieldGroupings { get; set; } = new List<GroupBy>();
+    public IEnumerable<ConversationGroupBy> FieldGroupings { get; set; } =
+        new List<ConversationGroupBy>();
 
     /// <summary>
     /// Specifies the metrics to be displayed as columns. Column headers act as keys, with computed metric values as their mapped values. There needs to be at least one column definition in the table request.
     /// </summary>
     [JsonPropertyName("columnDefinitions")]
-    public IEnumerable<ColumnDefinition> ColumnDefinitions { get; set; } =
-        new List<ColumnDefinition>();
+    public IEnumerable<ConversationColumnDefinition> ColumnDefinitions { get; set; } =
+        new List<ConversationColumnDefinition>();
 
     /// <summary>
     /// Optional filter applied to refine the conversation data before processing.

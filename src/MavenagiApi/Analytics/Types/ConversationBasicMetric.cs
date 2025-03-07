@@ -5,10 +5,10 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record Median
+public record ConversationBasicMetric
 {
     /// <summary>
-    /// Field to apply the metric to. The field should be numeric for all metrics except for Count (no field) and DistinctCount.
+    /// Field to apply the metric to.
     /// </summary>
     [JsonPropertyName("targetField")]
     public required ConversationField TargetField { get; set; }

@@ -5,13 +5,13 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record Max
+public record FeedbackDistinctCount
 {
     /// <summary>
-    /// Field to apply the metric to. The field should be numeric for all metrics except for Count (no field) and DistinctCount.
+    /// All the distinct values of this field will be counted.
     /// </summary>
     [JsonPropertyName("targetField")]
-    public required ConversationField TargetField { get; set; }
+    public required FeedbackField TargetField { get; set; }
 
     public override string ToString()
     {

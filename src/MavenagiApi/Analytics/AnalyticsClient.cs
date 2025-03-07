@@ -29,22 +29,28 @@ public partial class AnalyticsClient
     ///             Languages = new List&lt;string&gt;() { "en", "es" },
     ///         },
     ///         TimeGrouping = TimeInterval.Day,
-    ///         FieldGroupings = new List&lt;GroupBy&gt;() { new GroupBy { Field = ConversationField.Category } },
-    ///         ColumnDefinitions = new List&lt;ColumnDefinition&gt;()
+    ///         FieldGroupings = new List&lt;ConversationGroupBy&gt;()
     ///         {
-    ///             new ColumnDefinition { Header = "count", Metric = new Count() },
-    ///             new ColumnDefinition
+    ///             new ConversationGroupBy { Field = ConversationField.Category },
+    ///         },
+    ///         ColumnDefinitions = new List&lt;ConversationColumnDefinition&gt;()
+    ///         {
+    ///             new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+    ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "avg_first_response_time",
-    ///                 Metric = new Average { TargetField = ConversationField.FirstResponseTime },
+    ///                 Metric = new ConversationAverage
+    ///                 {
+    ///                     TargetField = NumericConversationField.FirstResponseTime,
+    ///                 },
     ///             },
-    ///             new ColumnDefinition
+    ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "percentile_handle_time",
-    ///                 Metric = new Percentile
+    ///                 Metric = new ConversationPercentile
     ///                 {
-    ///                     TargetField = ConversationField.HandleTime,
-    ///                     Percentiles = new List&lt;double&gt;() { 25, 75 },
+    ///                     TargetField = NumericConversationField.HandleTime,
+    ///                     Percentile = 25,
     ///                 },
     ///             },
     ///         },
@@ -75,6 +81,158 @@ public partial class AnalyticsClient
             try
             {
                 return JsonUtils.Deserialize<ConversationTableResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        try
+        {
+            switch (response.StatusCode)
+            {
+                case 404:
+                    throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                case 400:
+                    throw new BadRequestError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                case 500:
+                    throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+            }
+        }
+        catch (JsonException)
+        {
+            // unable to map error response, throwing generic error
+        }
+        throw new MavenAGIApiException(
+            $"Error with status code {response.StatusCode}",
+            response.StatusCode,
+            responseBody
+        );
+    }
+
+    /// <summary>
+    /// Fetches conversation data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Analytics.GetConversationChartAsync(
+    ///     new PieChartRequest
+    ///     {
+    ///         ConversationFilter = new ConversationFilter
+    ///         {
+    ///             Languages = new List&lt;string&gt;() { "en", "es" },
+    ///         },
+    ///         GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+    ///         Metric = new ConversationCount(),
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
+    public async Task<object> GetConversationChartAsync(
+        object request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client.MakeRequestAsync(
+            new RawClient.JsonApiRequest
+            {
+                BaseUrl = _client.Options.BaseUrl,
+                Method = HttpMethod.Post,
+                Path = "/v1/charts/conversations",
+                Body = request,
+                Options = options,
+            },
+            cancellationToken
+        );
+        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            try
+            {
+                return JsonUtils.Deserialize<object>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        try
+        {
+            switch (response.StatusCode)
+            {
+                case 404:
+                    throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                case 400:
+                    throw new BadRequestError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                case 500:
+                    throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+            }
+        }
+        catch (JsonException)
+        {
+            // unable to map error response, throwing generic error
+        }
+        throw new MavenAGIApiException(
+            $"Error with status code {response.StatusCode}",
+            response.StatusCode,
+            responseBody
+        );
+    }
+
+    /// <summary>
+    /// Retrieves structured feedback data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Analytics.GetFeedbackTableAsync(
+    ///     new FeedbackTableRequest
+    ///     {
+    ///         FeedbackFilter = new FeedbackFilter
+    ///         {
+    ///             Types = new List&lt;FeedbackType&gt;() { FeedbackType.ThumbsUp, FeedbackType.Insert },
+    ///         },
+    ///         FieldGroupings = new List&lt;FeedbackGroupBy&gt;()
+    ///         {
+    ///             new FeedbackGroupBy { Field = FeedbackField.CreatedBy },
+    ///         },
+    ///         ColumnDefinitions = new List&lt;FeedbackColumnDefinition&gt;()
+    ///         {
+    ///             new FeedbackColumnDefinition
+    ///             {
+    ///                 Header = "feedback_count",
+    ///                 Metric = new FeedbackCount(),
+    ///             },
+    ///         },
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
+    public async Task<FeedbackTableResponse> GetFeedbackTableAsync(
+        FeedbackTableRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client.MakeRequestAsync(
+            new RawClient.JsonApiRequest
+            {
+                BaseUrl = _client.Options.BaseUrl,
+                Method = HttpMethod.Post,
+                Path = "/v1/tables/feedback",
+                Body = request,
+                Options = options,
+            },
+            cancellationToken
+        );
+        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            try
+            {
+                return JsonUtils.Deserialize<FeedbackTableResponse>(responseBody)!;
             }
             catch (JsonException e)
             {
