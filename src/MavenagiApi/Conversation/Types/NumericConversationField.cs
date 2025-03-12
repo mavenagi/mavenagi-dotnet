@@ -2,8 +2,6 @@ using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 [JsonConverter(typeof(EnumSerializer<NumericConversationField>))]
@@ -14,6 +12,9 @@ public enum NumericConversationField
 
     [EnumMember(Value = "ThumbsDownCount")]
     ThumbsDownCount,
+
+    [EnumMember(Value = "InsertCount")]
+    InsertCount,
 
     [EnumMember(Value = "UserMessageCount")]
     UserMessageCount,

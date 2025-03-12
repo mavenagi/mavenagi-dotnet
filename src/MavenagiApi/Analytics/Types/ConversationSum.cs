@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 public record ConversationSum

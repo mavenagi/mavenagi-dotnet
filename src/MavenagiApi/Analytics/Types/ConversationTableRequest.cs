@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 public record ConversationTableRequest
@@ -16,7 +14,8 @@ public record ConversationTableRequest
     /// <summary>
     /// Specifies the fields by which data should be grouped. Each unique combination forms a row.
     /// If multiple fields are provided, the result is grouped by their unique value combinations.
-    /// If empty, all data is aggregated into a single row.
+    /// If empty, all data is aggregated into a single row. |
+    /// Note: The field `CreatedAt` should not be used here, all time-based grouping should be done using the `timeGrouping` field.
     /// </summary>
     [JsonPropertyName("fieldGroupings")]
     public IEnumerable<ConversationGroupBy> FieldGroupings { get; set; } =

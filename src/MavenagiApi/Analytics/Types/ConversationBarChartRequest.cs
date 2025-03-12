@@ -1,11 +1,9 @@
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
-public record BarChartRequest
+public record ConversationBarChartRequest
 {
     /// <summary>
     /// Determines how data is grouped along the x-axis. Each unique value forms a separate bar.

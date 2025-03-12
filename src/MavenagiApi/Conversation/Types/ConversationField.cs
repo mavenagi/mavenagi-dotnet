@@ -2,8 +2,6 @@ using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 [JsonConverter(typeof(EnumSerializer<ConversationField>))]
@@ -47,6 +45,9 @@ public enum ConversationField
 
     [EnumMember(Value = "ThumbsDownCount")]
     ThumbsDownCount,
+
+    [EnumMember(Value = "InsertCount")]
+    InsertCount,
 
     [EnumMember(Value = "Tags")]
     Tags,

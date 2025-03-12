@@ -1,20 +1,24 @@
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
-public record PieChartRequest
+public record ConversationDateHistogramRequest
 {
     /// <summary>
-    /// Field used to group data into slices for the pie chart.
+    /// Time-based grouping interval (e.g., HOUR, DAY, WEEK) for the date histogram.
     /// </summary>
-    [JsonPropertyName("groupBy")]
-    public required ConversationGroupBy GroupBy { get; set; }
+    [JsonPropertyName("timeInterval")]
+    public required TimeInterval TimeInterval { get; set; }
 
     /// <summary>
-    /// Metric defining the value for each pie slice, stored in the y-axis value.
+    /// Groups data before applying calculations, forming a separate time series for each group.
+    /// </summary>
+    [JsonPropertyName("groupBy")]
+    public ConversationGroupBy? GroupBy { get; set; }
+
+    /// <summary>
+    /// Defines the y-axis values for the date histogram.
     /// </summary>
     [JsonPropertyName("metric")]
     public required object Metric { get; set; }

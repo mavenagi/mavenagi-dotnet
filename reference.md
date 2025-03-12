@@ -297,7 +297,7 @@ Fetches conversation data visualized in a chart format. Supported chart types in
 
 ```csharp
 await client.Analytics.GetConversationChartAsync(
-    new PieChartRequest
+    new ConversationPieChartRequest
     {
         ConversationFilter = new ConversationFilter
         {
@@ -478,6 +478,13 @@ Initialize a new conversation. Only required if the ask request wishes to supply
 await client.Conversation.InitializeAsync(
     new ConversationRequest
     {
+        AllMetadata = new Dictionary<string, Dictionary<string, string>>()
+        {
+            {
+                "allMetadata",
+                new Dictionary<string, string>() { { "allMetadata", "allMetadata" } }
+            },
+        },
         ConversationId = new EntityIdBase { ReferenceId = "referenceId" },
         Messages = new List<ConversationMessageRequest>()
         {
@@ -1193,7 +1200,9 @@ await client.Conversation.SubmitActionFormAsync(
 <dl>
 <dd>
 
-Add metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
+Replaced by `updateConversationMetadata`. 
+
+Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
 </dd>
 </dl>
 </dd>
@@ -1235,6 +1244,387 @@ await client.Conversation.AddConversationMetadataAsync(
 <dd>
 
 **request:** `Dictionary<string, string>` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">UpdateConversationMetadataAsync</a>(conversationId, UpdateMetadataRequest { ... }) -> ConversationMetadata</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update metadata supplied by the calling application for an existing conversation. 
+Does not modify metadata saved by other apps.
+
+If a metadata field already exists for the calling app, it will be overwritten. 
+If it does not exist, it will be added. Will not remove metadata fields.
+
+Returns all metadata saved by any app on the conversation.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Conversation.UpdateConversationMetadataAsync(
+    "conversation-0",
+    new UpdateMetadataRequest
+    {
+        AppId = "conversation-owning-app",
+        Values = new Dictionary<string, string>() { { "key", "newValue" } },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversationId:** `string` — The ID of the conversation to modify metadata for
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `UpdateMetadataRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Inbox
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">SearchAsync</a>(InboxSearchRequest { ... }) -> InboxSearchResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve a paginated list of inbox items for an agent.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Inbox.SearchAsync(new InboxSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `InboxSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetAsync</a>(inboxItemId, InboxItemRequest { ... }) -> object</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve details of a specific inbox item by its ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Inbox.GetAsync("inboxItemId", new InboxItemRequest { AppId = "appId" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inboxItemId:** `string` — The ID of the inbox item to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `InboxItemRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetFixAsync</a>(inboxItemFixId, InboxItemFixRequest { ... }) -> object</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Inbox.GetFixAsync("inboxItemFixId", new InboxItemFixRequest { AppId = "appId" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inboxItemFixId:** `string` — Unique identifier for the inbox fix.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `InboxItemFixRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">ApplyFixAsync</a>(inboxItemFixId, ApplyInboxItemFixRequest { ... })</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Apply a fix to an inbox item with a specific document.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Inbox.ApplyFixAsync(
+    "inboxItemFixId",
+    new ApplyInboxItemFixRequest { AppId = "appId" }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inboxItemFixId:** `string` — Unique identifier for the inbox fix.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `ApplyInboxItemFixRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">IgnoreAsync</a>(inboxItemId, InboxItemIgnoreRequest { ... })</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Ignore a specific inbox item by its ID.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Inbox.IgnoreAsync("inboxItemId", new InboxItemIgnoreRequest { AppId = "appId" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**inboxItemId:** `string` — Unique identifier for the inbox item.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `InboxItemIgnoreRequest` 
     
 </dd>
 </dl>

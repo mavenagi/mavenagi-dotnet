@@ -2,8 +2,6 @@ using System;
 using System.Net.Http;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 public partial class RequestOptions : IRequestOptions

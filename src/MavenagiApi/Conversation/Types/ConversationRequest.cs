@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 public record ConversationRequest
@@ -57,10 +55,17 @@ public record ConversationRequest
     public HashSet<string>? Tags { get; set; }
 
     /// <summary>
-    /// The metadata of the conversation.
+    /// The metadata of the conversation supplied by the app which created the conversation.
     /// </summary>
     [JsonPropertyName("metadata")]
     public Dictionary<string, string>? Metadata { get; set; }
+
+    /// <summary>
+    /// All metadata for the conversation. Keyed by appId.
+    /// </summary>
+    [JsonPropertyName("allMetadata")]
+    public Dictionary<string, Dictionary<string, string>> AllMetadata { get; set; } =
+        new Dictionary<string, Dictionary<string, string>>();
 
     public override string ToString()
     {

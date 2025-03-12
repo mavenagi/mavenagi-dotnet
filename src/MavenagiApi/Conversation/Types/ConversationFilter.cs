@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 public record ConversationFilter
@@ -51,6 +49,9 @@ public record ConversationFilter
 
     [JsonPropertyName("tags")]
     public IEnumerable<string>? Tags { get; set; }
+
+    [JsonPropertyName("resolutionStatus")]
+    public IEnumerable<ResolutionStatus>? ResolutionStatus { get; set; }
 
     public override string ToString()
     {

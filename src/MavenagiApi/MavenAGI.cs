@@ -1,12 +1,10 @@
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 public partial class MavenAGI
 {
-    private RawClient _client;
+    private readonly RawClient _client;
 
     public MavenAGI(
         string organizationId,
@@ -27,10 +25,12 @@ public partial class MavenAGI
         var defaultHeaders = new Headers(
             new Dictionary<string, string>()
             {
+                { "X-Organization-Id", organizationId },
+                { "X-Agent-Id", agentId },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "MavenagiApi" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "mavenagi/1.0.7" },
+                { "User-Agent", "mavenagi/1.0.8" },
             }
         );
         clientOptions ??= new ClientOptions();
@@ -47,6 +47,7 @@ public partial class MavenAGI
         AppSettings = new AppSettingsClient(_client);
         Commons = new CommonsClient(_client);
         Conversation = new ConversationClient(_client);
+        Inbox = new InboxClient(_client);
         Knowledge = new KnowledgeClient(_client);
         Translations = new TranslationsClient(_client);
         Triggers = new TriggersClient(_client);
@@ -62,6 +63,8 @@ public partial class MavenAGI
     public CommonsClient Commons { get; init; }
 
     public ConversationClient Conversation { get; init; }
+
+    public InboxClient Inbox { get; init; }
 
     public KnowledgeClient Knowledge { get; init; }
 

@@ -2,8 +2,6 @@ using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
-#nullable enable
-
 namespace MavenagiApi;
 
 [JsonConverter(typeof(EnumSerializer<EntityType>))]
@@ -38,4 +36,10 @@ public enum EntityType
 
     [EnumMember(Value = "FEEDBACK")]
     Feedback,
+
+    [EnumMember(Value = "INBOX_ITEM")]
+    InboxItem,
+
+    [EnumMember(Value = "INBOX_ITEM_FIX")]
+    InboxItemFix,
 }
