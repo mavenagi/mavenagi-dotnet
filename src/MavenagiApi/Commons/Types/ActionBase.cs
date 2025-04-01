@@ -24,7 +24,7 @@ public record ActionBase
     public required bool UserInteractionRequired { get; set; }
 
     /// <summary>
-    /// When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action
+    /// When user interaction is required, the name of the button that is shown to the end user to confirm execution of the action. Defaults to "Submit" if not supplied.
     /// </summary>
     [JsonPropertyName("buttonName")]
     public string? ButtonName { get; set; }
@@ -41,6 +41,12 @@ public record ActionBase
     [JsonPropertyName("userFormParameters")]
     public IEnumerable<ActionParameter> UserFormParameters { get; set; } =
         new List<ActionParameter>();
+
+    /// <summary>
+    /// The ISO 639-1 code for the language used in all fields of this action. Will be derived using the description's text if not specified.
+    /// </summary>
+    [JsonPropertyName("language")]
+    public string? Language { get; set; }
 
     public override string ToString()
     {

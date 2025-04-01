@@ -3,14 +3,8 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ConversationResponse
+public record BaseConversationResponse
 {
-    /// <summary>
-    /// The messages in the conversation
-    /// </summary>
-    [JsonPropertyName("messages")]
-    public IEnumerable<object> Messages { get; set; } = new List<object>();
-
     /// <summary>
     /// Optional configurations for responses to this conversation
     /// </summary>

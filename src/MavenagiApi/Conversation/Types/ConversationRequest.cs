@@ -12,13 +12,6 @@ public record ConversationRequest
     public required EntityIdBase ConversationId { get; set; }
 
     /// <summary>
-    /// The messages in the conversation
-    /// </summary>
-    [JsonPropertyName("messages")]
-    public IEnumerable<ConversationMessageRequest> Messages { get; set; } =
-        new List<ConversationMessageRequest>();
-
-    /// <summary>
     /// Optional configurations for responses to this conversation
     /// </summary>
     [JsonPropertyName("responseConfig")]
@@ -61,11 +54,11 @@ public record ConversationRequest
     public Dictionary<string, string>? Metadata { get; set; }
 
     /// <summary>
-    /// All metadata for the conversation. Keyed by appId.
+    /// The messages in the conversation
     /// </summary>
-    [JsonPropertyName("allMetadata")]
-    public Dictionary<string, Dictionary<string, string>> AllMetadata { get; set; } =
-        new Dictionary<string, Dictionary<string, string>>();
+    [JsonPropertyName("messages")]
+    public IEnumerable<ConversationMessageRequest> Messages { get; set; } =
+        new List<ConversationMessageRequest>();
 
     public override string ToString()
     {

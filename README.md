@@ -8,7 +8,7 @@ The Mavenagi C# library provides convenient access to the Mavenagi API from C#.
 ## Installation
 
 ```sh
-nuget install MavenagiApi
+dotnet add package MavenagiApi
 ```
 
 ## Usage

@@ -44,6 +44,7 @@ await client.Actions.CreateOrUpdateAsync(
                 new MetadataPrecondition { Key = "userKey2" },
             },
         },
+        Language = "en",
     }
 );
 ```
@@ -478,13 +479,6 @@ Initialize a new conversation. Only required if the ask request wishes to supply
 await client.Conversation.InitializeAsync(
     new ConversationRequest
     {
-        AllMetadata = new Dictionary<string, Dictionary<string, string>>()
-        {
-            {
-                "allMetadata",
-                new Dictionary<string, string>() { { "allMetadata", "allMetadata" } }
-            },
-        },
         ConversationId = new EntityIdBase { ReferenceId = "referenceId" },
         Messages = new List<ConversationMessageRequest>()
         {
@@ -1330,6 +1324,60 @@ await client.Conversation.UpdateConversationMetadataAsync(
 </dl>
 </details>
 
+<details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">SearchAsync</a>(ConversationsSearchRequest { ... }) -> ConversationsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search conversations
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Conversation.SearchAsync(new ConversationsSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ConversationsSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Inbox
 <details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">SearchAsync</a>(InboxSearchRequest { ... }) -> InboxSearchResponse</code></summary>
 <dl>
@@ -1669,7 +1717,6 @@ await client.Knowledge.CreateOrUpdateKnowledgeBaseAsync(
     {
         KnowledgeBaseId = new EntityIdBase { ReferenceId = "help-center" },
         Name = "Help center",
-        Type = KnowledgeBaseType.Api,
     }
 );
 ```

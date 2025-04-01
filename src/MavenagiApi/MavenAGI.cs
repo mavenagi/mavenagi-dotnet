@@ -30,7 +30,7 @@ public partial class MavenAGI
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "MavenagiApi" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "mavenagi/1.0.8" },
+                { "User-Agent", "mavenagi/1.0.9" },
             }
         );
         clientOptions ??= new ClientOptions();
@@ -49,6 +49,7 @@ public partial class MavenAGI
         Conversation = new ConversationClient(_client);
         Inbox = new InboxClient(_client);
         Knowledge = new KnowledgeClient(_client);
+        Realtime = new RealtimeClient(_client);
         Translations = new TranslationsClient(_client);
         Triggers = new TriggersClient(_client);
         Users = new UsersClient(_client);
@@ -67,6 +68,8 @@ public partial class MavenAGI
     public InboxClient Inbox { get; init; }
 
     public KnowledgeClient Knowledge { get; init; }
+
+    public RealtimeClient Realtime { get; init; }
 
     public TranslationsClient Translations { get; init; }
 

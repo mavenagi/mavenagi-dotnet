@@ -12,18 +12,6 @@ public record KnowledgeBaseProperties
     public required string Name { get; set; }
 
     /// <summary>
-    /// The type of the knowledge base. Can not be changed once created.
-    /// </summary>
-    [JsonPropertyName("type")]
-    public required KnowledgeBaseType Type { get; set; }
-
-    /// <summary>
-    /// The URL to pull content from for RSS and URL knowledge bases.
-    /// </summary>
-    [JsonPropertyName("url")]
-    public string? Url { get; set; }
-
-    /// <summary>
     /// (Beta) The preconditions that must be met for knowledge base be relevant to a conversation. Can be used to limit knowledge to certain types of users.
     /// </summary>
     [JsonPropertyName("precondition")]

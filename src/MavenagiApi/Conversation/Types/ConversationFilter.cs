@@ -53,6 +53,9 @@ public record ConversationFilter
     [JsonPropertyName("resolutionStatus")]
     public IEnumerable<ResolutionStatus>? ResolutionStatus { get; set; }
 
+    [JsonPropertyName("resolvedByMaven")]
+    public bool? ResolvedByMaven { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

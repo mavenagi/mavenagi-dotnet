@@ -37,6 +37,7 @@ public partial class ActionsClient
     ///                 new MetadataPrecondition { Key = "userKey2" },
     ///             },
     ///         },
+    ///         Language = "en",
     ///     }
     /// );
     /// </code>

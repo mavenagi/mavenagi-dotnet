@@ -23,13 +23,6 @@ public partial class ConversationClient
     /// await client.Conversation.InitializeAsync(
     ///     new ConversationRequest
     ///     {
-    ///         AllMetadata = new Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;()
-    ///         {
-    ///             {
-    ///                 "allMetadata",
-    ///                 new Dictionary&lt;string, string&gt;() { { "allMetadata", "allMetadata" } }
-    ///             },
-    ///         },
     ///         ConversationId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         Messages = new List&lt;ConversationMessageRequest&gt;()
     ///         {
@@ -962,6 +955,74 @@ public partial class ConversationClient
             try
             {
                 return JsonUtils.Deserialize<ConversationMetadata>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
+    /// Search conversations
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Conversation.SearchAsync(new ConversationsSearchRequest());
+    /// </code>
+    /// </example>
+    public async Task<ConversationsResponse> SearchAsync(
+        ConversationsSearchRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new RawClient.JsonApiRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "/v1/conversations/search",
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<ConversationsResponse>(responseBody)!;
             }
             catch (JsonException e)
             {

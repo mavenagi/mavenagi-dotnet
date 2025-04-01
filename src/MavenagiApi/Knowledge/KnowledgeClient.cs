@@ -25,7 +25,6 @@ public partial class KnowledgeClient
     ///     {
     ///         KnowledgeBaseId = new EntityIdBase { ReferenceId = "help-center" },
     ///         Name = "Help center",
-    ///         Type = KnowledgeBaseType.Api,
     ///     }
     /// );
     /// </code>

@@ -35,6 +35,12 @@ public record ConversationAnalysis
     [JsonPropertyName("sentiment")]
     public Sentiment? Sentiment { get; set; }
 
+    /// <summary>
+    /// Whether the conversation was resolved by Maven
+    /// </summary>
+    [JsonPropertyName("resolvedByMaven")]
+    public bool? ResolvedByMaven { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

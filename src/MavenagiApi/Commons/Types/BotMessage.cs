@@ -20,6 +20,9 @@ public record BotMessage
     [JsonPropertyName("metadata")]
     public required BotResponseMetadata Metadata { get; set; }
 
+    [JsonPropertyName("status")]
+    public required BotMessageStatus Status { get; set; }
+
     /// <summary>
     /// The date and time the conversation was created
     /// </summary>
