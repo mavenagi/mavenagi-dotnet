@@ -36,10 +36,28 @@ public record ConversationAnalysis
     public Sentiment? Sentiment { get; set; }
 
     /// <summary>
+    /// Generated quality of the conversation
+    /// </summary>
+    [JsonPropertyName("quality")]
+    public Quality? Quality { get; set; }
+
+    /// <summary>
+    /// If the quality of the conversation is `UNKNOWN` or `NEEDS_IMPROVEMENT` then a reason for the quality will be provided when possible.
+    /// </summary>
+    [JsonPropertyName("qualityReason")]
+    public QualityReason? QualityReason { get; set; }
+
+    /// <summary>
     /// Whether the conversation was resolved by Maven
     /// </summary>
     [JsonPropertyName("resolvedByMaven")]
     public bool? ResolvedByMaven { get; set; }
+
+    /// <summary>
+    /// Primary language of the conversation in ISO 639-1 code format
+    /// </summary>
+    [JsonPropertyName("primaryLanguage")]
+    public string? PrimaryLanguage { get; set; }
 
     public override string ToString()
     {

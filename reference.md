@@ -448,6 +448,74 @@ await client.AppSettings.GetAsync();
 </dl>
 </details>
 
+<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">UpdateAsync</a>(object { ... }) -> object</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update app settings. Performs a merge of the provided settings with the existing app settings.
+
+- If a new key is provided, it will be added to the app settings.
+- If an existing key is provided, it will be updated.
+- No keys will be removed.
+
+Note that if an array value is provided it will fully replace an existing value as arrays cannot be merged.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.AppSettings.UpdateAsync(
+    new Dictionary<string, object>()
+    {
+        {
+            "string",
+            new Dictionary<object, object?>() { { "key", "value" } }
+        },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `object` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Conversation
 <details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">InitializeAsync</a>(ConversationRequest { ... }) -> ConversationResponse</code></summary>
 <dl>
@@ -461,7 +529,14 @@ await client.AppSettings.GetAsync();
 <dl>
 <dd>
 
-Initialize a new conversation. Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+Initialize a new conversation. 
+Only required if the ask request wishes to supply conversation level data or when syncing to external systems.
+
+Conversations can not be modified using this API. If the conversation already exists then the existing conversation will be returned.
+
+After initialization,
+- metadata can be changed using the `updateConversationMetadata` API.
+- messages can be added to the conversation with the `appendNewMessages` or `ask` APIs.
 </dd>
 </dl>
 </dd>
@@ -1811,7 +1886,9 @@ await client.Knowledge.GetKnowledgeBaseAsync("help-center");
 <dl>
 <dd>
 
-Create a new knowledge base version. Only supported on API knowledge bases. Will throw an exception if there is an existing version in progress.
+Create a new knowledge base version.
+
+If an existing version is in progress, then that version will be finalized in an error state.
 </dd>
 </dl>
 </dd>

@@ -22,9 +22,6 @@ public enum QualityReason
     [EnumMember(Value = "UNSUPPORTED_FORMAT")]
     UnsupportedFormat,
 
-    [EnumMember(Value = "GREAT_ANSWER")]
-    GreatAnswer,
-
     [EnumMember(Value = "INTERRUPTED")]
     Interrupted,
 

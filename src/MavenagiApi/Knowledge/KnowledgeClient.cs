@@ -157,7 +157,9 @@ public partial class KnowledgeClient
     }
 
     /// <summary>
-    /// Create a new knowledge base version. Only supported on API knowledge bases. Will throw an exception if there is an existing version in progress.
+    /// Create a new knowledge base version.
+    ///
+    /// If an existing version is in progress, then that version will be finalized in an error state.
     /// </summary>
     /// <example>
     /// <code>

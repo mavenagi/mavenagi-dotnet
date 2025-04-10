@@ -12,6 +12,12 @@ public record KnowledgeBaseResponse
     public required EntityId KnowledgeBaseId { get; set; }
 
     /// <summary>
+    /// The type of the knowledge base. Can not be changed once created.
+    /// </summary>
+    [JsonPropertyName("type")]
+    public required KnowledgeBaseType Type { get; set; }
+
+    /// <summary>
     /// The name of the knowledge base
     /// </summary>
     [JsonPropertyName("name")]
