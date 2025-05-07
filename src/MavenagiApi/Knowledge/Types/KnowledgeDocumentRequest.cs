@@ -11,6 +11,12 @@ public record KnowledgeDocumentRequest
     [JsonPropertyName("knowledgeDocumentId")]
     public required EntityIdBase KnowledgeDocumentId { get; set; }
 
+    /// <summary>
+    /// ID that uniquely identifies which knowledge base version to create the document in. If not provided will use the most recent version of the knowledge base.
+    /// </summary>
+    [JsonPropertyName("versionId")]
+    public EntityIdWithoutAgent? VersionId { get; set; }
+
     [JsonPropertyName("contentType")]
     public required KnowledgeDocumentContentType ContentType { get; set; }
 
@@ -19,6 +25,12 @@ public record KnowledgeDocumentRequest
     /// </summary>
     [JsonPropertyName("content")]
     public required string Content { get; set; }
+
+    /// <summary>
+    /// Metadata for the knowledge document.
+    /// </summary>
+    [JsonPropertyName("metadata")]
+    public Dictionary<string, string>? Metadata { get; set; }
 
     /// <summary>
     /// The title of the document. Will be shown as part of answers.

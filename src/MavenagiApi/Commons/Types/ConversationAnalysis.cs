@@ -59,6 +59,12 @@ public record ConversationAnalysis
     [JsonPropertyName("primaryLanguage")]
     public string? PrimaryLanguage { get; set; }
 
+    /// <summary>
+    /// The predicted NPS of the conversation.
+    /// </summary>
+    [JsonPropertyName("predictedNps")]
+    public double? PredictedNps { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

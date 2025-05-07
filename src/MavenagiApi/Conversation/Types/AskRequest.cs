@@ -35,6 +35,12 @@ public record AskRequest
     [JsonPropertyName("transientData")]
     public Dictionary<string, string>? TransientData { get; set; }
 
+    /// <summary>
+    /// IANA timezone identifier (e.g. "America/New_York", "Europe/London") to be used for time-based operations in the conversation.
+    /// </summary>
+    [JsonPropertyName("timezone")]
+    public string? Timezone { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

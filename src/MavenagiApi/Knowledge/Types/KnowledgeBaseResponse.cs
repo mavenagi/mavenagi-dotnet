@@ -18,6 +18,12 @@ public record KnowledgeBaseResponse
     public required KnowledgeBaseType Type { get; set; }
 
     /// <summary>
+    /// Metadata for the knowledge base.
+    /// </summary>
+    [JsonPropertyName("metadata")]
+    public Dictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+
+    /// <summary>
     /// The name of the knowledge base
     /// </summary>
     [JsonPropertyName("name")]

@@ -165,7 +165,19 @@ public partial class KnowledgeClient
     /// <code>
     /// await client.Knowledge.CreateKnowledgeBaseVersionAsync(
     ///     "help-center",
-    ///     new KnowledgeBaseVersion { Type = KnowledgeBaseVersionType.Full }
+    ///     new KnowledgeBaseVersion
+    ///     {
+    ///         VersionId = new EntityId
+    ///         {
+    ///             Type = EntityType.KnowledgeBaseVersion,
+    ///             ReferenceId = "versionId",
+    ///             AppId = "maven",
+    ///             OrganizationId = "acme",
+    ///             AgentId = "support",
+    ///         },
+    ///         Type = KnowledgeBaseVersionType.Full,
+    ///         Status = KnowledgeBaseVersionStatus.InProgress,
+    ///     }
     /// );
     /// </code>
     /// </example>
@@ -236,11 +248,24 @@ public partial class KnowledgeClient
     /// </summary>
     /// <example>
     /// <code>
-    /// await client.Knowledge.FinalizeKnowledgeBaseVersionAsync("help-center");
+    /// await client.Knowledge.FinalizeKnowledgeBaseVersionAsync(
+    ///     "help-center",
+    ///     new FinalizeKnowledgeBaseVersionRequest
+    ///     {
+    ///         VersionId = new EntityIdWithoutAgent
+    ///         {
+    ///             Type = EntityType.KnowledgeBaseVersion,
+    ///             ReferenceId = "versionId",
+    ///             AppId = "maven",
+    ///         },
+    ///         Status = KnowledgeBaseVersionFinalizeStatus.Succeeded,
+    ///     }
+    /// );
     /// </code>
     /// </example>
-    public async global::System.Threading.Tasks.Task FinalizeKnowledgeBaseVersionAsync(
+    public async Task<KnowledgeBaseVersion> FinalizeKnowledgeBaseVersionAsync(
         string knowledgeBaseReferenceId,
+        FinalizeKnowledgeBaseVersionRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -253,6 +278,7 @@ public partial class KnowledgeClient
                     Method = HttpMethod.Post,
                     Path =
                         $"/v1/knowledge/{JsonUtils.SerializeAsString(knowledgeBaseReferenceId)}/version/finalize",
+                    Body = request,
                     Options = options,
                 },
                 cancellationToken
@@ -260,8 +286,17 @@ public partial class KnowledgeClient
             .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
-            return;
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<KnowledgeBaseVersion>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
         }
+
         {
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
@@ -292,6 +327,11 @@ public partial class KnowledgeClient
 
     /// <summary>
     /// Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+    ///
+    /// &lt;Tip&gt;
+    /// This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+    /// have changed, a new document version will not be created. The existing version will be reused.
+    /// &lt;/Tip&gt;
     /// </summary>
     /// <example>
     /// <code>
@@ -300,9 +340,16 @@ public partial class KnowledgeClient
     ///     new KnowledgeDocumentRequest
     ///     {
     ///         KnowledgeDocumentId = new EntityIdBase { ReferenceId = "getting-started" },
+    ///         VersionId = new EntityIdWithoutAgent
+    ///         {
+    ///             Type = EntityType.KnowledgeBaseVersion,
+    ///             ReferenceId = "versionId",
+    ///             AppId = "maven",
+    ///         },
     ///         ContentType = KnowledgeDocumentContentType.Markdown,
     ///         Content = "## Getting started\\nThis is a getting started guide for the help center.",
     ///         Title = "Getting started",
+    ///         Metadata = new Dictionary&lt;string, string&gt;() { { "category", "getting-started" } },
     ///     }
     /// );
     /// </code>
@@ -379,9 +426,16 @@ public partial class KnowledgeClient
     ///     new KnowledgeDocumentRequest
     ///     {
     ///         KnowledgeDocumentId = new EntityIdBase { ReferenceId = "getting-started" },
+    ///         VersionId = new EntityIdWithoutAgent
+    ///         {
+    ///             Type = EntityType.KnowledgeBaseVersion,
+    ///             ReferenceId = "versionId",
+    ///             AppId = "maven",
+    ///         },
     ///         ContentType = KnowledgeDocumentContentType.Markdown,
     ///         Content = "## Getting started\\nThis is a getting started guide for the help center.",
     ///         Title = "Getting started",
+    ///         Metadata = new Dictionary&lt;string, string&gt;() { { "category", "getting-started" } },
     ///     }
     /// );
     /// </code>

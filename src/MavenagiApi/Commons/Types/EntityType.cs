@@ -16,6 +16,9 @@ public enum EntityType
     [EnumMember(Value = "KNOWLEDGE_BASE")]
     KnowledgeBase,
 
+    [EnumMember(Value = "KNOWLEDGE_BASE_VERSION")]
+    KnowledgeBaseVersion,
+
     [EnumMember(Value = "KNOWLEDGE_DOCUMENT")]
     KnowledgeDocument,
 

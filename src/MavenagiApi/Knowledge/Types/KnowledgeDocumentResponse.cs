@@ -18,6 +18,12 @@ public record KnowledgeDocumentResponse
     public required string Content { get; set; }
 
     /// <summary>
+    /// Metadata for the knowledge document.
+    /// </summary>
+    [JsonPropertyName("metadata")]
+    public Dictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+
+    /// <summary>
     /// The title of the document. Will be shown as part of answers.
     /// </summary>
     [JsonPropertyName("title")]

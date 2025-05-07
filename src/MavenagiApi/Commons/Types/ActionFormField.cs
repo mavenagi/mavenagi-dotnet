@@ -6,19 +6,19 @@ namespace MavenagiApi;
 public record ActionFormField
 {
     /// <summary>
-    /// The ID field should be used as the key in the submitActionForm API call.
+    /// The ID field should be used as the key in the `submitActionForm` API.
     /// </summary>
     [JsonPropertyName("id")]
     public required string Id { get; set; }
 
     /// <summary>
-    /// The title of the field to show on the form.
+    /// The title of the field to show on the form. Provided in the user's language.
     /// </summary>
     [JsonPropertyName("label")]
     public required string Label { get; set; }
 
     /// <summary>
-    /// A longer description of the field which should be shown in smaller text near the label.
+    /// A longer description of the field which should be shown in smaller text near the label. Provided in the user's language.
     /// </summary>
     [JsonPropertyName("description")]
     public required string Description { get; set; }

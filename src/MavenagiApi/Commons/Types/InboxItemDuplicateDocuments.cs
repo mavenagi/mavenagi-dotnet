@@ -20,6 +20,12 @@ public record InboxItemDuplicateDocuments
         new List<InboxItemFixDeactivateDocument>();
 
     /// <summary>
+    /// Information about the source document associated with the inbox item.
+    /// </summary>
+    [JsonPropertyName("sourceDocument")]
+    public DocumentInformation? SourceDocument { get; set; }
+
+    /// <summary>
     /// List of Document information objects related to the inbox item.
     /// </summary>
     [JsonPropertyName("documents")]

@@ -12,6 +12,12 @@ public record EventTriggerResponse
     public required EntityId TriggerId { get; set; }
 
     /// <summary>
+    /// Whether this trigger will be called by Maven.
+    /// </summary>
+    [JsonPropertyName("enabled")]
+    public required bool Enabled { get; set; }
+
+    /// <summary>
     /// The description of what the event trigger does, shown in the Maven Dashboard
     /// </summary>
     [JsonPropertyName("description")]

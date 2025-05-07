@@ -12,6 +12,12 @@ public record KnowledgeBaseRequest
     public required EntityIdBase KnowledgeBaseId { get; set; }
 
     /// <summary>
+    /// Metadata for the knowledge base.
+    /// </summary>
+    [JsonPropertyName("metadata")]
+    public Dictionary<string, string>? Metadata { get; set; }
+
+    /// <summary>
     /// The name of the knowledge base
     /// </summary>
     [JsonPropertyName("name")]

@@ -379,6 +379,7 @@ public partial class ConversationClient
     ///             { "userToken", "abcdef123" },
     ///             { "queryApiKey", "foobar456" },
     ///         },
+    ///         Timezone = "America/New_York",
     ///     }
     /// );
     /// </code>
@@ -477,6 +478,7 @@ public partial class ConversationClient
     ///             { "userToken", "abcdef123" },
     ///             { "queryApiKey", "foobar456" },
     ///         },
+    ///         Timezone = "America/New_York",
     ///     }
     /// );
     /// </code>

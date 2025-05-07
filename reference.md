@@ -409,6 +409,64 @@ await client.Analytics.GetFeedbackTableAsync(
 </details>
 
 ## AppSettings
+<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">SearchAsync</a>(SearchAppSettingsRequest { ... }) -> SearchAppSettingsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search for app settings which have the `$index` key set to the provided value.
+
+You can set the `$index` key using the Update app settings API.
+
+<Warning>This API currently requires an organization ID and agent ID for any agent which is installed on the app. This requirement will be removed in a future update.</Warning>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.AppSettings.SearchAsync(new SearchAppSettingsRequest { Index = "index" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `SearchAppSettingsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">GetAsync</a>() -> object</code></summary>
 <dl>
 <dd>
@@ -865,6 +923,7 @@ await client.Conversation.AskAsync(
             { "userToken", "abcdef123" },
             { "queryApiKey", "foobar456" },
         },
+        Timezone = "America/New_York",
     }
 );
 ```
@@ -956,6 +1015,7 @@ await client.Conversation.AskStreamAsync(
             { "userToken", "abcdef123" },
             { "queryApiKey", "foobar456" },
         },
+        Timezone = "America/New_York",
     }
 );
 ```
@@ -1905,7 +1965,19 @@ If an existing version is in progress, then that version will be finalized in an
 ```csharp
 await client.Knowledge.CreateKnowledgeBaseVersionAsync(
     "help-center",
-    new KnowledgeBaseVersion { Type = KnowledgeBaseVersionType.Full }
+    new KnowledgeBaseVersion
+    {
+        VersionId = new EntityId
+        {
+            Type = EntityType.KnowledgeBaseVersion,
+            ReferenceId = "versionId",
+            AppId = "maven",
+            OrganizationId = "acme",
+            AgentId = "support",
+        },
+        Type = KnowledgeBaseVersionType.Full,
+        Status = KnowledgeBaseVersionStatus.InProgress,
+    }
 );
 ```
 </dd>
@@ -1941,7 +2013,7 @@ await client.Knowledge.CreateKnowledgeBaseVersionAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">FinalizeKnowledgeBaseVersionAsync</a>(knowledgeBaseReferenceId)</code></summary>
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">FinalizeKnowledgeBaseVersionAsync</a>(knowledgeBaseReferenceId, FinalizeKnowledgeBaseVersionRequest { ... }) -> KnowledgeBaseVersion</code></summary>
 <dl>
 <dd>
 
@@ -1968,7 +2040,19 @@ Finalize the latest knowledge base version. Required to indicate the version is 
 <dd>
 
 ```csharp
-await client.Knowledge.FinalizeKnowledgeBaseVersionAsync("help-center");
+await client.Knowledge.FinalizeKnowledgeBaseVersionAsync(
+    "help-center",
+    new FinalizeKnowledgeBaseVersionRequest
+    {
+        VersionId = new EntityIdWithoutAgent
+        {
+            Type = EntityType.KnowledgeBaseVersion,
+            ReferenceId = "versionId",
+            AppId = "maven",
+        },
+        Status = KnowledgeBaseVersionFinalizeStatus.Succeeded,
+    }
+);
 ```
 </dd>
 </dl>
@@ -1984,6 +2068,14 @@ await client.Knowledge.FinalizeKnowledgeBaseVersionAsync("help-center");
 <dd>
 
 **knowledgeBaseReferenceId:** `string` — The reference ID of the knowledge base to finalize a version for. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `FinalizeKnowledgeBaseVersionRequest` 
     
 </dd>
 </dl>
@@ -2008,6 +2100,11 @@ await client.Knowledge.FinalizeKnowledgeBaseVersionAsync("help-center");
 <dd>
 
 Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+        
+<Tip>
+This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields 
+have changed, a new document version will not be created. The existing version will be reused.
+</Tip>
 </dd>
 </dl>
 </dd>
@@ -2027,9 +2124,16 @@ await client.Knowledge.CreateKnowledgeDocumentAsync(
     new KnowledgeDocumentRequest
     {
         KnowledgeDocumentId = new EntityIdBase { ReferenceId = "getting-started" },
+        VersionId = new EntityIdWithoutAgent
+        {
+            Type = EntityType.KnowledgeBaseVersion,
+            ReferenceId = "versionId",
+            AppId = "maven",
+        },
         ContentType = KnowledgeDocumentContentType.Markdown,
         Content = "## Getting started\\nThis is a getting started guide for the help center.",
         Title = "Getting started",
+        Metadata = new Dictionary<string, string>() { { "category", "getting-started" } },
     }
 );
 ```
@@ -2098,9 +2202,16 @@ await client.Knowledge.UpdateKnowledgeDocumentAsync(
     new KnowledgeDocumentRequest
     {
         KnowledgeDocumentId = new EntityIdBase { ReferenceId = "getting-started" },
+        VersionId = new EntityIdWithoutAgent
+        {
+            Type = EntityType.KnowledgeBaseVersion,
+            ReferenceId = "versionId",
+            AppId = "maven",
+        },
         ContentType = KnowledgeDocumentContentType.Markdown,
         Content = "## Getting started\\nThis is a getting started guide for the help center.",
         Title = "Getting started",
+        Metadata = new Dictionary<string, string>() { { "category", "getting-started" } },
     }
 );
 ```
@@ -2199,6 +2310,169 @@ await client.Knowledge.DeleteKnowledgeDocumentAsync("help-center", "getting-star
 </dl>
 </details>
 
+## Organizations
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetConversationTableAsync</a>(ConversationTableRequest { ... }) -> ConversationTableResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured conversation data across all organizations, formatted as a table, 
+allowing users to group, filter, and define specific metrics to display as columns.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Organizations.GetConversationTableAsync(
+    new ConversationTableRequest
+    {
+        ConversationFilter = new ConversationFilter
+        {
+            Languages = new List<string>() { "en", "es" },
+        },
+        TimeGrouping = TimeInterval.Day,
+        FieldGroupings = new List<ConversationGroupBy>()
+        {
+            new ConversationGroupBy { Field = ConversationField.Category },
+        },
+        ColumnDefinitions = new List<ConversationColumnDefinition>()
+        {
+            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+            new ConversationColumnDefinition
+            {
+                Header = "avg_first_response_time",
+                Metric = new ConversationAverage
+                {
+                    TargetField = NumericConversationField.FirstResponseTime,
+                },
+            },
+            new ConversationColumnDefinition
+            {
+                Header = "percentile_handle_time",
+                Metric = new ConversationPercentile
+                {
+                    TargetField = NumericConversationField.HandleTime,
+                    Percentile = 25,
+                },
+            },
+        },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ConversationTableRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetConversationChartAsync</a>(object { ... }) -> object</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Fetches conversation data across all organizations, visualized in a chart format. 
+Supported chart types include pie chart, date histogram, and stacked bar charts.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Organizations.GetConversationChartAsync(
+    new ConversationPieChartRequest
+    {
+        ConversationFilter = new ConversationFilter
+        {
+            Languages = new List<string>() { "en", "es" },
+        },
+        GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+        Metric = new ConversationCount(),
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `object` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Translations
 <details><summary><code>client.Translations.<a href="/src/MavenagiApi/Translations/TranslationsClient.cs">TranslateAsync</a>(TranslationRequest { ... }) -> TranslationResponse</code></summary>
 <dl>
@@ -2257,6 +2531,46 @@ await client.Translations.TranslateAsync(
 </details>
 
 ## Triggers
+<details><summary><code>client.Triggers.<a href="/src/MavenagiApi/Triggers/TriggersClient.cs">SearchAsync</a>(EventTriggersSearchRequest { ... }) -> EventTriggersSearchResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Triggers.SearchAsync(new EventTriggersSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `EventTriggersSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Triggers.<a href="/src/MavenagiApi/Triggers/TriggersClient.cs">CreateOrUpdateAsync</a>(EventTriggerRequest { ... }) -> EventTriggerResponse</code></summary>
 <dl>
 <dd>
@@ -2415,6 +2729,71 @@ await client.Triggers.DeleteAsync("store-in-snowflake");
 <dd>
 
 **triggerReferenceId:** `string` — The reference ID of the event trigger to delete. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Triggers.<a href="/src/MavenagiApi/Triggers/TriggersClient.cs">PartialUpdateAsync</a>(triggerReferenceId, PartialUpdateRequest { ... }) -> EventTriggerResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Updates an event trigger. Only the enabled field is editable.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Triggers.PartialUpdateAsync(
+    "triggerReferenceId",
+    new PartialUpdateRequest { Body = new TriggerPartialUpdate() }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**triggerReferenceId:** `string` — The reference ID of the event trigger to update. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `PartialUpdateRequest` 
     
 </dd>
 </dl>

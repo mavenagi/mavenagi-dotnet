@@ -25,6 +25,12 @@ public record UserMessage
         new List<UserMessageAttachment>();
 
     /// <summary>
+    /// The display name of the user who created this message. Only available for users who have saved name information.
+    /// </summary>
+    [JsonPropertyName("userDisplayName")]
+    public string? UserDisplayName { get; set; }
+
+    /// <summary>
     /// ID that uniquely identifies the user that created this message
     /// </summary>
     [JsonPropertyName("userId")]
