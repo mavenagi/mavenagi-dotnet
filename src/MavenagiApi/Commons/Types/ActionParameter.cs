@@ -41,6 +41,12 @@ public record ActionParameter
     [JsonPropertyName("enumOptions")]
     public IEnumerable<ActionEnumOption>? EnumOptions { get; set; }
 
+    /// <summary>
+    /// JSON schema for validating the parameter value. Only valid when type is `SCHEMA`.
+    /// </summary>
+    [JsonPropertyName("schema")]
+    public string? Schema { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

@@ -3,17 +3,8 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ControlEvent
+public record MessageBase
 {
-    [JsonPropertyName("reason")]
-    public string? Reason { get; set; }
-
-    /// <summary>
-    /// not used.
-    /// </summary>
-    [JsonPropertyName("unused")]
-    public AudioFormat? Unused { get; set; }
-
     [JsonPropertyName("seqId")]
     public int? SeqId { get; set; }
 

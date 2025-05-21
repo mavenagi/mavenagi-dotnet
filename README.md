@@ -19,41 +19,7 @@ Instantiate and use the client with the following:
 using MavenagiApi;
 
 var client = new MavenAGI("ORGANIZATION_ID", "AGENT_ID");
-await client.Analytics.GetConversationTableAsync(
-    new ConversationTableRequest
-    {
-        ConversationFilter = new ConversationFilter
-        {
-            Languages = new List<string>() { "en", "es" },
-        },
-        TimeGrouping = TimeInterval.Day,
-        FieldGroupings = new List<ConversationGroupBy>()
-        {
-            new ConversationGroupBy { Field = ConversationField.Category },
-        },
-        ColumnDefinitions = new List<ConversationColumnDefinition>()
-        {
-            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
-            new ConversationColumnDefinition
-            {
-                Header = "avg_first_response_time",
-                Metric = new ConversationAverage
-                {
-                    TargetField = NumericConversationField.FirstResponseTime,
-                },
-            },
-            new ConversationColumnDefinition
-            {
-                Header = "percentile_handle_time",
-                Metric = new ConversationPercentile
-                {
-                    TargetField = NumericConversationField.HandleTime,
-                    Percentile = 25,
-                },
-            },
-        },
-    }
-);
+await client.Agents.SearchAsync(new AgentsSearchRequest());
 ```
 
 ## Exception Handling
@@ -65,7 +31,7 @@ will be thrown.
 using MavenagiApi;
 
 try {
-    var response = await client.Analytics.GetConversationTableAsync(...);
+    var response = await client.Agents.SearchAsync(...);
 } catch (MavenAGIApiException e) {
     System.Console.WriteLine(e.Body);
     System.Console.WriteLine(e.StatusCode);
@@ -89,7 +55,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `MaxRetries` request option to configure this behavior.
 
 ```csharp
-var response = await client.Analytics.GetConversationTableAsync(
+var response = await client.Agents.SearchAsync(
     ...,
     new RequestOptions {
         MaxRetries: 0 // Override MaxRetries at the request level
@@ -102,7 +68,7 @@ var response = await client.Analytics.GetConversationTableAsync(
 The SDK defaults to a 30 second timeout. Use the `Timeout` option to configure this behavior.
 
 ```csharp
-var response = await client.Analytics.GetConversationTableAsync(
+var response = await client.Agents.SearchAsync(
     ...,
     new RequestOptions {
         Timeout: TimeSpan.FromSeconds(3) // Override timeout to 3s

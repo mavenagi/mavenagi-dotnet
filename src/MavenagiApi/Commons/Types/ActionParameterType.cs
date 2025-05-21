@@ -15,4 +15,7 @@ public enum ActionParameterType
 
     [EnumMember(Value = "NUMBER")]
     Number,
+
+    [EnumMember(Value = "SCHEMA")]
+    Schema,
 }

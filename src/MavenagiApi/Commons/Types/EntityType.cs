@@ -7,6 +7,9 @@ namespace MavenagiApi;
 [JsonConverter(typeof(EnumSerializer<EntityType>))]
 public enum EntityType
 {
+    [EnumMember(Value = "AGENT")]
+    Agent,
+
     [EnumMember(Value = "CONVERSATION")]
     Conversation,
 

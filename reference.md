@@ -181,6 +181,181 @@ await client.Actions.DeleteAsync("get-balance");
 </dl>
 </details>
 
+## Agents
+<details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">SearchAsync</a>(AgentsSearchRequest { ... }) -> AgentsSearchResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search for agents across all organizations.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Agents.SearchAsync(new AgentsSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `AgentsSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">ListAsync</a>(organizationReferenceId) -> IEnumerable<Agent></code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists all agents for an organization
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Agents.ListAsync("organizationReferenceId");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The ID of the organization.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">GetAsync</a>(organizationReferenceId, agentReferenceId) -> Agent</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an agent
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Agents.GetAsync("organizationReferenceId", "agentReferenceId");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agentReferenceId:** `string` — The ID of the agent.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Analytics
 <details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetConversationTableAsync</a>(ConversationTableRequest { ... }) -> ConversationTableResponse</code></summary>
 <dl>
@@ -1502,6 +1677,61 @@ await client.Conversation.SearchAsync(new ConversationsSearchRequest());
 <dd>
 
 **request:** `ConversationsSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Events
+<details><summary><code>client.Events.<a href="/src/MavenagiApi/Events/EventsClient.cs">SearchAsync</a>(EventsSearchRequest { ... }) -> EventsSearchResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search events
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Events.SearchAsync(new EventsSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `EventsSearchRequest` 
     
 </dd>
 </dl>
