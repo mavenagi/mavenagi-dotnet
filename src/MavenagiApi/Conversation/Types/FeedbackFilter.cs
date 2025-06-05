@@ -14,12 +14,6 @@ public record FeedbackFilter
     [JsonPropertyName("createdBefore")]
     public DateTime? CreatedBefore { get; set; }
 
-    [JsonPropertyName("users")]
-    public IEnumerable<string>? Users { get; set; }
-
-    [JsonPropertyName("apps")]
-    public IEnumerable<string>? Apps { get; set; }
-
     [JsonPropertyName("types")]
     public IEnumerable<FeedbackType>? Types { get; set; }
 

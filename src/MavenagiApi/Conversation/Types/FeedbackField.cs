@@ -15,7 +15,4 @@ public enum FeedbackField
 
     [EnumMember(Value = "CreatedAt")]
     CreatedAt,
-
-    [EnumMember(Value = "App")]
-    App,
 }
