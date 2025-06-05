@@ -792,17 +792,17 @@ await client.Conversation.InitializeAsync(
         {
             new ConversationMessageRequest
             {
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
                 Text = "text",
                 UserMessageType = UserConversationMessageType.User,
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
             new ConversationMessageRequest
             {
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
                 Text = "text",
                 UserMessageType = UserConversationMessageType.User,
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
         },
     }
@@ -999,17 +999,17 @@ await client.Conversation.AppendNewMessagesAsync(
     {
         new ConversationMessageRequest
         {
-            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             UserId = new EntityIdBase { ReferenceId = "referenceId" },
             Text = "text",
             UserMessageType = UserConversationMessageType.User,
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
         new ConversationMessageRequest
         {
-            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             UserId = new EntityIdBase { ReferenceId = "referenceId" },
             Text = "text",
             UserMessageType = UserConversationMessageType.User,
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
     }
 );
@@ -1336,10 +1336,10 @@ await client.Conversation.GenerateObjectAsync(
     "conversationId",
     new GenerateObjectRequest
     {
-        Schema = "schema",
         ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         UserId = new EntityIdBase { ReferenceId = "referenceId" },
         Text = "text",
+        Schema = "schema",
     }
 );
 ```

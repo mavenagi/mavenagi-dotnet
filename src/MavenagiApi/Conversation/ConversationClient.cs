@@ -35,17 +35,17 @@ public partial class ConversationClient
     ///         {
     ///             new ConversationMessageRequest
     ///             {
-    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 Text = "text",
     ///                 UserMessageType = UserConversationMessageType.User,
+    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             },
     ///             new ConversationMessageRequest
     ///             {
-    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 Text = "text",
     ///                 UserMessageType = UserConversationMessageType.User,
+    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             },
     ///         },
     ///     }
@@ -272,17 +272,17 @@ public partial class ConversationClient
     ///     {
     ///         new ConversationMessageRequest
     ///         {
-    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             Text = "text",
     ///             UserMessageType = UserConversationMessageType.User,
+    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///         new ConversationMessageRequest
     ///         {
-    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             Text = "text",
     ///             UserMessageType = UserConversationMessageType.User,
+    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///     }
     /// );
@@ -627,10 +627,10 @@ public partial class ConversationClient
     ///     "conversationId",
     ///     new GenerateObjectRequest
     ///     {
-    ///         Schema = "schema",
     ///         ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         Text = "text",
+    ///         Schema = "schema",
     ///     }
     /// );
     /// </code>
