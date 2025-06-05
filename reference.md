@@ -792,17 +792,17 @@ await client.Conversation.InitializeAsync(
         {
             new ConversationMessageRequest
             {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
                 Text = "text",
                 UserMessageType = UserConversationMessageType.User,
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
             new ConversationMessageRequest
             {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
                 Text = "text",
                 UserMessageType = UserConversationMessageType.User,
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
         },
     }
@@ -999,17 +999,17 @@ await client.Conversation.AppendNewMessagesAsync(
     {
         new ConversationMessageRequest
         {
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             UserId = new EntityIdBase { ReferenceId = "referenceId" },
             Text = "text",
             UserMessageType = UserConversationMessageType.User,
-            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
         new ConversationMessageRequest
         {
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             UserId = new EntityIdBase { ReferenceId = "referenceId" },
             Text = "text",
             UserMessageType = UserConversationMessageType.User,
-            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
     }
 );
@@ -1288,6 +1288,83 @@ await client.Conversation.GenerateMavenSuggestionsAsync(
 <dd>
 
 **request:** `GenerateMavenSuggestionsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">GenerateObjectAsync</a>(conversationId, GenerateObjectRequest { ... }) -> BotObjectResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate a structured object response based on a provided schema and user prompt.
+
+If the user question and object response already exist, they will be reused and not updated.
+
+Known Limitations:
+- Schema enforcement is best-effort and may not guarantee exact conformity.
+- This endpoint does not stream results. Use `askDataStream` (coming soon) for progressive rendering.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Conversation.GenerateObjectAsync(
+    "conversationId",
+    new GenerateObjectRequest
+    {
+        Schema = "schema",
+        ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+        UserId = new EntityIdBase { ReferenceId = "referenceId" },
+        Text = "text",
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversationId:** `string` — The ID of a new or existing conversation to use as context for the object generation request
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `GenerateObjectRequest` 
     
 </dd>
 </dl>

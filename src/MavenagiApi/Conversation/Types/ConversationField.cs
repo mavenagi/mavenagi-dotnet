@@ -19,6 +19,9 @@ public enum ConversationField
     [EnumMember(Value = "HumanAgents")]
     HumanAgents,
 
+    [EnumMember(Value = "HumanAgentsWithInserts")]
+    HumanAgentsWithInserts,
+
     [EnumMember(Value = "App")]
     App,
 

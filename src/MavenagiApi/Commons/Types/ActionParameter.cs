@@ -36,7 +36,7 @@ public record ActionParameter
     public ActionParameterType? Type { get; set; }
 
     /// <summary>
-    /// Restricts the action parameter to only the options in this list. Valid for type `STRING`, `BOOLEAN`, and `NUMBER`.
+    /// Restricts the action parameter to only the options in this list. Valid for type `STRING`, `BOOLEAN`, and `NUMBER`. Should not be used when type is `SCHEMA`.
     /// </summary>
     [JsonPropertyName("enumOptions")]
     public IEnumerable<ActionEnumOption>? EnumOptions { get; set; }

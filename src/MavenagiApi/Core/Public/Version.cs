@@ -2,5 +2,5 @@ namespace MavenagiApi;
 
 internal class Version
 {
-    public const string Current = "1.0.12";
+    public const string Current = "1.0.13";
 }
