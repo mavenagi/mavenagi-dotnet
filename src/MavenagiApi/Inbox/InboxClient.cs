@@ -88,7 +88,10 @@ public partial class InboxClient
     /// </summary>
     /// <example>
     /// <code>
-    /// await client.Inbox.GetAsync("inboxItemId", new InboxItemRequest { AppId = "appId" });
+    /// await client.Inbox.GetAsync(
+    ///     "inboxItemId",
+    ///     new InboxItemRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
+    /// );
     /// </code>
     /// </example>
     public async Task<object> GetAsync(
@@ -100,6 +103,7 @@ public partial class InboxClient
     {
         var _query = new Dictionary<string, object>();
         _query["appId"] = request.AppId;
+        _query["itemType"] = request.ItemType.Stringify();
         var response = await _client
             .SendRequestAsync(
                 new RawClient.JsonApiRequest
@@ -159,7 +163,10 @@ public partial class InboxClient
     /// </summary>
     /// <example>
     /// <code>
-    /// await client.Inbox.GetFixAsync("inboxItemFixId", new InboxItemFixRequest { AppId = "appId" });
+    /// await client.Inbox.GetFixAsync(
+    ///     "inboxItemFixId",
+    ///     new InboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
+    /// );
     /// </code>
     /// </example>
     public async Task<object> GetFixAsync(
@@ -171,6 +178,7 @@ public partial class InboxClient
     {
         var _query = new Dictionary<string, object>();
         _query["appId"] = request.AppId;
+        _query["fixType"] = request.FixType.Stringify();
         var response = await _client
             .SendRequestAsync(
                 new RawClient.JsonApiRequest
@@ -232,7 +240,7 @@ public partial class InboxClient
     /// <code>
     /// await client.Inbox.ApplyFixAsync(
     ///     "inboxItemFixId",
-    ///     new ApplyInboxItemFixRequest { AppId = "appId" }
+    ///     new ApplyInboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
     /// );
     /// </code>
     /// </example>
@@ -293,7 +301,10 @@ public partial class InboxClient
     /// </summary>
     /// <example>
     /// <code>
-    /// await client.Inbox.IgnoreAsync("inboxItemId", new InboxItemIgnoreRequest { AppId = "appId" });
+    /// await client.Inbox.IgnoreAsync(
+    ///     "inboxItemId",
+    ///     new InboxItemIgnoreRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
+    /// );
     /// </code>
     /// </example>
     public async global::System.Threading.Tasks.Task IgnoreAsync(
@@ -305,6 +316,7 @@ public partial class InboxClient
     {
         var _query = new Dictionary<string, object>();
         _query["appId"] = request.AppId;
+        _query["itemType"] = request.ItemType.Stringify();
         var response = await _client
             .SendRequestAsync(
                 new RawClient.JsonApiRequest

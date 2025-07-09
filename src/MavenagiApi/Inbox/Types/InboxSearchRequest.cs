@@ -30,6 +30,18 @@ public record InboxSearchRequest
     public DateTime? CreatedBefore { get; set; }
 
     /// <summary>
+    /// The field to sort by, defaults to created timestamp.
+    /// </summary>
+    [JsonPropertyName("sortId")]
+    public string? SortId { get; set; }
+
+    /// <summary>
+    /// Whether to sort descending, defaults to true.
+    /// </summary>
+    [JsonPropertyName("sortDesc")]
+    public bool? SortDesc { get; set; }
+
+    /// <summary>
     /// Page number to return, defaults to 0
     /// </summary>
     [JsonPropertyName("page")]

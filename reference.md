@@ -1299,83 +1299,6 @@ await client.Conversation.GenerateMavenSuggestionsAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">GenerateObjectAsync</a>(conversationId, GenerateObjectRequest { ... }) -> BotObjectResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Generate a structured object response based on a provided schema and user prompt.
-
-If the user question and object response already exist, they will be reused and not updated.
-
-Known Limitations:
-- Schema enforcement is best-effort and may not guarantee exact conformity.
-- This endpoint does not stream results. Use `askDataStream` (coming soon) for progressive rendering.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```csharp
-await client.Conversation.GenerateObjectAsync(
-    "conversationId",
-    new GenerateObjectRequest
-    {
-        ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
-        UserId = new EntityIdBase { ReferenceId = "referenceId" },
-        Text = "text",
-        Schema = "schema",
-    }
-);
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**conversationId:** `string` — The ID of a new or existing conversation to use as context for the object generation request
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request:** `GenerateObjectRequest` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">CategorizeAsync</a>(conversationId) -> CategorizationResponse</code></summary>
 <dl>
 <dd>
@@ -1902,7 +1825,10 @@ Retrieve details of a specific inbox item by its ID.
 <dd>
 
 ```csharp
-await client.Inbox.GetAsync("inboxItemId", new InboxItemRequest { AppId = "appId" });
+await client.Inbox.GetAsync(
+    "inboxItemId",
+    new InboxItemRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
+);
 ```
 </dd>
 </dl>
@@ -1964,7 +1890,10 @@ Retrieve a suggested fix. Includes document information if the fix is a Missing 
 <dd>
 
 ```csharp
-await client.Inbox.GetFixAsync("inboxItemFixId", new InboxItemFixRequest { AppId = "appId" });
+await client.Inbox.GetFixAsync(
+    "inboxItemFixId",
+    new InboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
+);
 ```
 </dd>
 </dl>
@@ -2028,7 +1957,7 @@ Apply a fix to an inbox item with a specific document.
 ```csharp
 await client.Inbox.ApplyFixAsync(
     "inboxItemFixId",
-    new ApplyInboxItemFixRequest { AppId = "appId" }
+    new ApplyInboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
 );
 ```
 </dd>
@@ -2091,7 +2020,10 @@ Ignore a specific inbox item by its ID.
 <dd>
 
 ```csharp
-await client.Inbox.IgnoreAsync("inboxItemId", new InboxItemIgnoreRequest { AppId = "appId" });
+await client.Inbox.IgnoreAsync(
+    "inboxItemId",
+    new InboxItemIgnoreRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
+);
 ```
 </dd>
 </dl>

@@ -12,6 +12,12 @@ public record ConversationMessageRequest
     public required EntityIdBase ConversationMessageId { get; set; }
 
     /// <summary>
+    /// The attachments to the message.
+    /// </summary>
+    [JsonPropertyName("attachments")]
+    public IEnumerable<Attachment>? Attachments { get; set; }
+
+    /// <summary>
     /// ID that uniquely identifies the user that created this message
     /// </summary>
     [JsonPropertyName("userId")]

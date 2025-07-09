@@ -9,6 +9,12 @@ public record ApplyInboxItemFixRequest
     public required string AppId { get; set; }
 
     /// <summary>
+    /// The type of the inbox item fix to retrieve
+    /// </summary>
+    [JsonPropertyName("fixType")]
+    public required InboxItemFixType FixType { get; set; }
+
+    /// <summary>
     /// Content for Add Document fixes
     /// </summary>
     [JsonPropertyName("addDocumentRequest")]
