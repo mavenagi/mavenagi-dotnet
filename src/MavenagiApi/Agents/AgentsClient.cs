@@ -21,11 +21,9 @@ public partial class AgentsClient
     /// This endpoint requires additional permissions. Contact support to request access.
     /// &lt;/Tip&gt;
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Agents.SearchAsync(new AgentsSearchRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<AgentsSearchResponse> SearchAsync(
         AgentsSearchRequest request,
         RequestOptions? options = null,
@@ -34,7 +32,7 @@ public partial class AgentsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -89,11 +87,9 @@ public partial class AgentsClient
     /// <summary>
     /// Lists all agents for an organization
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Agents.ListAsync("organizationReferenceId");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<IEnumerable<Agent>> ListAsync(
         string organizationReferenceId,
         RequestOptions? options = null,
@@ -102,12 +98,14 @@ public partial class AgentsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path =
-                        $"/v1/organizations/{JsonUtils.SerializeAsString(organizationReferenceId)}/agents",
+                    Path = string.Format(
+                        "/v1/organizations/{0}/agents",
+                        ValueConvert.ToPathParameterString(organizationReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken
@@ -157,11 +155,9 @@ public partial class AgentsClient
     /// <summary>
     /// Get an agent
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Agents.GetAsync("organizationReferenceId", "agentReferenceId");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<Agent> GetAsync(
         string organizationReferenceId,
         string agentReferenceId,
@@ -171,12 +167,15 @@ public partial class AgentsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path =
-                        $"/v1/organizations/{JsonUtils.SerializeAsString(organizationReferenceId)}/agents/{JsonUtils.SerializeAsString(agentReferenceId)}",
+                    Path = string.Format(
+                        "/v1/organizations/{0}/agents/{1}",
+                        ValueConvert.ToPathParameterString(organizationReferenceId),
+                        ValueConvert.ToPathParameterString(agentReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken

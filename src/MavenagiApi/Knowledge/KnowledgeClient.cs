@@ -18,8 +18,7 @@ public partial class KnowledgeClient
     /// <summary>
     /// Update a knowledge base or create it if it doesn't exist.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Knowledge.CreateOrUpdateKnowledgeBaseAsync(
     ///     new KnowledgeBaseRequest
     ///     {
@@ -27,8 +26,7 @@ public partial class KnowledgeClient
     ///         Name = "Help center",
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<KnowledgeBaseResponse> CreateOrUpdateKnowledgeBaseAsync(
         KnowledgeBaseRequest request,
         RequestOptions? options = null,
@@ -37,7 +35,7 @@ public partial class KnowledgeClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Put,
@@ -92,11 +90,9 @@ public partial class KnowledgeClient
     /// <summary>
     /// Get an existing knowledge base by its supplied ID
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Knowledge.GetKnowledgeBaseAsync("help-center");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<KnowledgeBaseResponse> GetKnowledgeBaseAsync(
         string knowledgeBaseReferenceId,
         RequestOptions? options = null,
@@ -105,11 +101,14 @@ public partial class KnowledgeClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = $"/v1/knowledge/{JsonUtils.SerializeAsString(knowledgeBaseReferenceId)}",
+                    Path = string.Format(
+                        "/v1/knowledge/{0}",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken
@@ -161,8 +160,7 @@ public partial class KnowledgeClient
     ///
     /// If an existing version is in progress, then that version will be finalized in an error state.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Knowledge.CreateKnowledgeBaseVersionAsync(
     ///     "help-center",
     ///     new KnowledgeBaseVersion
@@ -179,8 +177,7 @@ public partial class KnowledgeClient
     ///         Status = KnowledgeBaseVersionStatus.InProgress,
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<KnowledgeBaseVersion> CreateKnowledgeBaseVersionAsync(
         string knowledgeBaseReferenceId,
         KnowledgeBaseVersion request,
@@ -190,12 +187,14 @@ public partial class KnowledgeClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/knowledge/{JsonUtils.SerializeAsString(knowledgeBaseReferenceId)}/version",
+                    Path = string.Format(
+                        "/v1/knowledge/{0}/version",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -246,8 +245,7 @@ public partial class KnowledgeClient
     /// <summary>
     /// Finalize the latest knowledge base version. Required to indicate the version is complete. Will throw an exception if the latest version is not in progress.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Knowledge.FinalizeKnowledgeBaseVersionAsync(
     ///     "help-center",
     ///     new FinalizeKnowledgeBaseVersionRequest
@@ -261,8 +259,7 @@ public partial class KnowledgeClient
     ///         Status = KnowledgeBaseVersionFinalizeStatus.Succeeded,
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<KnowledgeBaseVersion> FinalizeKnowledgeBaseVersionAsync(
         string knowledgeBaseReferenceId,
         FinalizeKnowledgeBaseVersionRequest request,
@@ -272,12 +269,14 @@ public partial class KnowledgeClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/knowledge/{JsonUtils.SerializeAsString(knowledgeBaseReferenceId)}/version/finalize",
+                    Path = string.Format(
+                        "/v1/knowledge/{0}/version/finalize",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -333,8 +332,7 @@ public partial class KnowledgeClient
     /// have changed, a new document version will not be created. The existing version will be reused.
     /// &lt;/Tip&gt;
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Knowledge.CreateKnowledgeDocumentAsync(
     ///     "help-center",
     ///     new KnowledgeDocumentRequest
@@ -352,8 +350,7 @@ public partial class KnowledgeClient
     ///         Metadata = new Dictionary&lt;string, string&gt;() { { "category", "getting-started" } },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<KnowledgeDocumentResponse> CreateKnowledgeDocumentAsync(
         string knowledgeBaseReferenceId,
         KnowledgeDocumentRequest request,
@@ -363,12 +360,14 @@ public partial class KnowledgeClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/knowledge/{JsonUtils.SerializeAsString(knowledgeBaseReferenceId)}/document",
+                    Path = string.Format(
+                        "/v1/knowledge/{0}/document",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -419,8 +418,7 @@ public partial class KnowledgeClient
     /// <summary>
     /// Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Knowledge.UpdateKnowledgeDocumentAsync(
     ///     "help-center",
     ///     new KnowledgeDocumentRequest
@@ -438,8 +436,7 @@ public partial class KnowledgeClient
     ///         Metadata = new Dictionary&lt;string, string&gt;() { { "category", "getting-started" } },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<KnowledgeDocumentResponse> UpdateKnowledgeDocumentAsync(
         string knowledgeBaseReferenceId,
         KnowledgeDocumentRequest request,
@@ -449,12 +446,14 @@ public partial class KnowledgeClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Put,
-                    Path =
-                        $"/v1/knowledge/{JsonUtils.SerializeAsString(knowledgeBaseReferenceId)}/document",
+                    Path = string.Format(
+                        "/v1/knowledge/{0}/document",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -505,11 +504,9 @@ public partial class KnowledgeClient
     /// <summary>
     /// Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Knowledge.DeleteKnowledgeDocumentAsync("help-center", "getting-started");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task DeleteKnowledgeDocumentAsync(
         string knowledgeBaseReferenceId,
         string knowledgeDocumentReferenceId,
@@ -519,12 +516,15 @@ public partial class KnowledgeClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Delete,
-                    Path =
-                        $"/v1/knowledge/{JsonUtils.SerializeAsString(knowledgeBaseReferenceId)}/{JsonUtils.SerializeAsString(knowledgeDocumentReferenceId)}/document",
+                    Path = string.Format(
+                        "/v1/knowledge/{0}/{1}/document",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId),
+                        ValueConvert.ToPathParameterString(knowledgeDocumentReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken

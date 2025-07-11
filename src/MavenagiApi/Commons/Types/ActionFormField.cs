@@ -1,10 +1,16 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ActionFormField
+[Serializable]
+public record ActionFormField : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The ID field should be used as the key in the `submitActionForm` API.
     /// </summary>
@@ -47,6 +53,13 @@ public record ActionFormField
     [JsonPropertyName("enumOptions")]
     public IEnumerable<ActionEnumOption>? EnumOptions { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

@@ -18,8 +18,7 @@ public partial class UsersClient
     /// <summary>
     /// Update a user or create it if it doesn't exist.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Users.CreateOrUpdateAsync(
     ///     new AppUserRequest
     ///     {
@@ -41,8 +40,7 @@ public partial class UsersClient
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<AppUserResponse> CreateOrUpdateAsync(
         AppUserRequest request,
         RequestOptions? options = null,
@@ -51,7 +49,7 @@ public partial class UsersClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Put,
@@ -106,11 +104,9 @@ public partial class UsersClient
     /// <summary>
     /// Get a user by its supplied ID
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Users.GetAsync("user-0", new UserGetRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<AppUserResponse> GetAsync(
         string userId,
         UserGetRequest request,
@@ -125,11 +121,14 @@ public partial class UsersClient
         }
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = $"/v1/users/{JsonUtils.SerializeAsString(userId)}",
+                    Path = string.Format(
+                        "/v1/users/{0}",
+                        ValueConvert.ToPathParameterString(userId)
+                    ),
                     Query = _query,
                     Options = options,
                 },
@@ -185,11 +184,9 @@ public partial class UsersClient
     ///
     /// &lt;Warning&gt;This is a destructive operation and cannot be undone.&lt;/Warning&gt;
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Users.DeleteAsync("user-0", new UserDeleteRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task DeleteAsync(
         string userId,
         UserDeleteRequest request,
@@ -204,11 +201,14 @@ public partial class UsersClient
         }
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Delete,
-                    Path = $"/v1/users/{JsonUtils.SerializeAsString(userId)}",
+                    Path = string.Format(
+                        "/v1/users/{0}",
+                        ValueConvert.ToPathParameterString(userId)
+                    ),
                     Query = _query,
                     Options = options,
                 },

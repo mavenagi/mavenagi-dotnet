@@ -1,10 +1,16 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ConversationDateHistogramRequest
+[Serializable]
+public record ConversationDateHistogramRequest : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// Time-based grouping interval (e.g., HOUR, DAY, WEEK) for the date histogram.
     /// </summary>
@@ -21,7 +27,7 @@ public record ConversationDateHistogramRequest
     /// Defines the y-axis values for the date histogram.
     /// </summary>
     [JsonPropertyName("metric")]
-    public required object Metric { get; set; }
+    public required ConversationMetric Metric { get; set; }
 
     /// <summary>
     /// Optional filter applied to refine the conversation data before processing.
@@ -29,6 +35,13 @@ public record ConversationDateHistogramRequest
     [JsonPropertyName("conversationFilter")]
     public ConversationFilter? ConversationFilter { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

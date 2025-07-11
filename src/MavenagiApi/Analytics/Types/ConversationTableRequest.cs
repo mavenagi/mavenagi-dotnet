@@ -1,10 +1,16 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ConversationTableRequest
+[Serializable]
+public record ConversationTableRequest : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// Defines the time interval for grouping data. If specified, data is grouped accordingly  based on the time they were created. Example: If set to "DAY," data will be aggregated by day.
     /// </summary>
@@ -34,6 +40,13 @@ public record ConversationTableRequest
     [JsonPropertyName("conversationFilter")]
     public ConversationFilter? ConversationFilter { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

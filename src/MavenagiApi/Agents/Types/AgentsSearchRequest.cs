@@ -1,10 +1,16 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record AgentsSearchRequest
+[Serializable]
+public record AgentsSearchRequest : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     [JsonPropertyName("sort")]
     public AgentField? Sort { get; set; }
 
@@ -29,6 +35,13 @@ public record AgentsSearchRequest
     [JsonPropertyName("sortDesc")]
     public bool? SortDesc { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

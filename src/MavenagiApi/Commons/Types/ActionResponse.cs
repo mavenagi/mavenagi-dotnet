@@ -1,10 +1,16 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ActionResponse
+[Serializable]
+public record ActionResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// ID that uniquely identifies this action
     /// </summary>
@@ -39,7 +45,7 @@ public record ActionResponse
     /// The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
     /// </summary>
     [JsonPropertyName("precondition")]
-    public object? Precondition { get; set; }
+    public Precondition? Precondition { get; set; }
 
     /// <summary>
     /// The parameters that the action uses as input. An action will only be executed when all of the required parameters are provided. During execution, actions all have access to the full Conversation and User objects. Parameter values may be inferred from the user's conversation by the LLM.
@@ -54,6 +60,13 @@ public record ActionResponse
     [JsonPropertyName("language")]
     public string? Language { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

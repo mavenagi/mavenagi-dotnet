@@ -17,13 +17,11 @@ public partial class TranslationsClient
     /// <summary>
     /// Translate text from one language to another
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Translations.TranslateAsync(
     ///     new TranslationRequest { Text = "Hello world", TargetLanguage = "es" }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<TranslationResponse> TranslateAsync(
         TranslationRequest request,
         RequestOptions? options = null,
@@ -32,7 +30,7 @@ public partial class TranslationsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,

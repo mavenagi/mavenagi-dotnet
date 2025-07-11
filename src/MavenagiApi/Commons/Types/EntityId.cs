@@ -1,10 +1,19 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record EntityId
+/// <summary>
+/// A fully specified object ID, unique across the entire system.
+/// </summary>
+[Serializable]
+public record EntityId : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The ID of the organization that this object belongs to
     /// </summary>
@@ -35,6 +44,13 @@ public record EntityId
     [JsonPropertyName("referenceId")]
     public required string ReferenceId { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

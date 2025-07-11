@@ -3,6 +3,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
+[Serializable]
 public record UserGetRequest
 {
     /// <summary>
@@ -11,6 +12,7 @@ public record UserGetRequest
     [JsonIgnore]
     public string? AppId { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

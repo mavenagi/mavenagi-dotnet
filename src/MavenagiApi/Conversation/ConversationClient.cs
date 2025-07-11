@@ -25,8 +25,7 @@ public partial class ConversationClient
     /// - metadata can be changed using the `updateConversationMetadata` API.
     /// - messages can be added to the conversation with the `appendNewMessages` or `ask` APIs.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.InitializeAsync(
     ///     new ConversationRequest
     ///     {
@@ -35,23 +34,22 @@ public partial class ConversationClient
     ///         {
     ///             new ConversationMessageRequest
     ///             {
+    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 Text = "text",
     ///                 UserMessageType = UserConversationMessageType.User,
-    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             },
     ///             new ConversationMessageRequest
     ///             {
+    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///                 Text = "text",
     ///                 UserMessageType = UserConversationMessageType.User,
-    ///                 ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             },
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationResponse> InitializeAsync(
         ConversationRequest request,
         RequestOptions? options = null,
@@ -60,7 +58,7 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -115,11 +113,9 @@ public partial class ConversationClient
     /// <summary>
     /// Get a conversation
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.GetAsync("conversationId", new ConversationGetRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationResponse> GetAsync(
         string conversationId,
         ConversationGetRequest request,
@@ -134,11 +130,14 @@ public partial class ConversationClient
         }
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}",
+                    Path = string.Format(
+                        "/v1/conversations/{0}",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Query = _query,
                     Options = options,
                 },
@@ -195,14 +194,12 @@ public partial class ConversationClient
     /// The exact fields cleared include: the conversation subject, userRequest, agentResponse.
     /// As well as the text response, followup questions, and backend LLM prompt of all messages.&lt;/Warning&gt;
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.DeleteAsync(
     ///     "conversation-0",
     ///     new ConversationDeleteRequest { Reason = "GDPR deletion request 1234." }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task DeleteAsync(
         string conversationId,
         ConversationDeleteRequest request,
@@ -218,11 +215,14 @@ public partial class ConversationClient
         }
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Delete,
-                    Path = $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}",
+                    Path = string.Format(
+                        "/v1/conversations/{0}",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Query = _query,
                     Options = options,
                 },
@@ -264,30 +264,28 @@ public partial class ConversationClient
     /// <summary>
     /// Append messages to an existing conversation. The conversation must be initialized first. If a message with the same ID already exists, it will be ignored. Messages do not allow modification.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.AppendNewMessagesAsync(
     ///     "conversationId",
     ///     new List&lt;ConversationMessageRequest&gt;()
     ///     {
     ///         new ConversationMessageRequest
     ///         {
+    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             Text = "text",
     ///             UserMessageType = UserConversationMessageType.User,
-    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///         new ConversationMessageRequest
     ///         {
+    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             UserId = new EntityIdBase { ReferenceId = "referenceId" },
     ///             Text = "text",
     ///             UserMessageType = UserConversationMessageType.User,
-    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationResponse> AppendNewMessagesAsync(
         string conversationId,
         IEnumerable<ConversationMessageRequest> request,
@@ -297,12 +295,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/messages",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/messages",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -361,8 +361,7 @@ public partial class ConversationClient
     /// Known Limitation:
     /// - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.AskAsync(
     ///     "conversation-0",
     ///     new AskRequest
@@ -382,8 +381,7 @@ public partial class ConversationClient
     ///         Timezone = "America/New_York",
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationResponse> AskAsync(
         string conversationId,
         AskRequest request,
@@ -393,11 +391,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path = $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/ask",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/ask",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -460,8 +461,7 @@ public partial class ConversationClient
     /// Known Limitation:
     /// - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.AskStreamAsync(
     ///     "conversation-0",
     ///     new AskRequest
@@ -481,8 +481,7 @@ public partial class ConversationClient
     ///         Timezone = "America/New_York",
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task AskStreamAsync(
         string conversationId,
         AskRequest request,
@@ -492,12 +491,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/ask_stream",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/ask_stream",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -535,8 +536,7 @@ public partial class ConversationClient
     /// <summary>
     /// This method is deprecated and will be removed in a future release. Use either `ask` or `askStream` instead.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.GenerateMavenSuggestionsAsync(
     ///     "conversationId",
     ///     new GenerateMavenSuggestionsRequest
@@ -548,8 +548,7 @@ public partial class ConversationClient
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationResponse> GenerateMavenSuggestionsAsync(
         string conversationId,
         GenerateMavenSuggestionsRequest request,
@@ -559,12 +558,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/generate_maven_suggestions",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/generate_maven_suggestions",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -615,11 +616,9 @@ public partial class ConversationClient
     /// <summary>
     /// Uses an LLM flow to categorize the conversation. Experimental.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.CategorizeAsync("conversationId");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<CategorizationResponse> CategorizeAsync(
         string conversationId,
         RequestOptions? options = null,
@@ -628,12 +627,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/categorize",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/categorize",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Options = options,
                 },
                 cancellationToken
@@ -683,8 +684,7 @@ public partial class ConversationClient
     /// <summary>
     /// Update feedback or create it if it doesn't exist
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.CreateFeedbackAsync(
     ///     new FeedbackRequest
     ///     {
@@ -696,8 +696,7 @@ public partial class ConversationClient
     ///         Text = "Great answer!",
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<Feedback> CreateFeedbackAsync(
         FeedbackRequest request,
         RequestOptions? options = null,
@@ -706,7 +705,7 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -761,8 +760,7 @@ public partial class ConversationClient
     /// <summary>
     /// Submit a filled out action form
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.SubmitActionFormAsync(
     ///     "conversationId",
     ///     new SubmitActionFormRequest
@@ -777,8 +775,7 @@ public partial class ConversationClient
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationResponse> SubmitActionFormAsync(
         string conversationId,
         SubmitActionFormRequest request,
@@ -788,12 +785,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/submit-form",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/submit-form",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -846,14 +845,12 @@ public partial class ConversationClient
     ///
     /// Adds metadata to an existing conversation. If a metadata field already exists, it will be overwritten.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.AddConversationMetadataAsync(
     ///     "conversationId",
     ///     new Dictionary&lt;string, string&gt;() { { "string", "string" } }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<Dictionary<string, string>> AddConversationMetadataAsync(
         string conversationId,
         Dictionary<string, string> request,
@@ -863,12 +860,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path =
-                        $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/metadata",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/metadata",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -925,8 +924,7 @@ public partial class ConversationClient
     ///
     /// Returns all metadata saved by any app on the conversation.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.UpdateConversationMetadataAsync(
     ///     "conversation-0",
     ///     new UpdateMetadataRequest
@@ -935,8 +933,7 @@ public partial class ConversationClient
     ///         Values = new Dictionary&lt;string, string&gt;() { { "key", "newValue" } },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationMetadata> UpdateConversationMetadataAsync(
         string conversationId,
         UpdateMetadataRequest request,
@@ -946,12 +943,14 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Put,
-                    Path =
-                        $"/v1/conversations/{JsonUtils.SerializeAsString(conversationId)}/metadata",
+                    Path = string.Format(
+                        "/v1/conversations/{0}/metadata",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -1002,11 +1001,9 @@ public partial class ConversationClient
     /// <summary>
     /// Search conversations
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Conversation.SearchAsync(new ConversationsSearchRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationsResponse> SearchAsync(
         ConversationsSearchRequest request,
         RequestOptions? options = null,
@@ -1015,7 +1012,7 @@ public partial class ConversationClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,

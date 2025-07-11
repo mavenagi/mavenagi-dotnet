@@ -15,11 +15,9 @@ public partial class TriggersClient
         _client = client;
     }
 
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Triggers.SearchAsync(new EventTriggersSearchRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<EventTriggersSearchResponse> SearchAsync(
         EventTriggersSearchRequest request,
         RequestOptions? options = null,
@@ -28,7 +26,7 @@ public partial class TriggersClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -83,8 +81,7 @@ public partial class TriggersClient
     /// <summary>
     /// Update an event trigger or create it if it doesn't exist.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Triggers.CreateOrUpdateAsync(
     ///     new EventTriggerRequest
     ///     {
@@ -93,8 +90,7 @@ public partial class TriggersClient
     ///         Type = EventTriggerType.ConversationCreated,
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<EventTriggerResponse> CreateOrUpdateAsync(
         EventTriggerRequest request,
         RequestOptions? options = null,
@@ -103,7 +99,7 @@ public partial class TriggersClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Put,
@@ -158,11 +154,9 @@ public partial class TriggersClient
     /// <summary>
     /// Get an event trigger by its supplied ID
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Triggers.GetAsync("store-in-snowflake");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<EventTriggerResponse> GetAsync(
         string triggerReferenceId,
         RequestOptions? options = null,
@@ -171,11 +165,14 @@ public partial class TriggersClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = $"/v1/triggers/{JsonUtils.SerializeAsString(triggerReferenceId)}",
+                    Path = string.Format(
+                        "/v1/triggers/{0}",
+                        ValueConvert.ToPathParameterString(triggerReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken
@@ -225,11 +222,9 @@ public partial class TriggersClient
     /// <summary>
     /// Delete an event trigger
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Triggers.DeleteAsync("store-in-snowflake");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task DeleteAsync(
         string triggerReferenceId,
         RequestOptions? options = null,
@@ -238,11 +233,14 @@ public partial class TriggersClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Delete,
-                    Path = $"/v1/triggers/{JsonUtils.SerializeAsString(triggerReferenceId)}",
+                    Path = string.Format(
+                        "/v1/triggers/{0}",
+                        ValueConvert.ToPathParameterString(triggerReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken
@@ -283,14 +281,12 @@ public partial class TriggersClient
     /// <summary>
     /// Updates an event trigger. Only the enabled field is editable.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Triggers.PartialUpdateAsync(
     ///     "triggerReferenceId",
     ///     new PartialUpdateRequest { Body = new TriggerPartialUpdate() }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<EventTriggerResponse> PartialUpdateAsync(
         string triggerReferenceId,
         PartialUpdateRequest request,
@@ -305,11 +301,14 @@ public partial class TriggersClient
         }
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethodExtensions.Patch,
-                    Path = $"/v1/triggers/{JsonUtils.SerializeAsString(triggerReferenceId)}",
+                    Path = string.Format(
+                        "/v1/triggers/{0}",
+                        ValueConvert.ToPathParameterString(triggerReferenceId)
+                    ),
                     Body = request.Body,
                     Query = _query,
                     Options = options,

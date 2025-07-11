@@ -1,15 +1,21 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record InboxSearchResponse
+[Serializable]
+public record InboxSearchResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The list of inbox items returned in the search response.
     /// </summary>
     [JsonPropertyName("content")]
-    public IEnumerable<object> Content { get; set; } = new List<object>();
+    public IEnumerable<InboxItem> Content { get; set; } = new List<InboxItem>();
 
     /// <summary>
     /// The page being returned, starts at 0
@@ -35,6 +41,13 @@ public record InboxSearchResponse
     [JsonPropertyName("totalPages")]
     public required int TotalPages { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

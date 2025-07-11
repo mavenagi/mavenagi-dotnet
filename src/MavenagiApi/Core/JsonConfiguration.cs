@@ -1,3 +1,4 @@
+using global::System.Reflection;
 using global::System.Text.Json;
 using global::System.Text.Json.Nodes;
 using global::System.Text.Json.Serialization;
@@ -47,7 +48,6 @@ internal static partial class JsonOptions
                                 switch (jsonAccessAttribute.AccessType)
                                 {
                                     case JsonAccessType.ReadOnly:
-                                        propertyInfo.Get = null;
                                         propertyInfo.ShouldSerialize = (_, _) => false;
                                         break;
                                     case JsonAccessType.WriteOnly:
@@ -56,6 +56,43 @@ internal static partial class JsonOptions
                                     default:
                                         throw new ArgumentOutOfRangeException();
                                 }
+                            }
+
+                            var jsonIgnoreAttribute = propertyInfo
+                                .AttributeProvider?.GetCustomAttributes(
+                                    typeof(JsonIgnoreAttribute),
+                                    true
+                                )
+                                .OfType<JsonIgnoreAttribute>()
+                                .FirstOrDefault();
+
+                            if (jsonIgnoreAttribute is not null)
+                            {
+                                propertyInfo.IsRequired = false;
+                            }
+                        }
+
+                        if (
+                            typeInfo.Kind == JsonTypeInfoKind.Object
+                            && typeInfo.Properties.All(prop => !prop.IsExtensionData)
+                        )
+                        {
+                            var extensionProp = typeInfo
+                                .Type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                .FirstOrDefault(prop =>
+                                    prop.GetCustomAttribute<JsonExtensionDataAttribute>() != null
+                                );
+
+                            if (extensionProp is not null)
+                            {
+                                var jsonPropertyInfo = typeInfo.CreateJsonPropertyInfo(
+                                    extensionProp.FieldType,
+                                    extensionProp.Name
+                                );
+                                jsonPropertyInfo.Get = extensionProp.GetValue;
+                                jsonPropertyInfo.Set = extensionProp.SetValue;
+                                jsonPropertyInfo.IsExtensionData = true;
+                                typeInfo.Properties.Add(jsonPropertyInfo);
                             }
                         }
                     },
@@ -86,10 +123,56 @@ internal static class JsonUtils
     internal static byte[] SerializeToUtf8Bytes<T>(T obj) =>
         JsonSerializer.SerializeToUtf8Bytes(obj, JsonOptions.JsonSerializerOptions);
 
-    internal static string SerializeAsString<T>(T obj)
+    internal static string SerializeWithAdditionalProperties<T>(
+        T obj,
+        object? additionalProperties = null
+    )
     {
-        var json = JsonSerializer.Serialize(obj, JsonOptions.JsonSerializerOptions);
-        return json.Trim('"');
+        if (additionalProperties == null)
+        {
+            return Serialize(obj);
+        }
+        var additionalPropertiesJsonNode = SerializeToNode(additionalProperties);
+        if (additionalPropertiesJsonNode is not JsonObject additionalPropertiesJsonObject)
+        {
+            throw new InvalidOperationException(
+                "The additional properties must serialize to a JSON object."
+            );
+        }
+        var jsonNode = SerializeToNode(obj);
+        if (jsonNode is not JsonObject jsonObject)
+        {
+            throw new InvalidOperationException(
+                "The serialized object must be a JSON object to add properties."
+            );
+        }
+        MergeJsonObjects(jsonObject, additionalPropertiesJsonObject);
+        return jsonObject.ToJsonString(JsonOptions.JsonSerializerOptions);
+    }
+
+    private static void MergeJsonObjects(JsonObject baseObject, JsonObject overrideObject)
+    {
+        foreach (var property in overrideObject)
+        {
+            if (!baseObject.TryGetPropertyValue(property.Key, out JsonNode? existingValue))
+            {
+                baseObject[property.Key] =
+                    property.Value != null ? JsonNode.Parse(property.Value.ToJsonString()) : null;
+                continue;
+            }
+            if (
+                existingValue is JsonObject nestedBaseObject
+                && property.Value is JsonObject nestedOverrideObject
+            )
+            {
+                // If both values are objects, recursively merge them.
+                MergeJsonObjects(nestedBaseObject, nestedOverrideObject);
+                continue;
+            }
+            // Otherwise, the overrideObject takes precedence.
+            baseObject[property.Key] =
+                property.Value != null ? JsonNode.Parse(property.Value.ToJsonString()) : null;
+        }
     }
 
     internal static T Deserialize<T>(string json) =>

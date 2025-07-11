@@ -21,11 +21,9 @@ public partial class AppSettingsClient
     ///
     /// &lt;Warning&gt;This API currently requires an organization ID and agent ID for any agent which is installed on the app. This requirement will be removed in a future update.&lt;/Warning&gt;
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.AppSettings.SearchAsync(new SearchAppSettingsRequest { Index = "index" });
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<SearchAppSettingsResponse> SearchAsync(
         SearchAppSettingsRequest request,
         RequestOptions? options = null,
@@ -36,7 +34,7 @@ public partial class AppSettingsClient
         _query["index"] = request.Index;
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
@@ -91,19 +89,17 @@ public partial class AppSettingsClient
     /// <summary>
     /// Get app settings set during installation
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.AppSettings.GetAsync();
-    /// </code>
-    /// </example>
-    public async Task<object> GetAsync(
+    /// </code></example>
+    public async Task<Dictionary<string, object?>> GetAsync(
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
@@ -118,7 +114,7 @@ public partial class AppSettingsClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<object>(responseBody)!;
+                return JsonUtils.Deserialize<Dictionary<string, object?>>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -163,8 +159,7 @@ public partial class AppSettingsClient
     ///
     /// Note that if an array value is provided it will fully replace an existing value as arrays cannot be merged.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.AppSettings.UpdateAsync(
     ///     new Dictionary&lt;string, object&gt;()
     ///     {
@@ -174,17 +169,16 @@ public partial class AppSettingsClient
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
-    public async Task<object> UpdateAsync(
-        object request,
+    /// </code></example>
+    public async Task<Dictionary<string, object?>> UpdateAsync(
+        Dictionary<string, object?> request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethodExtensions.Patch,
@@ -200,7 +194,7 @@ public partial class AppSettingsClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<object>(responseBody)!;
+                return JsonUtils.Deserialize<Dictionary<string, object?>>(responseBody)!;
             }
             catch (JsonException e)
             {

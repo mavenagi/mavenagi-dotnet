@@ -17,11 +17,9 @@ public partial class EventsClient
     /// <summary>
     /// Search events
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Events.SearchAsync(new EventsSearchRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<EventsSearchResponse> SearchAsync(
         EventsSearchRequest request,
         RequestOptions? options = null,
@@ -30,7 +28,7 @@ public partial class EventsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,

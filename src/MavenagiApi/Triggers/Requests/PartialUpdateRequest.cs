@@ -3,6 +3,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
+[Serializable]
 public record PartialUpdateRequest
 {
     /// <summary>
@@ -11,8 +12,10 @@ public record PartialUpdateRequest
     [JsonIgnore]
     public string? AppId { get; set; }
 
+    [JsonIgnore]
     public required TriggerPartialUpdate Body { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

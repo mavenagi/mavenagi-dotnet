@@ -1,5 +1,6 @@
 namespace MavenagiApi;
 
+[Serializable]
 public class MavenAGIEnvironment
 {
     public const string Production = "https://www.mavenagi-apis.com";

@@ -3,6 +3,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
+[Serializable]
 public record SearchAppSettingsRequest
 {
     /// <summary>
@@ -11,6 +12,7 @@ public record SearchAppSettingsRequest
     [JsonIgnore]
     public required string Index { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

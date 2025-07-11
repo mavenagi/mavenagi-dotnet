@@ -22,8 +22,7 @@ public partial class OrganizationsClient
     /// This endpoint requires additional permissions. Contact support to request access.
     /// &lt;/Tip&gt;
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Organizations.GetConversationTableAsync(
     ///     new ConversationTableRequest
     ///     {
@@ -38,29 +37,42 @@ public partial class OrganizationsClient
     ///         },
     ///         ColumnDefinitions = new List&lt;ConversationColumnDefinition&gt;()
     ///         {
-    ///             new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+    ///             new ConversationColumnDefinition
+    ///             {
+    ///                 Header = "count",
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Count(new ConversationCount())
+    ///                 ),
+    ///             },
     ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "avg_first_response_time",
-    ///                 Metric = new ConversationAverage
-    ///                 {
-    ///                     TargetField = NumericConversationField.FirstResponseTime,
-    ///                 },
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Average(
+    ///                         new ConversationAverage
+    ///                         {
+    ///                             TargetField = NumericConversationField.FirstResponseTime,
+    ///                         }
+    ///                     )
+    ///                 ),
     ///             },
     ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "percentile_handle_time",
-    ///                 Metric = new ConversationPercentile
-    ///                 {
-    ///                     TargetField = NumericConversationField.HandleTime,
-    ///                     Percentile = 25,
-    ///                 },
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Percentile(
+    ///                         new ConversationPercentile
+    ///                         {
+    ///                             TargetField = NumericConversationField.HandleTime,
+    ///                             Percentile = 25,
+    ///                         }
+    ///                     )
+    ///                 ),
     ///             },
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationTableResponse> GetConversationTableAsync(
         ConversationTableRequest request,
         RequestOptions? options = null,
@@ -69,7 +81,7 @@ public partial class OrganizationsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -129,30 +141,34 @@ public partial class OrganizationsClient
     /// This endpoint requires additional permissions. Contact support to request access.
     /// &lt;/Tip&gt;
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Organizations.GetConversationChartAsync(
-    ///     new ConversationPieChartRequest
-    ///     {
-    ///         ConversationFilter = new ConversationFilter
-    ///         {
-    ///             Languages = new List&lt;string&gt;() { "en", "es" },
-    ///         },
-    ///         GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
-    ///         Metric = new ConversationCount(),
-    ///     }
+    ///     new ConversationChartRequest(
+    ///         new ConversationChartRequest.PieChart(
+    ///             new ConversationPieChartRequest
+    ///             {
+    ///                 ConversationFilter = new ConversationFilter
+    ///                 {
+    ///                     Languages = new List&lt;string&gt;() { "en", "es" },
+    ///                 },
+    ///                 GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Count(new ConversationCount())
+    ///                 ),
+    ///             }
+    ///         )
+    ///     )
     /// );
-    /// </code>
-    /// </example>
-    public async Task<object> GetConversationChartAsync(
-        object request,
+    /// </code></example>
+    public async Task<ChartResponse> GetConversationChartAsync(
+        ConversationChartRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -168,7 +184,7 @@ public partial class OrganizationsClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<object>(responseBody)!;
+                return JsonUtils.Deserialize<ChartResponse>(responseBody)!;
             }
             catch (JsonException e)
             {

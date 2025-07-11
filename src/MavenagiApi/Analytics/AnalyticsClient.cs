@@ -17,8 +17,7 @@ public partial class AnalyticsClient
     /// <summary>
     /// Retrieves structured conversation data formatted as a table, allowing users to group, filter, and define specific metrics to display as columns.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Analytics.GetConversationTableAsync(
     ///     new ConversationTableRequest
     ///     {
@@ -33,29 +32,42 @@ public partial class AnalyticsClient
     ///         },
     ///         ColumnDefinitions = new List&lt;ConversationColumnDefinition&gt;()
     ///         {
-    ///             new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+    ///             new ConversationColumnDefinition
+    ///             {
+    ///                 Header = "count",
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Count(new ConversationCount())
+    ///                 ),
+    ///             },
     ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "avg_first_response_time",
-    ///                 Metric = new ConversationAverage
-    ///                 {
-    ///                     TargetField = NumericConversationField.FirstResponseTime,
-    ///                 },
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Average(
+    ///                         new ConversationAverage
+    ///                         {
+    ///                             TargetField = NumericConversationField.FirstResponseTime,
+    ///                         }
+    ///                     )
+    ///                 ),
     ///             },
     ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "percentile_handle_time",
-    ///                 Metric = new ConversationPercentile
-    ///                 {
-    ///                     TargetField = NumericConversationField.HandleTime,
-    ///                     Percentile = 25,
-    ///                 },
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Percentile(
+    ///                         new ConversationPercentile
+    ///                         {
+    ///                             TargetField = NumericConversationField.HandleTime,
+    ///                             Percentile = 25,
+    ///                         }
+    ///                     )
+    ///                 ),
     ///             },
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ConversationTableResponse> GetConversationTableAsync(
         ConversationTableRequest request,
         RequestOptions? options = null,
@@ -64,7 +76,7 @@ public partial class AnalyticsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -119,30 +131,34 @@ public partial class AnalyticsClient
     /// <summary>
     /// Fetches conversation data visualized in a chart format. Supported chart types include pie chart, date histogram, and stacked bar charts.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Analytics.GetConversationChartAsync(
-    ///     new ConversationPieChartRequest
-    ///     {
-    ///         ConversationFilter = new ConversationFilter
-    ///         {
-    ///             Languages = new List&lt;string&gt;() { "en", "es" },
-    ///         },
-    ///         GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
-    ///         Metric = new ConversationCount(),
-    ///     }
+    ///     new ConversationChartRequest(
+    ///         new ConversationChartRequest.PieChart(
+    ///             new ConversationPieChartRequest
+    ///             {
+    ///                 ConversationFilter = new ConversationFilter
+    ///                 {
+    ///                     Languages = new List&lt;string&gt;() { "en", "es" },
+    ///                 },
+    ///                 GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+    ///                 Metric = new ConversationMetric(
+    ///                     new ConversationMetric.Count(new ConversationCount())
+    ///                 ),
+    ///             }
+    ///         )
+    ///     )
     /// );
-    /// </code>
-    /// </example>
-    public async Task<object> GetConversationChartAsync(
-        object request,
+    /// </code></example>
+    public async Task<ChartResponse> GetConversationChartAsync(
+        ConversationChartRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -158,7 +174,7 @@ public partial class AnalyticsClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<object>(responseBody)!;
+                return JsonUtils.Deserialize<ChartResponse>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -197,8 +213,7 @@ public partial class AnalyticsClient
     /// <summary>
     /// Retrieves structured feedback data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Analytics.GetFeedbackTableAsync(
     ///     new FeedbackTableRequest
     ///     {
@@ -215,13 +230,12 @@ public partial class AnalyticsClient
     ///             new FeedbackColumnDefinition
     ///             {
     ///                 Header = "feedback_count",
-    ///                 Metric = new FeedbackCount(),
+    ///                 Metric = new FeedbackMetric(new FeedbackMetric.Count(new FeedbackCount())),
     ///             },
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<FeedbackTableResponse> GetFeedbackTableAsync(
         FeedbackTableRequest request,
         RequestOptions? options = null,
@@ -230,7 +244,7 @@ public partial class AnalyticsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,

@@ -18,8 +18,7 @@ public partial class ActionsClient
     /// <summary>
     /// Update an action or create it if it doesn't exist
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Actions.CreateOrUpdateAsync(
     ///     new ActionRequest
     ///     {
@@ -28,20 +27,27 @@ public partial class ActionsClient
     ///         Description = "This action calls an API to get the user's current balance.",
     ///         UserInteractionRequired = false,
     ///         UserFormParameters = new List&lt;ActionParameter&gt;() { },
-    ///         Precondition = new PreconditionGroup
-    ///         {
-    ///             Operator = PreconditionGroupOperator.And,
-    ///             Preconditions = new List&lt;object&gt;()
-    ///             {
-    ///                 new MetadataPrecondition { Key = "userKey" },
-    ///                 new MetadataPrecondition { Key = "userKey2" },
-    ///             },
-    ///         },
+    ///         Precondition = new Precondition(
+    ///             new Precondition.Group(
+    ///                 new PreconditionGroup
+    ///                 {
+    ///                     Operator = PreconditionGroupOperator.And,
+    ///                     Preconditions = new List&lt;Precondition&gt;()
+    ///                     {
+    ///                         new Precondition(
+    ///                             new Precondition.User(new MetadataPrecondition { Key = "userKey" })
+    ///                         ),
+    ///                         new Precondition(
+    ///                             new Precondition.User(new MetadataPrecondition { Key = "userKey2" })
+    ///                         ),
+    ///                     },
+    ///                 }
+    ///             )
+    ///         ),
     ///         Language = "en",
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ActionResponse> CreateOrUpdateAsync(
         ActionRequest request,
         RequestOptions? options = null,
@@ -50,7 +56,7 @@ public partial class ActionsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Put,
@@ -105,11 +111,9 @@ public partial class ActionsClient
     /// <summary>
     /// Get an action by its supplied ID
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Actions.GetAsync("get-balance");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ActionResponse> GetAsync(
         string actionReferenceId,
         RequestOptions? options = null,
@@ -118,11 +122,14 @@ public partial class ActionsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = $"/v1/actions/{JsonUtils.SerializeAsString(actionReferenceId)}",
+                    Path = string.Format(
+                        "/v1/actions/{0}",
+                        ValueConvert.ToPathParameterString(actionReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken
@@ -172,11 +179,9 @@ public partial class ActionsClient
     /// <summary>
     /// Delete an action
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Actions.DeleteAsync("get-balance");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task DeleteAsync(
         string actionReferenceId,
         RequestOptions? options = null,
@@ -185,11 +190,14 @@ public partial class ActionsClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Delete,
-                    Path = $"/v1/actions/{JsonUtils.SerializeAsString(actionReferenceId)}",
+                    Path = string.Format(
+                        "/v1/actions/{0}",
+                        ValueConvert.ToPathParameterString(actionReferenceId)
+                    ),
                     Options = options,
                 },
                 cancellationToken

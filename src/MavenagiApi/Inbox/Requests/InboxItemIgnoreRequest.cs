@@ -3,6 +3,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
+[Serializable]
 public record InboxItemIgnoreRequest
 {
     /// <summary>
@@ -17,6 +18,7 @@ public record InboxItemIgnoreRequest
     [JsonIgnore]
     public required InboxItemType ItemType { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

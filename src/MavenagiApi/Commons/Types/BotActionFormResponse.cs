@@ -1,10 +1,19 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record BotActionFormResponse
+/// <summary>
+/// This response should be rendered as a form which users can submit. Upon submission call the `submitActionForm` API.
+/// </summary>
+[Serializable]
+public record BotActionFormResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The ID to use when submitting the form via the `submitActionForm` API.
     /// </summary>
@@ -35,6 +44,13 @@ public record BotActionFormResponse
     [JsonPropertyName("submitLabel")]
     public required string SubmitLabel { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

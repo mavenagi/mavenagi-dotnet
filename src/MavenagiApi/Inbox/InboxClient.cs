@@ -18,11 +18,9 @@ public partial class InboxClient
     /// <summary>
     /// Retrieve a paginated list of inbox items for an agent.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Inbox.SearchAsync(new InboxSearchRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<InboxSearchResponse> SearchAsync(
         InboxSearchRequest request,
         RequestOptions? options = null,
@@ -31,7 +29,7 @@ public partial class InboxClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
@@ -86,15 +84,13 @@ public partial class InboxClient
     /// <summary>
     /// Retrieve details of a specific inbox item by its ID.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Inbox.GetAsync(
     ///     "inboxItemId",
     ///     new InboxItemRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
     /// );
-    /// </code>
-    /// </example>
-    public async Task<object> GetAsync(
+    /// </code></example>
+    public async Task<InboxItem> GetAsync(
         string inboxItemId,
         InboxItemRequest request,
         RequestOptions? options = null,
@@ -106,11 +102,14 @@ public partial class InboxClient
         _query["itemType"] = request.ItemType.Stringify();
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = $"/v1/inbox/{JsonUtils.SerializeAsString(inboxItemId)}",
+                    Path = string.Format(
+                        "/v1/inbox/{0}",
+                        ValueConvert.ToPathParameterString(inboxItemId)
+                    ),
                     Query = _query,
                     Options = options,
                 },
@@ -122,7 +121,7 @@ public partial class InboxClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<object>(responseBody)!;
+                return JsonUtils.Deserialize<InboxItem>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -161,15 +160,13 @@ public partial class InboxClient
     /// <summary>
     /// Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Inbox.GetFixAsync(
     ///     "inboxItemFixId",
     ///     new InboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
     /// );
-    /// </code>
-    /// </example>
-    public async Task<object> GetFixAsync(
+    /// </code></example>
+    public async Task<InboxItemFix> GetFixAsync(
         string inboxItemFixId,
         InboxItemFixRequest request,
         RequestOptions? options = null,
@@ -181,11 +178,14 @@ public partial class InboxClient
         _query["fixType"] = request.FixType.Stringify();
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = $"/v1/inbox/fix/{JsonUtils.SerializeAsString(inboxItemFixId)}",
+                    Path = string.Format(
+                        "/v1/inbox/fix/{0}",
+                        ValueConvert.ToPathParameterString(inboxItemFixId)
+                    ),
                     Query = _query,
                     Options = options,
                 },
@@ -197,7 +197,7 @@ public partial class InboxClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<object>(responseBody)!;
+                return JsonUtils.Deserialize<InboxItemFix>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -236,14 +236,12 @@ public partial class InboxClient
     /// <summary>
     /// Apply a fix to an inbox item with a specific document.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Inbox.ApplyFixAsync(
     ///     "inboxItemFixId",
     ///     new ApplyInboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task ApplyFixAsync(
         string inboxItemFixId,
         ApplyInboxItemFixRequest request,
@@ -253,11 +251,14 @@ public partial class InboxClient
     {
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path = $"/v1/inbox/fix/{JsonUtils.SerializeAsString(inboxItemFixId)}/apply",
+                    Path = string.Format(
+                        "/v1/inbox/fix/{0}/apply",
+                        ValueConvert.ToPathParameterString(inboxItemFixId)
+                    ),
                     Body = request,
                     Options = options,
                 },
@@ -299,14 +300,12 @@ public partial class InboxClient
     /// <summary>
     /// Ignore a specific inbox item by its ID.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Inbox.IgnoreAsync(
     ///     "inboxItemId",
     ///     new InboxItemIgnoreRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async global::System.Threading.Tasks.Task IgnoreAsync(
         string inboxItemId,
         InboxItemIgnoreRequest request,
@@ -319,11 +318,14 @@ public partial class InboxClient
         _query["itemType"] = request.ItemType.Stringify();
         var response = await _client
             .SendRequestAsync(
-                new RawClient.JsonApiRequest
+                new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
-                    Path = $"/v1/inbox/{JsonUtils.SerializeAsString(inboxItemId)}/ignore",
+                    Path = string.Format(
+                        "/v1/inbox/{0}/ignore",
+                        ValueConvert.ToPathParameterString(inboxItemId)
+                    ),
                     Query = _query,
                     Options = options,
                 },

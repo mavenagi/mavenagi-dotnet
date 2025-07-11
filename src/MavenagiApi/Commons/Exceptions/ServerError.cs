@@ -3,6 +3,7 @@ namespace MavenagiApi;
 /// <summary>
 /// This exception type will be thrown for any non-2XX API responses.
 /// </summary>
+[Serializable]
 public class ServerError(ErrorMessage body) : MavenAGIApiException("ServerError", 500, body)
 {
     /// <summary>

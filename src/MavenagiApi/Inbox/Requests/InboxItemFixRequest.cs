@@ -3,6 +3,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
+[Serializable]
 public record InboxItemFixRequest
 {
     /// <summary>
@@ -17,6 +18,7 @@ public record InboxItemFixRequest
     [JsonIgnore]
     public required InboxItemFixType FixType { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

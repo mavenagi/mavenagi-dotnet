@@ -30,7 +30,7 @@ public partial class MavenAGI
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "MavenagiApi" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "mavenagi/1.0.17" },
+                { "User-Agent", "mavenagi/1.0.19" },
             }
         );
         clientOptions ??= new ClientOptions();
@@ -57,31 +57,31 @@ public partial class MavenAGI
         Users = new UsersClient(_client);
     }
 
-    public ActionsClient Actions { get; init; }
+    public ActionsClient Actions { get; }
 
-    public AgentsClient Agents { get; init; }
+    public AgentsClient Agents { get; }
 
-    public AnalyticsClient Analytics { get; init; }
+    public AnalyticsClient Analytics { get; }
 
-    public AppSettingsClient AppSettings { get; init; }
+    public AppSettingsClient AppSettings { get; }
 
-    public CommonsClient Commons { get; init; }
+    public CommonsClient Commons { get; }
 
-    public ConversationClient Conversation { get; init; }
+    public ConversationClient Conversation { get; }
 
-    public EventsClient Events { get; init; }
+    public EventsClient Events { get; }
 
-    public InboxClient Inbox { get; init; }
+    public InboxClient Inbox { get; }
 
-    public KnowledgeClient Knowledge { get; init; }
+    public KnowledgeClient Knowledge { get; }
 
-    public OrganizationsClient Organizations { get; init; }
+    public OrganizationsClient Organizations { get; }
 
-    public TranslationsClient Translations { get; init; }
+    public TranslationsClient Translations { get; }
 
-    public TriggersClient Triggers { get; init; }
+    public TriggersClient Triggers { get; }
 
-    public UsersClient Users { get; init; }
+    public UsersClient Users { get; }
 
     private static string GetFromEnvironmentOrThrow(string env, string message)
     {

@@ -3,6 +3,7 @@ using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
+[Serializable]
 public record ConversationDeleteRequest
 {
     /// <summary>
@@ -17,6 +18,7 @@ public record ConversationDeleteRequest
     [JsonIgnore]
     public required string Reason { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

@@ -35,15 +35,23 @@ await client.Actions.CreateOrUpdateAsync(
         Description = "This action calls an API to get the user's current balance.",
         UserInteractionRequired = false,
         UserFormParameters = new List<ActionParameter>() { },
-        Precondition = new PreconditionGroup
-        {
-            Operator = PreconditionGroupOperator.And,
-            Preconditions = new List<object>()
-            {
-                new MetadataPrecondition { Key = "userKey" },
-                new MetadataPrecondition { Key = "userKey2" },
-            },
-        },
+        Precondition = new Precondition(
+            new Precondition.Group(
+                new PreconditionGroup
+                {
+                    Operator = PreconditionGroupOperator.And,
+                    Preconditions = new List<Precondition>()
+                    {
+                        new Precondition(
+                            new Precondition.User(new MetadataPrecondition { Key = "userKey" })
+                        ),
+                        new Precondition(
+                            new Precondition.User(new MetadataPrecondition { Key = "userKey2" })
+                        ),
+                    },
+                }
+            )
+        ),
         Language = "en",
     }
 );
@@ -398,23 +406,37 @@ await client.Analytics.GetConversationTableAsync(
         },
         ColumnDefinitions = new List<ConversationColumnDefinition>()
         {
-            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+            new ConversationColumnDefinition
+            {
+                Header = "count",
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Count(new ConversationCount())
+                ),
+            },
             new ConversationColumnDefinition
             {
                 Header = "avg_first_response_time",
-                Metric = new ConversationAverage
-                {
-                    TargetField = NumericConversationField.FirstResponseTime,
-                },
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Average(
+                        new ConversationAverage
+                        {
+                            TargetField = NumericConversationField.FirstResponseTime,
+                        }
+                    )
+                ),
             },
             new ConversationColumnDefinition
             {
                 Header = "percentile_handle_time",
-                Metric = new ConversationPercentile
-                {
-                    TargetField = NumericConversationField.HandleTime,
-                    Percentile = 25,
-                },
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Percentile(
+                        new ConversationPercentile
+                        {
+                            TargetField = NumericConversationField.HandleTime,
+                            Percentile = 25,
+                        }
+                    )
+                ),
             },
         },
     }
@@ -445,7 +467,7 @@ await client.Analytics.GetConversationTableAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetConversationChartAsync</a>(object { ... }) -> object</code></summary>
+<details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetConversationChartAsync</a>(ConversationChartRequest { ... }) -> ChartResponse</code></summary>
 <dl>
 <dd>
 
@@ -473,15 +495,21 @@ Fetches conversation data visualized in a chart format. Supported chart types in
 
 ```csharp
 await client.Analytics.GetConversationChartAsync(
-    new ConversationPieChartRequest
-    {
-        ConversationFilter = new ConversationFilter
-        {
-            Languages = new List<string>() { "en", "es" },
-        },
-        GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
-        Metric = new ConversationCount(),
-    }
+    new ConversationChartRequest(
+        new ConversationChartRequest.PieChart(
+            new ConversationPieChartRequest
+            {
+                ConversationFilter = new ConversationFilter
+                {
+                    Languages = new List<string>() { "en", "es" },
+                },
+                GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Count(new ConversationCount())
+                ),
+            }
+        )
+    )
 );
 ```
 </dd>
@@ -497,7 +525,7 @@ await client.Analytics.GetConversationChartAsync(
 <dl>
 <dd>
 
-**request:** `object` 
+**request:** `ConversationChartRequest` 
     
 </dd>
 </dl>
@@ -552,7 +580,7 @@ await client.Analytics.GetFeedbackTableAsync(
             new FeedbackColumnDefinition
             {
                 Header = "feedback_count",
-                Metric = new FeedbackCount(),
+                Metric = new FeedbackMetric(new FeedbackMetric.Count(new FeedbackCount())),
             },
         },
     }
@@ -642,7 +670,7 @@ await client.AppSettings.SearchAsync(new SearchAppSettingsRequest { Index = "ind
 </dl>
 </details>
 
-<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">GetAsync</a>() -> object</code></summary>
+<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">GetAsync</a>() -> Dictionary<string, object?></code></summary>
 <dl>
 <dd>
 
@@ -681,7 +709,7 @@ await client.AppSettings.GetAsync();
 </dl>
 </details>
 
-<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">UpdateAsync</a>(object { ... }) -> object</code></summary>
+<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">UpdateAsync</a>(Dictionary<string, object?> { ... }) -> Dictionary<string, object?></code></summary>
 <dl>
 <dd>
 
@@ -737,7 +765,7 @@ await client.AppSettings.UpdateAsync(
 <dl>
 <dd>
 
-**request:** `object` 
+**request:** `Dictionary<string, object?>` 
     
 </dd>
 </dl>
@@ -792,17 +820,17 @@ await client.Conversation.InitializeAsync(
         {
             new ConversationMessageRequest
             {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
                 Text = "text",
                 UserMessageType = UserConversationMessageType.User,
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
             new ConversationMessageRequest
             {
+                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
                 UserId = new EntityIdBase { ReferenceId = "referenceId" },
                 Text = "text",
                 UserMessageType = UserConversationMessageType.User,
-                ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             },
         },
     }
@@ -999,17 +1027,17 @@ await client.Conversation.AppendNewMessagesAsync(
     {
         new ConversationMessageRequest
         {
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             UserId = new EntityIdBase { ReferenceId = "referenceId" },
             Text = "text",
             UserMessageType = UserConversationMessageType.User,
-            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
         new ConversationMessageRequest
         {
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
             UserId = new EntityIdBase { ReferenceId = "referenceId" },
             Text = "text",
             UserMessageType = UserConversationMessageType.User,
-            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
         },
     }
 );
@@ -1798,7 +1826,7 @@ await client.Inbox.SearchAsync(new InboxSearchRequest());
 </dl>
 </details>
 
-<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetAsync</a>(inboxItemId, InboxItemRequest { ... }) -> object</code></summary>
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetAsync</a>(inboxItemId, InboxItemRequest { ... }) -> InboxItem</code></summary>
 <dl>
 <dd>
 
@@ -1863,7 +1891,7 @@ await client.Inbox.GetAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetFixAsync</a>(inboxItemFixId, InboxItemFixRequest { ... }) -> object</code></summary>
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetFixAsync</a>(inboxItemFixId, InboxItemFixRequest { ... }) -> InboxItemFix</code></summary>
 <dl>
 <dd>
 
@@ -2596,23 +2624,37 @@ await client.Organizations.GetConversationTableAsync(
         },
         ColumnDefinitions = new List<ConversationColumnDefinition>()
         {
-            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
+            new ConversationColumnDefinition
+            {
+                Header = "count",
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Count(new ConversationCount())
+                ),
+            },
             new ConversationColumnDefinition
             {
                 Header = "avg_first_response_time",
-                Metric = new ConversationAverage
-                {
-                    TargetField = NumericConversationField.FirstResponseTime,
-                },
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Average(
+                        new ConversationAverage
+                        {
+                            TargetField = NumericConversationField.FirstResponseTime,
+                        }
+                    )
+                ),
             },
             new ConversationColumnDefinition
             {
                 Header = "percentile_handle_time",
-                Metric = new ConversationPercentile
-                {
-                    TargetField = NumericConversationField.HandleTime,
-                    Percentile = 25,
-                },
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Percentile(
+                        new ConversationPercentile
+                        {
+                            TargetField = NumericConversationField.HandleTime,
+                            Percentile = 25,
+                        }
+                    )
+                ),
             },
         },
     }
@@ -2643,7 +2685,7 @@ await client.Organizations.GetConversationTableAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetConversationChartAsync</a>(object { ... }) -> object</code></summary>
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetConversationChartAsync</a>(ConversationChartRequest { ... }) -> ChartResponse</code></summary>
 <dl>
 <dd>
 
@@ -2676,15 +2718,21 @@ This endpoint requires additional permissions. Contact support to request access
 
 ```csharp
 await client.Organizations.GetConversationChartAsync(
-    new ConversationPieChartRequest
-    {
-        ConversationFilter = new ConversationFilter
-        {
-            Languages = new List<string>() { "en", "es" },
-        },
-        GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
-        Metric = new ConversationCount(),
-    }
+    new ConversationChartRequest(
+        new ConversationChartRequest.PieChart(
+            new ConversationPieChartRequest
+            {
+                ConversationFilter = new ConversationFilter
+                {
+                    Languages = new List<string>() { "en", "es" },
+                },
+                GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+                Metric = new ConversationMetric(
+                    new ConversationMetric.Count(new ConversationCount())
+                ),
+            }
+        )
+    )
 );
 ```
 </dd>
@@ -2700,7 +2748,7 @@ await client.Organizations.GetConversationChartAsync(
 <dl>
 <dd>
 
-**request:** `object` 
+**request:** `ConversationChartRequest` 
     
 </dd>
 </dl>

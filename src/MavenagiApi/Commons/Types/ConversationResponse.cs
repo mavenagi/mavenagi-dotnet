@@ -1,15 +1,22 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-public record ConversationResponse
+[Serializable]
+public record ConversationResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The messages in the conversation
     /// </summary>
     [JsonPropertyName("messages")]
-    public IEnumerable<object> Messages { get; set; } = new List<object>();
+    public IEnumerable<ConversationMessageResponse> Messages { get; set; } =
+        new List<ConversationMessageResponse>();
 
     /// <summary>
     /// Optional configurations for responses to this conversation
@@ -84,6 +91,13 @@ public record ConversationResponse
     [JsonPropertyName("deleted")]
     public required bool Deleted { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);
