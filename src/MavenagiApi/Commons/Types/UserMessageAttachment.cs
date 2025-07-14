@@ -33,6 +33,12 @@ public record UserMessageAttachment : IJsonOnDeserialized
     [JsonPropertyName("url")]
     public required string Url { get; set; }
 
+    /// <summary>
+    /// An optional name for the attachment.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
+
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

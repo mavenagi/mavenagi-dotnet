@@ -36,6 +36,12 @@ public record Attachment : IJsonOnDeserialized
     [JsonPropertyName("content")]
     public required string Content { get; set; }
 
+    /// <summary>
+    /// The name of the attachment, if one was provided.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
+
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

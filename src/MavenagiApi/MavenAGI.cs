@@ -30,7 +30,7 @@ public partial class MavenAGI
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "MavenagiApi" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "mavenagi/1.0.19" },
+                { "User-Agent", "mavenagi/1.1.0" },
             }
         );
         clientOptions ??= new ClientOptions();
