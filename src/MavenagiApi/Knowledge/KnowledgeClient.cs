@@ -16,6 +16,72 @@ public partial class KnowledgeClient
     }
 
     /// <summary>
+    /// Search knowledge bases
+    /// </summary>
+    /// <example><code>
+    /// await client.Knowledge.SearchKnowledgeBasesAsync(new KnowledgeBaseSearchRequest());
+    /// </code></example>
+    public async Task<KnowledgeBasesResponse> SearchKnowledgeBasesAsync(
+        KnowledgeBaseSearchRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "/v1/knowledge/search",
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<KnowledgeBasesResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
     /// Update a knowledge base or create it if it doesn't exist.
     /// </summary>
     /// <example><code>
@@ -91,14 +157,20 @@ public partial class KnowledgeClient
     /// Get an existing knowledge base by its supplied ID
     /// </summary>
     /// <example><code>
-    /// await client.Knowledge.GetKnowledgeBaseAsync("help-center");
+    /// await client.Knowledge.GetKnowledgeBaseAsync("help-center", new KnowledgeBaseGetRequest());
     /// </code></example>
     public async Task<KnowledgeBaseResponse> GetKnowledgeBaseAsync(
         string knowledgeBaseReferenceId,
+        KnowledgeBaseGetRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
+        var _query = new Dictionary<string, object>();
+        if (request.AppId != null)
+        {
+            _query["appId"] = request.AppId;
+        }
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
@@ -109,6 +181,83 @@ public partial class KnowledgeClient
                         "/v1/knowledge/{0}",
                         ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
                     ),
+                    Query = _query,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<KnowledgeBaseResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
+    /// Update mutable knowledge base fields
+    ///
+    /// The `appId` field can be provided to update a knowledge base owned by a different app.
+    /// All other fields will overwrite the existing value on the knowledge base only if provided.
+    /// </summary>
+    /// <example><code>
+    /// await client.Knowledge.PatchKnowledgeBaseAsync(
+    ///     "knowledgeBaseReferenceId",
+    ///     new KnowledgeBasePatchRequest()
+    /// );
+    /// </code></example>
+    public async Task<KnowledgeBaseResponse> PatchKnowledgeBaseAsync(
+        string knowledgeBaseReferenceId,
+        KnowledgeBasePatchRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethodExtensions.Patch,
+                    Path = string.Format(
+                        "/v1/knowledge/{0}",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                    ),
+                    Body = request,
                     Options = options,
                 },
                 cancellationToken
@@ -289,6 +438,72 @@ public partial class KnowledgeClient
             try
             {
                 return JsonUtils.Deserialize<KnowledgeBaseVersion>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
+    /// Search knowledge documents
+    /// </summary>
+    /// <example><code>
+    /// await client.Knowledge.SearchKnowledgeDocumentsAsync(new KnowledgeDocumentSearchRequest());
+    /// </code></example>
+    public async Task<KnowledgeDocumentsResponse> SearchKnowledgeDocumentsAsync(
+        KnowledgeDocumentSearchRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "/v1/knowledge/documents/search",
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<KnowledgeDocumentsResponse>(responseBody)!;
             }
             catch (JsonException e)
             {

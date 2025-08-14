@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record PieChartResponse : IJsonOnDeserialized
+public record PieChartResponse
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// The dataset for the pie chart.
     /// Each slice in the pie chart is represented as a data point with a name and a corresponding y-value.
@@ -18,11 +14,15 @@ public record PieChartResponse : IJsonOnDeserialized
     [JsonPropertyName("series")]
     public required Series Series { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

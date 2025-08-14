@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record UserData : IJsonOnDeserialized
+public record UserData
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// The value of the user metadata
     /// </summary>
@@ -23,11 +19,15 @@ public record UserData : IJsonOnDeserialized
     [JsonPropertyName("visibility")]
     public required VisibilityType Visibility { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

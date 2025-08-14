@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record FinalizeKnowledgeBaseVersionRequest : IJsonOnDeserialized
+public record FinalizeKnowledgeBaseVersionRequest
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// ID that uniquely identifies which knowledge base version to finalize. If not provided will use the most recent version of the knowledge base.
     /// </summary>
@@ -29,11 +25,15 @@ public record FinalizeKnowledgeBaseVersionRequest : IJsonOnDeserialized
     [JsonPropertyName("errorMessage")]
     public string? ErrorMessage { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

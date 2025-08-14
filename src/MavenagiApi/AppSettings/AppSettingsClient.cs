@@ -92,7 +92,7 @@ public partial class AppSettingsClient
     /// <example><code>
     /// await client.AppSettings.GetAsync();
     /// </code></example>
-    public async Task<Dictionary<string, object?>> GetAsync(
+    public async Task<object> GetAsync(
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -114,7 +114,7 @@ public partial class AppSettingsClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<Dictionary<string, object?>>(responseBody)!;
+                return JsonUtils.Deserialize<object>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -170,8 +170,8 @@ public partial class AppSettingsClient
     ///     }
     /// );
     /// </code></example>
-    public async Task<Dictionary<string, object?>> UpdateAsync(
-        Dictionary<string, object?> request,
+    public async Task<object> UpdateAsync(
+        object request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -194,7 +194,7 @@ public partial class AppSettingsClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<Dictionary<string, object?>>(responseBody)!;
+                return JsonUtils.Deserialize<object>(responseBody)!;
             }
             catch (JsonException e)
             {

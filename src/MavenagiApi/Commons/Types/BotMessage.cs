@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record BotMessage : IJsonOnDeserialized
+public record BotMessage
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// The ID that uniquely identifies this message within the conversation
     /// </summary>
@@ -21,13 +17,19 @@ public record BotMessage : IJsonOnDeserialized
     public required BotConversationMessageType BotMessageType { get; set; }
 
     [JsonPropertyName("responses")]
-    public IEnumerable<BotResponse> Responses { get; set; } = new List<BotResponse>();
+    public IEnumerable<object> Responses { get; set; } = new List<object>();
 
     [JsonPropertyName("metadata")]
     public required BotResponseMetadata Metadata { get; set; }
 
     [JsonPropertyName("status")]
-    public required BotMessageStatus Status { get; set; }
+    public required MessageStatus Status { get; set; }
+
+    /// <summary>
+    /// The logic that was used to generate the response. Response size may be large; only present on the getConversation request.
+    /// </summary>
+    [JsonPropertyName("logic")]
+    public BotLogic? Logic { get; set; }
 
     /// <summary>
     /// The date and time the conversation was created
@@ -41,11 +43,15 @@ public record BotMessage : IJsonOnDeserialized
     [JsonPropertyName("updatedAt")]
     public DateTime? UpdatedAt { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

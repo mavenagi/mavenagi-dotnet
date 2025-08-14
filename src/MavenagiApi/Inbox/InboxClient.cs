@@ -85,12 +85,9 @@ public partial class InboxClient
     /// Retrieve details of a specific inbox item by its ID.
     /// </summary>
     /// <example><code>
-    /// await client.Inbox.GetAsync(
-    ///     "inboxItemId",
-    ///     new InboxItemRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
-    /// );
+    /// await client.Inbox.GetAsync("inboxItemId", new InboxItemRequest { AppId = "appId" });
     /// </code></example>
-    public async Task<InboxItem> GetAsync(
+    public async Task<object> GetAsync(
         string inboxItemId,
         InboxItemRequest request,
         RequestOptions? options = null,
@@ -99,7 +96,6 @@ public partial class InboxClient
     {
         var _query = new Dictionary<string, object>();
         _query["appId"] = request.AppId;
-        _query["itemType"] = request.ItemType.Stringify();
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
@@ -121,7 +117,7 @@ public partial class InboxClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<InboxItem>(responseBody)!;
+                return JsonUtils.Deserialize<object>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -161,12 +157,9 @@ public partial class InboxClient
     /// Retrieve a suggested fix. Includes document information if the fix is a Missing Knowledge suggestion.
     /// </summary>
     /// <example><code>
-    /// await client.Inbox.GetFixAsync(
-    ///     "inboxItemFixId",
-    ///     new InboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
-    /// );
+    /// await client.Inbox.GetFixAsync("inboxItemFixId", new InboxItemFixRequest { AppId = "appId" });
     /// </code></example>
-    public async Task<InboxItemFix> GetFixAsync(
+    public async Task<object> GetFixAsync(
         string inboxItemFixId,
         InboxItemFixRequest request,
         RequestOptions? options = null,
@@ -175,7 +168,6 @@ public partial class InboxClient
     {
         var _query = new Dictionary<string, object>();
         _query["appId"] = request.AppId;
-        _query["fixType"] = request.FixType.Stringify();
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
@@ -197,7 +189,7 @@ public partial class InboxClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<InboxItemFix>(responseBody)!;
+                return JsonUtils.Deserialize<object>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -234,17 +226,21 @@ public partial class InboxClient
     }
 
     /// <summary>
-    /// Apply a fix to an inbox item with a specific document.
+    /// Apply a list of fixes belonging to an inbox item.
     /// </summary>
     /// <example><code>
-    /// await client.Inbox.ApplyFixAsync(
-    ///     "inboxItemFixId",
-    ///     new ApplyInboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
+    /// await client.Inbox.ApplyFixesAsync(
+    ///     "inboxItemId",
+    ///     new ApplyFixesRequest
+    ///     {
+    ///         AppId = "appId",
+    ///         FixReferenceIds = new List&lt;string&gt;() { "fixReferenceIds", "fixReferenceIds" },
+    ///     }
     /// );
     /// </code></example>
-    public async global::System.Threading.Tasks.Task ApplyFixAsync(
-        string inboxItemFixId,
-        ApplyInboxItemFixRequest request,
+    public async global::System.Threading.Tasks.Task ApplyFixesAsync(
+        string inboxItemId,
+        ApplyFixesRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -256,8 +252,8 @@ public partial class InboxClient
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Post,
                     Path = string.Format(
-                        "/v1/inbox/fix/{0}/apply",
-                        ValueConvert.ToPathParameterString(inboxItemFixId)
+                        "/v1/inbox/{0}/applyfixes",
+                        ValueConvert.ToPathParameterString(inboxItemId)
                     ),
                     Body = request,
                     Options = options,
@@ -301,10 +297,7 @@ public partial class InboxClient
     /// Ignore a specific inbox item by its ID.
     /// </summary>
     /// <example><code>
-    /// await client.Inbox.IgnoreAsync(
-    ///     "inboxItemId",
-    ///     new InboxItemIgnoreRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
-    /// );
+    /// await client.Inbox.IgnoreAsync("inboxItemId", new InboxItemIgnoreRequest { AppId = "appId" });
     /// </code></example>
     public async global::System.Threading.Tasks.Task IgnoreAsync(
         string inboxItemId,
@@ -315,7 +308,6 @@ public partial class InboxClient
     {
         var _query = new Dictionary<string, object>();
         _query["appId"] = request.AppId;
-        _query["itemType"] = request.ItemType.Stringify();
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest

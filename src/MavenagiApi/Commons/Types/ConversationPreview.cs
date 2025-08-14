@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record ConversationPreview : IJsonOnDeserialized
+public record ConversationPreview
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// Optional configurations for responses to this conversation
     /// </summary>
@@ -84,11 +80,30 @@ public record ConversationPreview : IJsonOnDeserialized
     [JsonPropertyName("deleted")]
     public required bool Deleted { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    /// <summary>
+    /// Whether the conversation is able to receive asynchronous messages.
+    /// Only applicable if a conversation is initialized with the `ASYNC` capability. Defaults to true. Can be closed using the `PATCH` API.
+    /// </summary>
+    [JsonPropertyName("open")]
+    public required bool Open { get; set; }
 
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Whether the LLM is enabled for this conversation.
+    /// If true, `USER` messages sent via the ask API will be sent to the LLM and a `BOT_RESPONSE` or `BOT_SUGGESTION` message will be generated.
+    /// If false, `USER` messages will not be sent to the LLM.
+    /// </summary>
+    [JsonPropertyName("llmEnabled")]
+    public required bool LlmEnabled { get; set; }
+
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

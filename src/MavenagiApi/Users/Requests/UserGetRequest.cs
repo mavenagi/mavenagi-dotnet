@@ -7,7 +7,7 @@ namespace MavenagiApi;
 public record UserGetRequest
 {
     /// <summary>
-    /// The App ID of the user to get. If not provided the ID of the calling app will be used.
+    /// The App ID of the app user to get. If not provided the ID of the calling app will be used.
     /// </summary>
     [JsonIgnore]
     public string? AppId { get; set; }

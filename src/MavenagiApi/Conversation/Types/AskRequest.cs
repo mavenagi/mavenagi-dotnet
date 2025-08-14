@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record AskRequest : IJsonOnDeserialized
+public record AskRequest
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// Externally supplied ID to uniquely identify this message within the conversation. If a message with this ID already exists it will be reused and will not be updated.
     /// </summary>
@@ -30,10 +26,11 @@ public record AskRequest : IJsonOnDeserialized
     public required string Text { get; set; }
 
     /// <summary>
-    /// The attachments to the message.
+    /// The attachments to the message. Image attachments will be sent to the LLM as additional data.
+    /// Non-image attachments can be stored and downloaded from the API but will not be sent to the LLM.
     /// </summary>
     [JsonPropertyName("attachments")]
-    public IEnumerable<Attachment>? Attachments { get; set; }
+    public IEnumerable<AttachmentRequest>? Attachments { get; set; }
 
     /// <summary>
     /// Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken by this ask request. For example, one may put in user tokens as transient data.
@@ -47,11 +44,15 @@ public record AskRequest : IJsonOnDeserialized
     [JsonPropertyName("timezone")]
     public string? Timezone { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

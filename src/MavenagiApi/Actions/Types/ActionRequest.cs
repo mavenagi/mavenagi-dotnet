@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record ActionRequest : IJsonOnDeserialized
+public record ActionRequest
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// ID that uniquely identifies this action
     /// </summary>
@@ -45,7 +41,7 @@ public record ActionRequest : IJsonOnDeserialized
     /// The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
     /// </summary>
     [JsonPropertyName("precondition")]
-    public Precondition? Precondition { get; set; }
+    public object? Precondition { get; set; }
 
     /// <summary>
     /// The parameters that the action uses as input. An action will only be executed when all of the required parameters are provided. During execution, actions all have access to the full Conversation and User objects. Parameter values may be inferred from the user's conversation by the LLM.
@@ -60,11 +56,15 @@ public record ActionRequest : IJsonOnDeserialized
     [JsonPropertyName("language")]
     public string? Language { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

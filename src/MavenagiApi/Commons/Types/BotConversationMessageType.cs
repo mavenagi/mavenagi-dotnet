@@ -1,65 +1,15 @@
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
 namespace MavenagiApi;
 
-[JsonConverter(typeof(StringEnumSerializer<BotConversationMessageType>))]
-[Serializable]
-public readonly record struct BotConversationMessageType : IStringEnum
+[JsonConverter(typeof(EnumSerializer<BotConversationMessageType>))]
+public enum BotConversationMessageType
 {
-    public static readonly BotConversationMessageType BotResponse = new(Values.BotResponse);
+    [EnumMember(Value = "BOT_RESPONSE")]
+    BotResponse,
 
-    public static readonly BotConversationMessageType BotSuggestion = new(Values.BotSuggestion);
-
-    public BotConversationMessageType(string value)
-    {
-        Value = value;
-    }
-
-    /// <summary>
-    /// The string value of the enum.
-    /// </summary>
-    public string Value { get; }
-
-    /// <summary>
-    /// Create a string enum with the given value.
-    /// </summary>
-    public static BotConversationMessageType FromCustom(string value)
-    {
-        return new BotConversationMessageType(value);
-    }
-
-    public bool Equals(string? other)
-    {
-        return Value.Equals(other);
-    }
-
-    /// <summary>
-    /// Returns the string value of the enum.
-    /// </summary>
-    public override string ToString()
-    {
-        return Value;
-    }
-
-    public static bool operator ==(BotConversationMessageType value1, string value2) =>
-        value1.Value.Equals(value2);
-
-    public static bool operator !=(BotConversationMessageType value1, string value2) =>
-        !value1.Value.Equals(value2);
-
-    public static explicit operator string(BotConversationMessageType value) => value.Value;
-
-    public static explicit operator BotConversationMessageType(string value) => new(value);
-
-    /// <summary>
-    /// Constant strings for enum values
-    /// </summary>
-    [Serializable]
-    public static class Values
-    {
-        public const string BotResponse = "BOT_RESPONSE";
-
-        public const string BotSuggestion = "BOT_SUGGESTION";
-    }
+    [EnumMember(Value = "BOT_SUGGESTION")]
+    BotSuggestion,
 }

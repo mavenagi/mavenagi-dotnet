@@ -5,17 +5,13 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record EventsSearchResponse : IJsonOnDeserialized
+public record EventsSearchResponse
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// The list of events
     /// </summary>
     [JsonPropertyName("events")]
-    public IEnumerable<EventResponse> Events { get; set; } = new List<EventResponse>();
+    public IEnumerable<object> Events { get; set; } = new List<object>();
 
     /// <summary>
     /// The page being returned, starts at 0
@@ -41,11 +37,15 @@ public record EventsSearchResponse : IJsonOnDeserialized
     [JsonPropertyName("totalPages")]
     public required int TotalPages { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

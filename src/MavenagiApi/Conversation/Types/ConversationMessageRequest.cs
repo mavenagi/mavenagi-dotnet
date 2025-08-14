@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record ConversationMessageRequest : IJsonOnDeserialized
+public record ConversationMessageRequest
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// The ID that uniquely identifies this message within the conversation
     /// </summary>
@@ -21,7 +17,7 @@ public record ConversationMessageRequest : IJsonOnDeserialized
     /// The attachments to the message.
     /// </summary>
     [JsonPropertyName("attachments")]
-    public IEnumerable<Attachment>? Attachments { get; set; }
+    public IEnumerable<AttachmentRequest>? Attachments { get; set; }
 
     /// <summary>
     /// ID that uniquely identifies the user that created this message
@@ -50,11 +46,15 @@ public record ConversationMessageRequest : IJsonOnDeserialized
     [JsonPropertyName("updatedAt")]
     public DateTime? UpdatedAt { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

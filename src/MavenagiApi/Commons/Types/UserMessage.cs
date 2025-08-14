@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record UserMessage : IJsonOnDeserialized
+public record UserMessage
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// The ID that uniquely identifies this message within the conversation
     /// </summary>
@@ -27,14 +23,42 @@ public record UserMessage : IJsonOnDeserialized
     /// The attachments associated with the message
     /// </summary>
     [JsonPropertyName("attachments")]
-    public IEnumerable<UserMessageAttachment> Attachments { get; set; } =
-        new List<UserMessageAttachment>();
+    public IEnumerable<AttachmentResponse> Attachments { get; set; } =
+        new List<AttachmentResponse>();
+
+    /// <summary>
+    /// The ID of the agent user that created this message. More detail can be fetched via the agent user APIs. Will be empty only for legacy conversations.
+    /// </summary>
+    [JsonPropertyName("agentUserId")]
+    public string? AgentUserId { get; set; }
 
     /// <summary>
     /// The display name of the user who created this message. Only available for users who have saved name information.
     /// </summary>
     [JsonPropertyName("userDisplayName")]
     public string? UserDisplayName { get; set; }
+
+    /// <summary>
+    /// The delivery status of the message. Only applicable to messages sent via the deliverMessage API.
+    /// All other messages have an `UNKNOWN` status.
+    ///
+    /// * `SENT`: The message has been sent to the user.
+    /// * `FAILED`: The message sending encountered an error.
+    /// * `UNKNOWN`: The message status is unknown.
+    /// </summary>
+    [JsonPropertyName("status")]
+    public required MessageStatus Status { get; set; }
+
+    /// <summary>
+    /// Only present on newer messaged where `userMessageType` is `USER`.
+    /// Indicates the state of the answer to the user message.
+    ///
+    /// - `NOT_ASKED`: An answer was not requested for this user message.
+    /// - `LLM_ENABLED`: An answer was requested for this user message and the LLM was enabled.
+    /// - `LLM_DISABLED`: An answer was requested for this user message and the LLM was disabled.
+    /// </summary>
+    [JsonPropertyName("responseState")]
+    public UserMessageResponseState? ResponseState { get; set; }
 
     /// <summary>
     /// ID that uniquely identifies the user that created this message
@@ -63,11 +87,15 @@ public record UserMessage : IJsonOnDeserialized
     [JsonPropertyName("updatedAt")]
     public DateTime? UpdatedAt { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

@@ -111,6 +111,82 @@ public partial class ConversationClient
     }
 
     /// <summary>
+    /// Update mutable conversation fields.
+    ///
+    /// The `appId` field can be provided to update a conversation owned by a different app.
+    /// All other fields will overwrite the existing value on the conversation only if provided.
+    /// </summary>
+    /// <example><code>
+    /// await client.Conversation.PatchAsync(
+    ///     "conversation-0",
+    ///     new ConversationPatchRequest { LlmEnabled = true }
+    /// );
+    /// </code></example>
+    public async Task<ConversationResponse> PatchAsync(
+        string conversationId,
+        ConversationPatchRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethodExtensions.Patch,
+                    Path = string.Format(
+                        "/v1/conversations/{0}",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<ConversationResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
     /// Get a conversation
     /// </summary>
     /// <example><code>
@@ -369,9 +445,9 @@ public partial class ConversationClient
     ///         ConversationMessageId = new EntityIdBase { ReferenceId = "message-0" },
     ///         UserId = new EntityIdBase { ReferenceId = "user-0" },
     ///         Text = "How do I reset my password?",
-    ///         Attachments = new List&lt;Attachment&gt;()
+    ///         Attachments = new List&lt;AttachmentRequest&gt;()
     ///         {
-    ///             new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
+    ///             new AttachmentRequest { Type = "image/png", Content = "iVBORw0KGgo..." },
     ///         },
     ///         TransientData = new Dictionary&lt;string, string&gt;()
     ///         {
@@ -469,9 +545,9 @@ public partial class ConversationClient
     ///         ConversationMessageId = new EntityIdBase { ReferenceId = "message-0" },
     ///         UserId = new EntityIdBase { ReferenceId = "user-0" },
     ///         Text = "How do I reset my password?",
-    ///         Attachments = new List&lt;Attachment&gt;()
+    ///         Attachments = new List&lt;AttachmentRequest&gt;()
     ///         {
-    ///             new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
+    ///             new AttachmentRequest { Type = "image/png", Content = "iVBORw0KGgo..." },
     ///         },
     ///         TransientData = new Dictionary&lt;string, string&gt;()
     ///         {
@@ -585,6 +661,84 @@ public partial class ConversationClient
             }
         }
 
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
+    /// Generate a structured object response based on a provided schema and user prompt with a streaming response.
+    /// The response will be sent as a stream of events containing text, start, and end events.
+    /// The text portions of stream responses should be concatenated to form the full response text.
+    ///
+    /// If the user question and object response already exist, they will be reused and not updated.
+    ///
+    /// Concurrency Behavior:
+    /// - If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+    /// - The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+    ///
+    /// Known Limitations:
+    /// - Schema enforcement is best-effort and may not guarantee exact conformity.
+    /// - The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
+    /// </summary>
+    /// <example><code>
+    /// await client.Conversation.AskObjectStreamAsync(
+    ///     "conversationId",
+    ///     new AskObjectRequest
+    ///     {
+    ///         Schema = "schema",
+    ///         ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///         UserId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///         Text = "text",
+    ///     }
+    /// );
+    /// </code></example>
+    public async global::System.Threading.Tasks.Task AskObjectStreamAsync(
+        string conversationId,
+        AskObjectRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = string.Format(
+                        "/v1/conversations/{0}/ask_object_stream",
+                        ValueConvert.ToPathParameterString(conversationId)
+                    ),
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
         {
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
@@ -1029,6 +1183,94 @@ public partial class ConversationClient
             try
             {
                 return JsonUtils.Deserialize<ConversationsResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
+    /// Deliver a message to a user or conversation.
+    ///
+    /// &lt;Warning&gt;
+    /// Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`.
+    /// User message delivery is not yet supported.
+    /// &lt;/Warning&gt;
+    /// </summary>
+    /// <example><code>
+    /// await client.Conversation.DeliverMessageAsync(
+    ///     new DeliverUserMessageRequest
+    ///     {
+    ///         UserId = new EntityIdWithoutAgent
+    ///         {
+    ///             Type = EntityType.Agent,
+    ///             AppId = "appId",
+    ///             ReferenceId = "referenceId",
+    ///         },
+    ///         Message = new ConversationMessageRequest
+    ///         {
+    ///             ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///             UserId = new EntityIdBase { ReferenceId = "referenceId" },
+    ///             Text = "text",
+    ///             UserMessageType = UserConversationMessageType.User,
+    ///         },
+    ///     }
+    /// );
+    /// </code></example>
+    public async Task<DeliverMessageResponse> DeliverMessageAsync(
+        object request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "/v1/conversations/deliver-message",
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<DeliverMessageResponse>(responseBody)!;
             }
             catch (JsonException e)
             {

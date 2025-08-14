@@ -1,5 +1,45 @@
 # Reference
 ## Actions
+<details><summary><code>client.Actions.<a href="/src/MavenagiApi/Actions/ActionsClient.cs">SearchAsync</a>(ActionsSearchRequest { ... }) -> ActionsResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Actions.SearchAsync(new ActionsSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ActionsSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Actions.<a href="/src/MavenagiApi/Actions/ActionsClient.cs">CreateOrUpdateAsync</a>(ActionRequest { ... }) -> ActionResponse</code></summary>
 <dl>
 <dd>
@@ -35,23 +75,15 @@ await client.Actions.CreateOrUpdateAsync(
         Description = "This action calls an API to get the user's current balance.",
         UserInteractionRequired = false,
         UserFormParameters = new List<ActionParameter>() { },
-        Precondition = new Precondition(
-            new Precondition.Group(
-                new PreconditionGroup
-                {
-                    Operator = PreconditionGroupOperator.And,
-                    Preconditions = new List<Precondition>()
-                    {
-                        new Precondition(
-                            new Precondition.User(new MetadataPrecondition { Key = "userKey" })
-                        ),
-                        new Precondition(
-                            new Precondition.User(new MetadataPrecondition { Key = "userKey2" })
-                        ),
-                    },
-                }
-            )
-        ),
+        Precondition = new PreconditionGroup
+        {
+            Operator = PreconditionGroupOperator.And,
+            Preconditions = new List<object>()
+            {
+                new MetadataPrecondition { Key = "userKey" },
+                new MetadataPrecondition { Key = "userKey2" },
+            },
+        },
         Language = "en",
     }
 );
@@ -81,7 +113,7 @@ await client.Actions.CreateOrUpdateAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Actions.<a href="/src/MavenagiApi/Actions/ActionsClient.cs">GetAsync</a>(actionReferenceId) -> ActionResponse</code></summary>
+<details><summary><code>client.Actions.<a href="/src/MavenagiApi/Actions/ActionsClient.cs">GetAsync</a>(actionReferenceId, ActionGetRequest { ... }) -> ActionResponse</code></summary>
 <dl>
 <dd>
 
@@ -108,7 +140,7 @@ Get an action by its supplied ID
 <dd>
 
 ```csharp
-await client.Actions.GetAsync("get-balance");
+await client.Actions.GetAsync("get-balance", new ActionGetRequest());
 ```
 </dd>
 </dl>
@@ -124,6 +156,79 @@ await client.Actions.GetAsync("get-balance");
 <dd>
 
 **actionReferenceId:** `string` — The reference ID of the action to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `ActionGetRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Actions.<a href="/src/MavenagiApi/Actions/ActionsClient.cs">PatchAsync</a>(actionReferenceId, ActionPatchRequest { ... }) -> ActionResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable action fields
+
+The `appId` field can be provided to update an action owned by a different app. 
+All other fields will overwrite the existing value on the action only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Actions.PatchAsync("actionReferenceId", new ActionPatchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**actionReferenceId:** `string` — The reference ID of the action to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `ActionPatchRequest` 
     
 </dd>
 </dl>
@@ -302,6 +407,84 @@ await client.Agents.ListAsync("organizationReferenceId");
 </dl>
 </details>
 
+<details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">CreateAsync</a>(organizationReferenceId, agentReferenceId, CreateAgentRequest { ... }) -> Agent</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new agent
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Agents.CreateAsync(
+    "organizationReferenceId",
+    "agentReferenceId",
+    new CreateAgentRequest { Name = "name", Environment = AgentEnvironment.Demo }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agentReferenceId:** `string` — The ID of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `CreateAgentRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">GetAsync</a>(organizationReferenceId, agentReferenceId) -> Agent</code></summary>
 <dl>
 <dd>
@@ -330,6 +513,151 @@ Get an agent
 
 ```csharp
 await client.Agents.GetAsync("organizationReferenceId", "agentReferenceId");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agentReferenceId:** `string` — The ID of the agent.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">PatchAsync</a>(organizationReferenceId, agentReferenceId, AgentPatchRequest { ... }) -> Agent</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable agent fields 
+All fields will overwrite the existing value on the agent only if provided.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Agents.PatchAsync(
+    "organizationReferenceId",
+    "agentReferenceId",
+    new AgentPatchRequest()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agentReferenceId:** `string` — The ID of the agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `AgentPatchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">DeleteAsync</a>(organizationReferenceId, agentReferenceId)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete an agent.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Agents.DeleteAsync("organizationReferenceId", "agentReferenceId");
 ```
 </dd>
 </dl>
@@ -406,37 +734,23 @@ await client.Analytics.GetConversationTableAsync(
         },
         ColumnDefinitions = new List<ConversationColumnDefinition>()
         {
-            new ConversationColumnDefinition
-            {
-                Header = "count",
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Count(new ConversationCount())
-                ),
-            },
+            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
             new ConversationColumnDefinition
             {
                 Header = "avg_first_response_time",
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Average(
-                        new ConversationAverage
-                        {
-                            TargetField = NumericConversationField.FirstResponseTime,
-                        }
-                    )
-                ),
+                Metric = new ConversationAverage
+                {
+                    TargetField = NumericConversationField.FirstResponseTime,
+                },
             },
             new ConversationColumnDefinition
             {
                 Header = "percentile_handle_time",
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Percentile(
-                        new ConversationPercentile
-                        {
-                            TargetField = NumericConversationField.HandleTime,
-                            Percentile = 25,
-                        }
-                    )
-                ),
+                Metric = new ConversationPercentile
+                {
+                    TargetField = NumericConversationField.HandleTime,
+                    Percentile = 25,
+                },
             },
         },
     }
@@ -467,7 +781,7 @@ await client.Analytics.GetConversationTableAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetConversationChartAsync</a>(ConversationChartRequest { ... }) -> ChartResponse</code></summary>
+<details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetConversationChartAsync</a>(object { ... }) -> object</code></summary>
 <dl>
 <dd>
 
@@ -495,21 +809,15 @@ Fetches conversation data visualized in a chart format. Supported chart types in
 
 ```csharp
 await client.Analytics.GetConversationChartAsync(
-    new ConversationChartRequest(
-        new ConversationChartRequest.PieChart(
-            new ConversationPieChartRequest
-            {
-                ConversationFilter = new ConversationFilter
-                {
-                    Languages = new List<string>() { "en", "es" },
-                },
-                GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Count(new ConversationCount())
-                ),
-            }
-        )
-    )
+    new ConversationPieChartRequest
+    {
+        ConversationFilter = new ConversationFilter
+        {
+            Languages = new List<string>() { "en", "es" },
+        },
+        GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+        Metric = new ConversationCount(),
+    }
 );
 ```
 </dd>
@@ -525,7 +833,7 @@ await client.Analytics.GetConversationChartAsync(
 <dl>
 <dd>
 
-**request:** `ConversationChartRequest` 
+**request:** `object` 
     
 </dd>
 </dl>
@@ -580,7 +888,7 @@ await client.Analytics.GetFeedbackTableAsync(
             new FeedbackColumnDefinition
             {
                 Header = "feedback_count",
-                Metric = new FeedbackMetric(new FeedbackMetric.Count(new FeedbackCount())),
+                Metric = new FeedbackCount(),
             },
         },
     }
@@ -670,7 +978,7 @@ await client.AppSettings.SearchAsync(new SearchAppSettingsRequest { Index = "ind
 </dl>
 </details>
 
-<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">GetAsync</a>() -> Dictionary<string, object?></code></summary>
+<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">GetAsync</a>() -> object</code></summary>
 <dl>
 <dd>
 
@@ -709,7 +1017,7 @@ await client.AppSettings.GetAsync();
 </dl>
 </details>
 
-<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">UpdateAsync</a>(Dictionary<string, object?> { ... }) -> Dictionary<string, object?></code></summary>
+<details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">UpdateAsync</a>(object { ... }) -> object</code></summary>
 <dl>
 <dd>
 
@@ -765,7 +1073,126 @@ await client.AppSettings.UpdateAsync(
 <dl>
 <dd>
 
-**request:** `Dictionary<string, object?>` 
+**request:** `object` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Assets
+<details><summary><code>client.Assets.<a href="/src/MavenagiApi/Assets/AssetsClient.cs">InitiateUploadAsync</a>(InitiateAssetUploadRequest { ... }) -> InitiateAssetUploadResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Initiate an upload. 
+Returns a pre-signed URL for direct file upload and an asset ID for subsequent operations.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Assets.InitiateUploadAsync(new InitiateAssetUploadRequest { Type = "type" });
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `InitiateAssetUploadRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Assets.<a href="/src/MavenagiApi/Assets/AssetsClient.cs">CommitUploadAsync</a>(assetReferenceId, CommitAssetUploadRequest { ... })</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Commit an upload after successful file transfer.
+Updates the asset status and makes it available for use.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Assets.CommitUploadAsync("assetReferenceId", new CommitAssetUploadRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**assetReferenceId:** `string` — The reference ID of the asset to commit (provided by the initiate call). All other entity ID fields are inferred from the API request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `CommitAssetUploadRequest` 
     
 </dd>
 </dl>
@@ -850,6 +1277,74 @@ await client.Conversation.InitializeAsync(
 <dd>
 
 **request:** `ConversationRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">PatchAsync</a>(conversationId, ConversationPatchRequest { ... }) -> ConversationResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable conversation fields. 
+
+The `appId` field can be provided to update a conversation owned by a different app. 
+All other fields will overwrite the existing value on the conversation only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Conversation.PatchAsync(
+    "conversation-0",
+    new ConversationPatchRequest { LlmEnabled = true }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversationId:** `string` — The ID of the conversation to patch
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `ConversationPatchRequest` 
     
 </dd>
 </dl>
@@ -1117,9 +1612,9 @@ await client.Conversation.AskAsync(
         ConversationMessageId = new EntityIdBase { ReferenceId = "message-0" },
         UserId = new EntityIdBase { ReferenceId = "user-0" },
         Text = "How do I reset my password?",
-        Attachments = new List<Attachment>()
+        Attachments = new List<AttachmentRequest>()
         {
-            new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
+            new AttachmentRequest { Type = "image/png", Content = "iVBORw0KGgo..." },
         },
         TransientData = new Dictionary<string, string>()
         {
@@ -1209,9 +1704,9 @@ await client.Conversation.AskStreamAsync(
         ConversationMessageId = new EntityIdBase { ReferenceId = "message-0" },
         UserId = new EntityIdBase { ReferenceId = "user-0" },
         Text = "How do I reset my password?",
-        Attachments = new List<Attachment>()
+        Attachments = new List<AttachmentRequest>()
         {
-            new Attachment { Type = "image/png", Content = "iVBORw0KGgo..." },
+            new AttachmentRequest { Type = "image/png", Content = "iVBORw0KGgo..." },
         },
         TransientData = new Dictionary<string, string>()
         {
@@ -1316,6 +1811,89 @@ await client.Conversation.GenerateMavenSuggestionsAsync(
 <dd>
 
 **request:** `GenerateMavenSuggestionsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">AskObjectStreamAsync</a>(conversationId, AskObjectRequest { ... })</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Generate a structured object response based on a provided schema and user prompt with a streaming response. 
+The response will be sent as a stream of events containing text, start, and end events.
+The text portions of stream responses should be concatenated to form the full response text.
+
+If the user question and object response already exist, they will be reused and not updated.
+
+Concurrency Behavior:
+- If another API call is made for the same user question while a response is mid-stream, partial answers may be returned.
+- The second caller will receive a truncated or partial response depending on where the first stream is in its processing. The first caller's stream will remain unaffected and continue delivering the full response.
+
+Known Limitations:
+- Schema enforcement is best-effort and may not guarantee exact conformity.
+- The API does not currently expose metadata indicating whether a response or message is incomplete. This will be addressed in a future update.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Conversation.AskObjectStreamAsync(
+    "conversationId",
+    new AskObjectRequest
+    {
+        Schema = "schema",
+        ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+        UserId = new EntityIdBase { ReferenceId = "referenceId" },
+        Text = "text",
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**conversationId:** `string` — The ID of a new or existing conversation to use as context for the object generation request
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `AskObjectRequest` 
     
 </dd>
 </dl>
@@ -1716,6 +2294,82 @@ await client.Conversation.SearchAsync(new ConversationsSearchRequest());
 </dl>
 </details>
 
+<details><summary><code>client.Conversation.<a href="/src/MavenagiApi/Conversation/ConversationClient.cs">DeliverMessageAsync</a>(object { ... }) -> DeliverMessageResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deliver a message to a user or conversation.
+
+<Warning>
+Currently, messages can only be successfully delivered to conversations with the `ASYNC` capability that are `open`. 
+User message delivery is not yet supported.
+</Warning>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Conversation.DeliverMessageAsync(
+    new DeliverUserMessageRequest
+    {
+        UserId = new EntityIdWithoutAgent
+        {
+            Type = EntityType.Agent,
+            AppId = "appId",
+            ReferenceId = "referenceId",
+        },
+        Message = new ConversationMessageRequest
+        {
+            ConversationMessageId = new EntityIdBase { ReferenceId = "referenceId" },
+            UserId = new EntityIdBase { ReferenceId = "referenceId" },
+            Text = "text",
+            UserMessageType = UserConversationMessageType.User,
+        },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `object` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Events
 <details><summary><code>client.Events.<a href="/src/MavenagiApi/Events/EventsClient.cs">SearchAsync</a>(EventsSearchRequest { ... }) -> EventsSearchResponse</code></summary>
 <dl>
@@ -1826,7 +2480,7 @@ await client.Inbox.SearchAsync(new InboxSearchRequest());
 </dl>
 </details>
 
-<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetAsync</a>(inboxItemId, InboxItemRequest { ... }) -> InboxItem</code></summary>
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetAsync</a>(inboxItemId, InboxItemRequest { ... }) -> object</code></summary>
 <dl>
 <dd>
 
@@ -1853,10 +2507,7 @@ Retrieve details of a specific inbox item by its ID.
 <dd>
 
 ```csharp
-await client.Inbox.GetAsync(
-    "inboxItemId",
-    new InboxItemRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
-);
+await client.Inbox.GetAsync("inboxItemId", new InboxItemRequest { AppId = "appId" });
 ```
 </dd>
 </dl>
@@ -1891,7 +2542,7 @@ await client.Inbox.GetAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetFixAsync</a>(inboxItemFixId, InboxItemFixRequest { ... }) -> InboxItemFix</code></summary>
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">GetFixAsync</a>(inboxItemFixId, InboxItemFixRequest { ... }) -> object</code></summary>
 <dl>
 <dd>
 
@@ -1918,10 +2569,7 @@ Retrieve a suggested fix. Includes document information if the fix is a Missing 
 <dd>
 
 ```csharp
-await client.Inbox.GetFixAsync(
-    "inboxItemFixId",
-    new InboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
-);
+await client.Inbox.GetFixAsync("inboxItemFixId", new InboxItemFixRequest { AppId = "appId" });
 ```
 </dd>
 </dl>
@@ -1956,7 +2604,7 @@ await client.Inbox.GetFixAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">ApplyFixAsync</a>(inboxItemFixId, ApplyInboxItemFixRequest { ... })</code></summary>
+<details><summary><code>client.Inbox.<a href="/src/MavenagiApi/Inbox/InboxClient.cs">ApplyFixesAsync</a>(inboxItemId, ApplyFixesRequest { ... })</code></summary>
 <dl>
 <dd>
 
@@ -1968,7 +2616,7 @@ await client.Inbox.GetFixAsync(
 <dl>
 <dd>
 
-Apply a fix to an inbox item with a specific document.
+Apply a list of fixes belonging to an inbox item.
 </dd>
 </dl>
 </dd>
@@ -1983,9 +2631,13 @@ Apply a fix to an inbox item with a specific document.
 <dd>
 
 ```csharp
-await client.Inbox.ApplyFixAsync(
-    "inboxItemFixId",
-    new ApplyInboxItemFixRequest { AppId = "appId", FixType = InboxItemFixType.RemoveDocument }
+await client.Inbox.ApplyFixesAsync(
+    "inboxItemId",
+    new ApplyFixesRequest
+    {
+        AppId = "appId",
+        FixReferenceIds = new List<string>() { "fixReferenceIds", "fixReferenceIds" },
+    }
 );
 ```
 </dd>
@@ -2001,7 +2653,7 @@ await client.Inbox.ApplyFixAsync(
 <dl>
 <dd>
 
-**inboxItemFixId:** `string` — Unique identifier for the inbox fix.
+**inboxItemId:** `string` — Unique identifier for the inbox item.
     
 </dd>
 </dl>
@@ -2009,7 +2661,7 @@ await client.Inbox.ApplyFixAsync(
 <dl>
 <dd>
 
-**request:** `ApplyInboxItemFixRequest` 
+**request:** `ApplyFixesRequest` 
     
 </dd>
 </dl>
@@ -2048,10 +2700,7 @@ Ignore a specific inbox item by its ID.
 <dd>
 
 ```csharp
-await client.Inbox.IgnoreAsync(
-    "inboxItemId",
-    new InboxItemIgnoreRequest { AppId = "appId", ItemType = InboxItemType.DuplicateDocument }
-);
+await client.Inbox.IgnoreAsync("inboxItemId", new InboxItemIgnoreRequest { AppId = "appId" });
 ```
 </dd>
 </dl>
@@ -2087,6 +2736,60 @@ await client.Inbox.IgnoreAsync(
 </details>
 
 ## Knowledge
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">SearchKnowledgeBasesAsync</a>(KnowledgeBaseSearchRequest { ... }) -> KnowledgeBasesResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search knowledge bases
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Knowledge.SearchKnowledgeBasesAsync(new KnowledgeBaseSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `KnowledgeBaseSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">CreateOrUpdateKnowledgeBaseAsync</a>(KnowledgeBaseRequest { ... }) -> KnowledgeBaseResponse</code></summary>
 <dl>
 <dd>
@@ -2147,7 +2850,7 @@ await client.Knowledge.CreateOrUpdateKnowledgeBaseAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">GetKnowledgeBaseAsync</a>(knowledgeBaseReferenceId) -> KnowledgeBaseResponse</code></summary>
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">GetKnowledgeBaseAsync</a>(knowledgeBaseReferenceId, KnowledgeBaseGetRequest { ... }) -> KnowledgeBaseResponse</code></summary>
 <dl>
 <dd>
 
@@ -2174,7 +2877,7 @@ Get an existing knowledge base by its supplied ID
 <dd>
 
 ```csharp
-await client.Knowledge.GetKnowledgeBaseAsync("help-center");
+await client.Knowledge.GetKnowledgeBaseAsync("help-center", new KnowledgeBaseGetRequest());
 ```
 </dd>
 </dl>
@@ -2190,6 +2893,82 @@ await client.Knowledge.GetKnowledgeBaseAsync("help-center");
 <dd>
 
 **knowledgeBaseReferenceId:** `string` — The reference ID of the knowledge base to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `KnowledgeBaseGetRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">PatchKnowledgeBaseAsync</a>(knowledgeBaseReferenceId, KnowledgeBasePatchRequest { ... }) -> KnowledgeBaseResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable knowledge base fields
+
+The `appId` field can be provided to update a knowledge base owned by a different app. 
+All other fields will overwrite the existing value on the knowledge base only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Knowledge.PatchKnowledgeBaseAsync(
+    "knowledgeBaseReferenceId",
+    new KnowledgeBasePatchRequest()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledgeBaseReferenceId:** `string` — The reference ID of the knowledge base to patch.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `KnowledgeBasePatchRequest` 
     
 </dd>
 </dl>
@@ -2343,6 +3122,60 @@ await client.Knowledge.FinalizeKnowledgeBaseVersionAsync(
 <dd>
 
 **request:** `FinalizeKnowledgeBaseVersionRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">SearchKnowledgeDocumentsAsync</a>(KnowledgeDocumentSearchRequest { ... }) -> KnowledgeDocumentsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search knowledge documents
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Knowledge.SearchKnowledgeDocumentsAsync(new KnowledgeDocumentSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `KnowledgeDocumentSearchRequest` 
     
 </dd>
 </dl>
@@ -2624,37 +3457,23 @@ await client.Organizations.GetConversationTableAsync(
         },
         ColumnDefinitions = new List<ConversationColumnDefinition>()
         {
-            new ConversationColumnDefinition
-            {
-                Header = "count",
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Count(new ConversationCount())
-                ),
-            },
+            new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
             new ConversationColumnDefinition
             {
                 Header = "avg_first_response_time",
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Average(
-                        new ConversationAverage
-                        {
-                            TargetField = NumericConversationField.FirstResponseTime,
-                        }
-                    )
-                ),
+                Metric = new ConversationAverage
+                {
+                    TargetField = NumericConversationField.FirstResponseTime,
+                },
             },
             new ConversationColumnDefinition
             {
                 Header = "percentile_handle_time",
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Percentile(
-                        new ConversationPercentile
-                        {
-                            TargetField = NumericConversationField.HandleTime,
-                            Percentile = 25,
-                        }
-                    )
-                ),
+                Metric = new ConversationPercentile
+                {
+                    TargetField = NumericConversationField.HandleTime,
+                    Percentile = 25,
+                },
             },
         },
     }
@@ -2685,7 +3504,7 @@ await client.Organizations.GetConversationTableAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetConversationChartAsync</a>(ConversationChartRequest { ... }) -> ChartResponse</code></summary>
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetConversationChartAsync</a>(object { ... }) -> object</code></summary>
 <dl>
 <dd>
 
@@ -2718,21 +3537,15 @@ This endpoint requires additional permissions. Contact support to request access
 
 ```csharp
 await client.Organizations.GetConversationChartAsync(
-    new ConversationChartRequest(
-        new ConversationChartRequest.PieChart(
-            new ConversationPieChartRequest
-            {
-                ConversationFilter = new ConversationFilter
-                {
-                    Languages = new List<string>() { "en", "es" },
-                },
-                GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
-                Metric = new ConversationMetric(
-                    new ConversationMetric.Count(new ConversationCount())
-                ),
-            }
-        )
-    )
+    new ConversationPieChartRequest
+    {
+        ConversationFilter = new ConversationFilter
+        {
+            Languages = new List<string>() { "en", "es" },
+        },
+        GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+        Metric = new ConversationCount(),
+    }
 );
 ```
 </dd>
@@ -2748,7 +3561,244 @@ await client.Organizations.GetConversationChartAsync(
 <dl>
 <dd>
 
-**request:** `ConversationChartRequest` 
+**request:** `object` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Segments
+<details><summary><code>client.Segments.<a href="/src/MavenagiApi/Segments/SegmentsClient.cs">SearchAsync</a>(SegmentsSearchRequest { ... }) -> SegmentsSearchResponse</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Segments.SearchAsync(new SegmentsSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `SegmentsSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Segments.<a href="/src/MavenagiApi/Segments/SegmentsClient.cs">CreateOrUpdateAsync</a>(SegmentRequest { ... }) -> SegmentResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update a segment or create it if it doesn't exist.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Segments.CreateOrUpdateAsync(
+    new SegmentRequest
+    {
+        SegmentId = new EntityIdBase { ReferenceId = "admin-users" },
+        Name = "Admin users",
+        Precondition = new PreconditionGroup
+        {
+            Operator = PreconditionGroupOperator.And,
+            Preconditions = new List<object>()
+            {
+                new MetadataPrecondition { Key = "userKey" },
+                new MetadataPrecondition { Key = "userKey2" },
+            },
+        },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `SegmentRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Segments.<a href="/src/MavenagiApi/Segments/SegmentsClient.cs">GetAsync</a>(segmentReferenceId, SegmentGetRequest { ... }) -> SegmentResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a segment by its supplied ID
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Segments.GetAsync("admin-users", new SegmentGetRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**segmentReferenceId:** `string` — The reference ID of the segment to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `SegmentGetRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Segments.<a href="/src/MavenagiApi/Segments/SegmentsClient.cs">PatchAsync</a>(segmentReferenceId, SegmentPatchRequest { ... }) -> SegmentResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable segment fields
+
+The `appId` field can be provided to update a segment owned by a different app. 
+All other fields will overwrite the existing value on the segment only if provided.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Segments.PatchAsync("segmentReferenceId", new SegmentPatchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**segmentReferenceId:** `string` — The reference ID of the segment to update. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `SegmentPatchRequest` 
     
 </dd>
 </dl>
@@ -3093,6 +4143,118 @@ await client.Triggers.PartialUpdateAsync(
 </details>
 
 ## Users
+<details><summary><code>client.Users.<a href="/src/MavenagiApi/Users/UsersClient.cs">SearchAsync</a>(AgentUserSearchRequest { ... }) -> AgentUserSearchResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Search across all agent users on an agent.
+
+Agent users are a merged view of the users created by individual apps.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Users.SearchAsync(new AgentUserSearchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `AgentUserSearchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Users.<a href="/src/MavenagiApi/Users/UsersClient.cs">GetAgentUserAsync</a>(userId) -> AgentUser</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an agent user by its supplied ID.
+
+Agent users are a merged view of the users created by individual apps.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Users.GetAgentUserAsync("userId");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**userId:** `string` — The ID of the agent user to get.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Users.<a href="/src/MavenagiApi/Users/UsersClient.cs">CreateOrUpdateAsync</a>(AppUserRequest { ... }) -> AppUserResponse</code></summary>
 <dl>
 <dd>
@@ -3105,7 +4267,7 @@ await client.Triggers.PartialUpdateAsync(
 <dl>
 <dd>
 
-Update a user or create it if it doesn't exist.
+Update an app user or create it if it doesn't exist.
 </dd>
 </dl>
 </dd>
@@ -3179,7 +4341,7 @@ await client.Users.CreateOrUpdateAsync(
 <dl>
 <dd>
 
-Get a user by its supplied ID
+Get an app user by its supplied ID
 </dd>
 </dl>
 </dd>
@@ -3209,7 +4371,7 @@ await client.Users.GetAsync("user-0", new UserGetRequest());
 <dl>
 <dd>
 
-**userId:** `string` — The reference ID of the user to get. All other entity ID fields are inferred from the request.
+**userId:** `string` — The reference ID of the app user to get. All other entity ID fields are inferred from the request.
     
 </dd>
 </dl>
@@ -3276,7 +4438,7 @@ await client.Users.DeleteAsync("user-0", new UserDeleteRequest());
 <dl>
 <dd>
 
-**userId:** `string` — The reference ID of the user to delete. All other entity ID fields are inferred from the request.
+**userId:** `string` — The reference ID of the app user to delete. All other entity ID fields are inferred from the request.
     
 </dd>
 </dl>

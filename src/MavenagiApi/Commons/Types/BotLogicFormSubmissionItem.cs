@@ -1,0 +1,40 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using MavenagiApi.Core;
+
+namespace MavenagiApi;
+
+[Serializable]
+public record BotLogicFormSubmissionItem
+{
+    [JsonPropertyName("actionParameters")]
+    public object ActionParameters { get; set; } = new Dictionary<string, object?>();
+
+    [JsonPropertyName("executionResult")]
+    public string? ExecutionResult { get; set; }
+
+    [JsonPropertyName("executionError")]
+    public string? ExecutionError { get; set; }
+
+    [JsonPropertyName("actionId")]
+    public required EntityIdWithoutAgent ActionId { get; set; }
+
+    [JsonPropertyName("actionName")]
+    public required string ActionName { get; set; }
+
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
+}

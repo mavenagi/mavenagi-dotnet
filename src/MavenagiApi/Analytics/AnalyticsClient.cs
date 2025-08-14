@@ -32,37 +32,23 @@ public partial class AnalyticsClient
     ///         },
     ///         ColumnDefinitions = new List&lt;ConversationColumnDefinition&gt;()
     ///         {
-    ///             new ConversationColumnDefinition
-    ///             {
-    ///                 Header = "count",
-    ///                 Metric = new ConversationMetric(
-    ///                     new ConversationMetric.Count(new ConversationCount())
-    ///                 ),
-    ///             },
+    ///             new ConversationColumnDefinition { Header = "count", Metric = new ConversationCount() },
     ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "avg_first_response_time",
-    ///                 Metric = new ConversationMetric(
-    ///                     new ConversationMetric.Average(
-    ///                         new ConversationAverage
-    ///                         {
-    ///                             TargetField = NumericConversationField.FirstResponseTime,
-    ///                         }
-    ///                     )
-    ///                 ),
+    ///                 Metric = new ConversationAverage
+    ///                 {
+    ///                     TargetField = NumericConversationField.FirstResponseTime,
+    ///                 },
     ///             },
     ///             new ConversationColumnDefinition
     ///             {
     ///                 Header = "percentile_handle_time",
-    ///                 Metric = new ConversationMetric(
-    ///                     new ConversationMetric.Percentile(
-    ///                         new ConversationPercentile
-    ///                         {
-    ///                             TargetField = NumericConversationField.HandleTime,
-    ///                             Percentile = 25,
-    ///                         }
-    ///                     )
-    ///                 ),
+    ///                 Metric = new ConversationPercentile
+    ///                 {
+    ///                     TargetField = NumericConversationField.HandleTime,
+    ///                     Percentile = 25,
+    ///                 },
     ///             },
     ///         },
     ///     }
@@ -133,25 +119,19 @@ public partial class AnalyticsClient
     /// </summary>
     /// <example><code>
     /// await client.Analytics.GetConversationChartAsync(
-    ///     new ConversationChartRequest(
-    ///         new ConversationChartRequest.PieChart(
-    ///             new ConversationPieChartRequest
-    ///             {
-    ///                 ConversationFilter = new ConversationFilter
-    ///                 {
-    ///                     Languages = new List&lt;string&gt;() { "en", "es" },
-    ///                 },
-    ///                 GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
-    ///                 Metric = new ConversationMetric(
-    ///                     new ConversationMetric.Count(new ConversationCount())
-    ///                 ),
-    ///             }
-    ///         )
-    ///     )
+    ///     new ConversationPieChartRequest
+    ///     {
+    ///         ConversationFilter = new ConversationFilter
+    ///         {
+    ///             Languages = new List&lt;string&gt;() { "en", "es" },
+    ///         },
+    ///         GroupBy = new ConversationGroupBy { Field = ConversationField.Category },
+    ///         Metric = new ConversationCount(),
+    ///     }
     /// );
     /// </code></example>
-    public async Task<ChartResponse> GetConversationChartAsync(
-        ConversationChartRequest request,
+    public async Task<object> GetConversationChartAsync(
+        object request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -174,7 +154,7 @@ public partial class AnalyticsClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<ChartResponse>(responseBody)!;
+                return JsonUtils.Deserialize<object>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -230,7 +210,7 @@ public partial class AnalyticsClient
     ///             new FeedbackColumnDefinition
     ///             {
     ///                 Header = "feedback_count",
-    ///                 Metric = new FeedbackMetric(new FeedbackMetric.Count(new FeedbackCount())),
+    ///                 Metric = new FeedbackCount(),
     ///             },
     ///         },
     ///     }

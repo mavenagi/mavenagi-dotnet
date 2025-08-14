@@ -5,14 +5,28 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record ConversationFilter : IJsonOnDeserialized
+public record ConversationFilter
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
-    /// Full-text search query for matching conversations by content. When you search with this parameter, you're performing a full-text search across all textual content in the conversations, including both the user's messages and the AI's responses.
+    /// Full-text search query for matching conversations by content.
+    /// When you search with this parameter, you're performing a full-text search across all textual content
+    /// in the conversations, including both the user's messages and the AI's responses.
+    ///
+    /// This field also supports a syntax for advanced filtering the `metadata` and `tags` fields.
+    ///
+    /// Metadata examples:
+    /// - `metadata:myvalue` - matches conversations with any metadata field set to `myvalue`
+    /// - `metadata.mykey:myvalue` - matches conversations with a metadata field `mykey` set to `myvalue`
+    /// - `metadata.mykey:myvalue OR anothervalue` - matches conversations with a metadata field `mykey` set to `myvalue` or `anothervalue`
+    /// - `metadata.mykey:*` - matches conversations with a metadata field `mykey`
+    /// - `-metadata:myvalue` - matches conversations that do not have any metadata field set to `myvalue`
+    /// - `_exists_:metadata` - matches conversations that have any metadata field set
+    ///
+    /// Tags examples:
+    /// - `tags:myvalue` - matches conversations with a tag of `myvalue`
+    /// - `tags:myvalue OR anothervalue` - matches conversations with a tag of `myvalue` or `anothervalue`
+    /// - `-tags:myvalue` - matches conversations that do not have the tag `myvalue`
+    /// - `_exists_:tags` - matches conversations that have any tags field set
     /// </summary>
     [JsonPropertyName("search")]
     public string? Search { get; set; }
@@ -125,11 +139,21 @@ public record ConversationFilter : IJsonOnDeserialized
     [JsonPropertyName("userMessageCount")]
     public NumberRange? UserMessageCount { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    /// <summary>
+    /// Filter by whether any message in the conversation has an attachment
+    /// </summary>
+    [JsonPropertyName("hasAttachment")]
+    public bool? HasAttachment { get; set; }
 
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

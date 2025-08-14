@@ -15,6 +15,69 @@ public partial class ActionsClient
         _client = client;
     }
 
+    /// <example><code>
+    /// await client.Actions.SearchAsync(new ActionsSearchRequest());
+    /// </code></example>
+    public async Task<ActionsResponse> SearchAsync(
+        ActionsSearchRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "/v1/actions/search",
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<ActionsResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
     /// <summary>
     /// Update an action or create it if it doesn't exist
     /// </summary>
@@ -27,23 +90,15 @@ public partial class ActionsClient
     ///         Description = "This action calls an API to get the user's current balance.",
     ///         UserInteractionRequired = false,
     ///         UserFormParameters = new List&lt;ActionParameter&gt;() { },
-    ///         Precondition = new Precondition(
-    ///             new Precondition.Group(
-    ///                 new PreconditionGroup
-    ///                 {
-    ///                     Operator = PreconditionGroupOperator.And,
-    ///                     Preconditions = new List&lt;Precondition&gt;()
-    ///                     {
-    ///                         new Precondition(
-    ///                             new Precondition.User(new MetadataPrecondition { Key = "userKey" })
-    ///                         ),
-    ///                         new Precondition(
-    ///                             new Precondition.User(new MetadataPrecondition { Key = "userKey2" })
-    ///                         ),
-    ///                     },
-    ///                 }
-    ///             )
-    ///         ),
+    ///         Precondition = new PreconditionGroup
+    ///         {
+    ///             Operator = PreconditionGroupOperator.And,
+    ///             Preconditions = new List&lt;object&gt;()
+    ///             {
+    ///                 new MetadataPrecondition { Key = "userKey" },
+    ///                 new MetadataPrecondition { Key = "userKey2" },
+    ///             },
+    ///         },
     ///         Language = "en",
     ///     }
     /// );
@@ -112,14 +167,20 @@ public partial class ActionsClient
     /// Get an action by its supplied ID
     /// </summary>
     /// <example><code>
-    /// await client.Actions.GetAsync("get-balance");
+    /// await client.Actions.GetAsync("get-balance", new ActionGetRequest());
     /// </code></example>
     public async Task<ActionResponse> GetAsync(
         string actionReferenceId,
+        ActionGetRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
+        var _query = new Dictionary<string, object>();
+        if (request.AppId != null)
+        {
+            _query["appId"] = request.AppId;
+        }
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
@@ -130,6 +191,80 @@ public partial class ActionsClient
                         "/v1/actions/{0}",
                         ValueConvert.ToPathParameterString(actionReferenceId)
                     ),
+                    Query = _query,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<ActionResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
+    /// Update mutable action fields
+    ///
+    /// The `appId` field can be provided to update an action owned by a different app.
+    /// All other fields will overwrite the existing value on the action only if provided.
+    /// </summary>
+    /// <example><code>
+    /// await client.Actions.PatchAsync("actionReferenceId", new ActionPatchRequest());
+    /// </code></example>
+    public async Task<ActionResponse> PatchAsync(
+        string actionReferenceId,
+        ActionPatchRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethodExtensions.Patch,
+                    Path = string.Format(
+                        "/v1/actions/{0}",
+                        ValueConvert.ToPathParameterString(actionReferenceId)
+                    ),
+                    Body = request,
                     Options = options,
                 },
                 cancellationToken

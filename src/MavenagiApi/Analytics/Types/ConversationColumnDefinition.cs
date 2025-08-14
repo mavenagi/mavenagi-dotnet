@@ -5,17 +5,13 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record ConversationColumnDefinition : IJsonOnDeserialized
+public record ConversationColumnDefinition
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// The metric calculated for this column, stored in the row data under the specified header.
     /// </summary>
     [JsonPropertyName("metric")]
-    public required ConversationMetric Metric { get; set; }
+    public required object Metric { get; set; }
 
     /// <summary>
     /// Unique column header, serving as the key for corresponding metric values.
@@ -23,11 +19,15 @@ public record ConversationColumnDefinition : IJsonOnDeserialized
     [JsonPropertyName("header")]
     public required string Header { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

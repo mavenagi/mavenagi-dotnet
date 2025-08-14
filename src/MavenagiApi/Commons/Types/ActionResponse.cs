@@ -5,17 +5,50 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record ActionResponse : IJsonOnDeserialized
+public record ActionResponse
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// ID that uniquely identifies this action
     /// </summary>
     [JsonPropertyName("actionId")]
     public required EntityId ActionId { get; set; }
+
+    /// <summary>
+    /// The instructions given to the LLM when determining whether to execute the action.
+    /// This field defaults to the `description` field if not provided. Use the `patch` API to update.
+    /// </summary>
+    [JsonPropertyName("instructions")]
+    public string? Instructions { get; set; }
+
+    /// <summary>
+    /// Determines whether the action is sent to the LLM as part of a conversation.
+    ///
+    /// - `ALWAYS`: The action is always available for use in conversations, textual relevance is not considered.
+    /// - `WHEN_RELEVANT`: The action is available only in conversations where the action is determined to be relevant to the user's question.
+    /// - `NEVER`: The action is not available for use in conversations.
+    /// </summary>
+    [JsonPropertyName("llmInclusionStatus")]
+    public required LlmInclusionStatus LlmInclusionStatus { get; set; }
+
+    /// <summary>
+    /// The IDs of the segment that must be matched for the action to be relevant to a conversation.
+    /// Segments are replacing inline preconditions - an Action may not have both an inline precondition and a segment.
+    /// Inline precondition support will be removed in a future release.
+    /// </summary>
+    [JsonPropertyName("segmentId")]
+    public EntityId? SegmentId { get; set; }
+
+    /// <summary>
+    /// A human-readable explanation of the precondition associated with this action, if present.
+    /// </summary>
+    [JsonPropertyName("preconditionExplanation")]
+    public string? PreconditionExplanation { get; set; }
+
+    /// <summary>
+    /// Whether the action has been deleted. Deleted actions will not sent to the LLM nor returned in search results.
+    /// </summary>
+    [JsonPropertyName("deleted")]
+    public required bool Deleted { get; set; }
 
     /// <summary>
     /// The name of the action. This is displayed to the end user as part of forms when user interaction is required. It is also used to help Maven decide if the action is relevant to a conversation.
@@ -45,7 +78,7 @@ public record ActionResponse : IJsonOnDeserialized
     /// The preconditions that must be met for an action to be relevant to a conversation. Can be used to restrict actions to certain types of users.
     /// </summary>
     [JsonPropertyName("precondition")]
-    public Precondition? Precondition { get; set; }
+    public object? Precondition { get; set; }
 
     /// <summary>
     /// The parameters that the action uses as input. An action will only be executed when all of the required parameters are provided. During execution, actions all have access to the full Conversation and User objects. Parameter values may be inferred from the user's conversation by the LLM.
@@ -60,11 +93,15 @@ public record ActionResponse : IJsonOnDeserialized
     [JsonPropertyName("language")]
     public string? Language { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

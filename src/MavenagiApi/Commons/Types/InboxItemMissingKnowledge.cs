@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record InboxItemMissingKnowledge : IJsonOnDeserialized
+public record InboxItemMissingKnowledge
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// Fix associated with the inbox item.
     /// </summary>
@@ -48,11 +44,21 @@ public record InboxItemMissingKnowledge : IJsonOnDeserialized
     [JsonPropertyName("status")]
     public required InboxItemStatus Status { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    /// <summary>
+    /// Severity of the inbox item.
+    /// </summary>
+    [JsonPropertyName("severity")]
+    public required InboxItemSeverity Severity { get; set; }
 
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

@@ -5,12 +5,8 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record Agent : IJsonOnDeserialized
+public record Agent
 {
-    [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
-        new Dictionary<string, JsonElement>();
-
     /// <summary>
     /// ID that uniquely identifies this action
     /// </summary>
@@ -35,11 +31,27 @@ public record Agent : IJsonOnDeserialized
     [JsonPropertyName("environment")]
     public required AgentEnvironment Environment { get; set; }
 
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+    /// <summary>
+    /// The PII categories that are enabled for the agent.
+    /// PII will be automatically redacted from all conversation message text.
+    /// Attachments and form submissions are not affected.
+    ///
+    /// Defaults to `AbaRoutingNumber`, `CreditCardNumber`, `IpAddress`, `PhoneNumber`, `SwiftCode`,
+    /// `UsBankAccountNumber`, `UsDriversLicenseNumber`, `UsIndividualTaxpayerIdentification`,
+    /// `UsUkPassportNumber`, `UsSocialSecurityNumber`.
+    /// </summary>
+    [JsonPropertyName("enabledPiiCategories")]
+    public HashSet<PiiCategory> EnabledPiiCategories { get; set; } = new HashSet<PiiCategory>();
 
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

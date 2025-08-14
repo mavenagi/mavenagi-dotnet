@@ -12,12 +12,6 @@ public record InboxItemIgnoreRequest
     [JsonIgnore]
     public required string AppId { get; set; }
 
-    /// <summary>
-    /// The type of the inbox item to retrieve
-    /// </summary>
-    [JsonIgnore]
-    public required InboxItemType ItemType { get; set; }
-
     /// <inheritdoc />
     public override string ToString()
     {

@@ -8,17 +8,17 @@ namespace MavenagiApi;
 /// Returns the total count of records in a group.
 /// </summary>
 [Serializable]
-public record FeedbackCount : IJsonOnDeserialized
+public record FeedbackCount
 {
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
     [JsonExtensionData]
-    private readonly IDictionary<string, JsonElement> _extensionData =
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
         new Dictionary<string, JsonElement>();
-
-    [JsonIgnore]
-    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
-
-    void IJsonOnDeserialized.OnDeserialized() =>
-        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <inheritdoc />
     public override string ToString()
