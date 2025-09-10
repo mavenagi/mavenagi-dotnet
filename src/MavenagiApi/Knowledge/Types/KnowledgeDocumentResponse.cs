@@ -8,12 +8,6 @@ namespace MavenagiApi;
 public record KnowledgeDocumentResponse
 {
     /// <summary>
-    /// ID that uniquely identifies this knowledge document within its knowledge base
-    /// </summary>
-    [JsonPropertyName("knowledgeDocumentId")]
-    public required EntityId KnowledgeDocumentId { get; set; }
-
-    /// <summary>
     /// The content of the document in markdown format. Not shown directly to users.
     /// </summary>
     [JsonPropertyName("content")]
@@ -24,6 +18,19 @@ public record KnowledgeDocumentResponse
     /// </summary>
     [JsonPropertyName("metadata")]
     public Dictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
+
+    /// <summary>
+    /// ID that uniquely identifies this knowledge document within its knowledge base
+    /// </summary>
+    [JsonPropertyName("knowledgeDocumentId")]
+    public required EntityId KnowledgeDocumentId { get; set; }
+
+    /// <summary>
+    /// ID that uniquely identifies the knowledge base version that contains this document.
+    /// This may be missing on legacy documents.
+    /// </summary>
+    [JsonPropertyName("knowledgeBaseVersionId")]
+    public EntityId? KnowledgeBaseVersionId { get; set; }
 
     /// <summary>
     /// The title of the document. Will be shown as part of answers.

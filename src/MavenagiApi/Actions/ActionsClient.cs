@@ -265,6 +265,7 @@ public partial class ActionsClient
                         ValueConvert.ToPathParameterString(actionReferenceId)
                     ),
                     Body = request,
+                    ContentType = "application/merge-patch+json",
                     Options = options,
                 },
                 cancellationToken

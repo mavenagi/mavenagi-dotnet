@@ -23,7 +23,7 @@ public record SystemEvent
     public DateTime? Timestamp { get; set; }
 
     [JsonPropertyName("references")]
-    public HashSet<EntityId>? References { get; set; }
+    public HashSet<ScopedEntity>? References { get; set; }
 
     [JsonPropertyName("sourceInfo")]
     public SourceInfo? SourceInfo { get; set; }

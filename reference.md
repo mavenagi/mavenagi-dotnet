@@ -294,6 +294,169 @@ await client.Actions.DeleteAsync("get-balance");
 </dl>
 </details>
 
+## AgentCapabilities
+<details><summary><code>client.AgentCapabilities.<a href="/src/MavenagiApi/AgentCapabilities/AgentCapabilitiesClient.cs">ListAsync</a>(AgentCapabilityListRequest { ... }) -> ListAgentCapabilitiesResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all capabilities for an agent.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.AgentCapabilities.ListAsync(new AgentCapabilityListRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `AgentCapabilityListRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.AgentCapabilities.<a href="/src/MavenagiApi/AgentCapabilities/AgentCapabilitiesClient.cs">GetAsync</a>(integrationId, capabilityId) -> object</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.AgentCapabilities.GetAsync("integrationId", "capabilityId");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**integrationId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capabilityId:** `string` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.AgentCapabilities.<a href="/src/MavenagiApi/AgentCapabilities/AgentCapabilitiesClient.cs">PatchAsync</a>(integrationId, capabilityId, PatchAgentCapabilityRequest { ... }) -> object</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.AgentCapabilities.PatchAsync(
+    "integrationId",
+    "capabilityId",
+    new PatchAgentCapabilityRequest()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**integrationId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**capabilityId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `PatchAgentCapabilityRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Agents
 <details><summary><code>client.Agents.<a href="/src/MavenagiApi/Agents/AgentsClient.cs">SearchAsync</a>(AgentsSearchRequest { ... }) -> AgentsSearchResponse</code></summary>
 <dl>
@@ -2055,7 +2218,7 @@ await client.Conversation.SubmitActionFormAsync(
     new SubmitActionFormRequest
     {
         ActionFormId = "actionFormId",
-        Parameters = new Dictionary<string, object>()
+        Parameters = new Dictionary<string, OneOf<object, ActionFormAttachment>>()
         {
             {
                 "parameters",
@@ -2371,6 +2534,67 @@ await client.Conversation.DeliverMessageAsync(
 </details>
 
 ## Events
+<details><summary><code>client.Events.<a href="/src/MavenagiApi/Events/EventsClient.cs">CreateAsync</a>(object { ... }) -> object</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new event
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Events.CreateAsync(
+    new NovelUserEvent
+    {
+        Id = new EntityIdBase { ReferenceId = "referenceId" },
+        EventName = UserEventName.ButtonClicked,
+        UserInfo = new UserInfoBase { Id = new EntityIdBase { ReferenceId = "referenceId" } },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `object` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Events.<a href="/src/MavenagiApi/Events/EventsClient.cs">SearchAsync</a>(EventsSearchRequest { ... }) -> EventsSearchResponse</code></summary>
 <dl>
 <dd>
@@ -2980,7 +3204,7 @@ await client.Knowledge.PatchKnowledgeBaseAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">CreateKnowledgeBaseVersionAsync</a>(knowledgeBaseReferenceId, KnowledgeBaseVersion { ... }) -> KnowledgeBaseVersion</code></summary>
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">CreateKnowledgeBaseVersionAsync</a>(knowledgeBaseReferenceId, KnowledgeBaseVersionRequest { ... }) -> KnowledgeBaseVersion</code></summary>
 <dl>
 <dd>
 
@@ -3011,19 +3235,7 @@ If an existing version is in progress, then that version will be finalized in an
 ```csharp
 await client.Knowledge.CreateKnowledgeBaseVersionAsync(
     "help-center",
-    new KnowledgeBaseVersion
-    {
-        VersionId = new EntityId
-        {
-            Type = EntityType.KnowledgeBaseVersion,
-            ReferenceId = "versionId",
-            AppId = "maven",
-            OrganizationId = "acme",
-            AgentId = "support",
-        },
-        Type = KnowledgeBaseVersionType.Full,
-        Status = KnowledgeBaseVersionStatus.InProgress,
-    }
+    new KnowledgeBaseVersionRequest { Type = KnowledgeBaseVersionType.Full }
 );
 ```
 </dd>
@@ -3047,7 +3259,7 @@ await client.Knowledge.CreateKnowledgeBaseVersionAsync(
 <dl>
 <dd>
 
-**request:** `KnowledgeBaseVersion` 
+**request:** `KnowledgeBaseVersionRequest` 
     
 </dd>
 </dl>
@@ -3133,6 +3345,71 @@ await client.Knowledge.FinalizeKnowledgeBaseVersionAsync(
 </dl>
 </details>
 
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">ListKnowledgeBaseVersionsAsync</a>(knowledgeBaseReferenceId, KnowledgeBaseVersionsListRequest { ... }) -> KnowledgeBaseVersionsListResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all active versions for a knowledge base. Returns the most recent versions first.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Knowledge.ListKnowledgeBaseVersionsAsync(
+    "knowledgeBaseReferenceId",
+    new KnowledgeBaseVersionsListRequest()
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledgeBaseReferenceId:** `string` — The reference ID of the knowledge base to list versions for. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `KnowledgeBaseVersionsListRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">SearchKnowledgeDocumentsAsync</a>(KnowledgeDocumentSearchRequest { ... }) -> KnowledgeDocumentsResponse</code></summary>
 <dl>
 <dd>
@@ -3199,10 +3476,11 @@ await client.Knowledge.SearchKnowledgeDocumentsAsync(new KnowledgeDocumentSearch
 <dl>
 <dd>
 
-Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+Create or update a knowledge document. Requires an existing knowledge base with an in progress version. 
+Will throw an exception if the latest version is not in progress.
         
 <Tip>
-This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields 
+This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields 
 have changed, a new document version will not be created. The existing version will be reused.
 </Tip>
 </dd>
@@ -3270,7 +3548,7 @@ await client.Knowledge.CreateKnowledgeDocumentAsync(
 </dl>
 </details>
 
-<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">UpdateKnowledgeDocumentAsync</a>(knowledgeBaseReferenceId, KnowledgeDocumentRequest { ... }) -> KnowledgeDocumentResponse</code></summary>
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">DeleteKnowledgeDocumentAsync</a>(knowledgeBaseReferenceId, knowledgeDocumentReferenceId, KnowledgeDeleteRequest { ... })</code></summary>
 <dl>
 <dd>
 
@@ -3282,7 +3560,8 @@ await client.Knowledge.CreateKnowledgeDocumentAsync(
 <dl>
 <dd>
 
-Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+Delete knowledge document from a specific version. 
+Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
 </dd>
 </dl>
 </dd>
@@ -3297,85 +3576,19 @@ Not yet implemented. Update knowledge document. Requires an existing knowledge b
 <dd>
 
 ```csharp
-await client.Knowledge.UpdateKnowledgeDocumentAsync(
+await client.Knowledge.DeleteKnowledgeDocumentAsync(
     "help-center",
-    new KnowledgeDocumentRequest
+    "getting-started",
+    new KnowledgeDeleteRequest
     {
-        KnowledgeDocumentId = new EntityIdBase { ReferenceId = "getting-started" },
         VersionId = new EntityIdWithoutAgent
         {
             Type = EntityType.KnowledgeBaseVersion,
-            ReferenceId = "versionId",
             AppId = "maven",
+            ReferenceId = "versionId",
         },
-        ContentType = KnowledgeDocumentContentType.Markdown,
-        Content = "## Getting started\\nThis is a getting started guide for the help center.",
-        Title = "Getting started",
-        Metadata = new Dictionary<string, string>() { { "category", "getting-started" } },
     }
 );
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**knowledgeBaseReferenceId:** `string` — The reference ID of the knowledge base that contains the document to update. All other entity ID fields are inferred from the request.
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**request:** `KnowledgeDocumentRequest` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
-<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">DeleteKnowledgeDocumentAsync</a>(knowledgeBaseReferenceId, knowledgeDocumentReferenceId)</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```csharp
-await client.Knowledge.DeleteKnowledgeDocumentAsync("help-center", "getting-started");
 ```
 </dd>
 </dl>
@@ -3402,6 +3615,88 @@ await client.Knowledge.DeleteKnowledgeDocumentAsync("help-center", "getting-star
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**request:** `KnowledgeDeleteRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Knowledge.<a href="/src/MavenagiApi/Knowledge/KnowledgeClient.cs">GetKnowledgeDocumentAsync</a>(knowledgeBaseVersionReferenceId, knowledgeDocumentReferenceId, KnowledgeDocumentGetRequest { ... }) -> KnowledgeDocumentResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Knowledge.GetKnowledgeDocumentAsync(
+    "knowledgeBaseVersionReferenceId",
+    "knowledgeDocumentReferenceId",
+    new KnowledgeDocumentGetRequest { KnowledgeBaseVersionAppId = "knowledgeBaseVersionAppId" }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**knowledgeBaseVersionReferenceId:** `string` — The reference ID of the knowledge base version that contains the document. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**knowledgeDocumentReferenceId:** `string` — The reference ID of the knowledge document to get. All other entity ID fields are inferred from the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `KnowledgeDocumentGetRequest` 
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -3411,6 +3706,254 @@ await client.Knowledge.DeleteKnowledgeDocumentAsync("help-center", "getting-star
 </details>
 
 ## Organizations
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">CreateAsync</a>(organizationReferenceId, CreateOrganizationRequest { ... }) -> Organization</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Create a new organization.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Organizations.CreateAsync(
+    "organizationReferenceId",
+    new CreateOrganizationRequest { Name = "name", DefaultLanguage = "defaultLanguage" }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The reference ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `CreateOrganizationRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetAsync</a>(organizationReferenceId) -> Organization</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get an organization by ID
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Organizations.GetAsync("organizationReferenceId");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The reference ID of the organization.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">PatchAsync</a>(organizationReferenceId, OrganizationPatchRequest { ... }) -> Organization</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Update mutable organization fields.
+All fields will overwrite the existing value on the organization only if provided.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Organizations.PatchAsync("organizationReferenceId", new OrganizationPatchRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The reference ID of the organization.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `OrganizationPatchRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">DeleteAsync</a>(organizationReferenceId)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete an organization.
+
+<Tip>
+This endpoint requires additional permissions. Contact support to request access.
+</Tip>
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Organizations.DeleteAsync("organizationReferenceId");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**organizationReferenceId:** `string` — The reference ID of the organization.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Organizations.<a href="/src/MavenagiApi/Organizations/OrganizationsClient.cs">GetConversationTableAsync</a>(ConversationTableRequest { ... }) -> ConversationTableResponse</code></summary>
 <dl>
 <dd>

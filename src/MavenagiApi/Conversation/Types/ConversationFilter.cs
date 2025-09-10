@@ -122,6 +122,12 @@ public record ConversationFilter
     public IEnumerable<string>? Tags { get; set; }
 
     /// <summary>
+    /// Filter by agent user IDs associated with the conversation
+    /// </summary>
+    [JsonPropertyName("agentUserIds")]
+    public IEnumerable<string>? AgentUserIds { get; set; }
+
+    /// <summary>
     /// Filter by conversation resolution status which is determined by AI based on the conversation content.
     /// </summary>
     [JsonPropertyName("resolutionStatus")]
@@ -144,6 +150,12 @@ public record ConversationFilter
     /// </summary>
     [JsonPropertyName("hasAttachment")]
     public bool? HasAttachment { get; set; }
+
+    /// <summary>
+    /// Filter by the segments that any message on a conversation matched.
+    /// </summary>
+    [JsonPropertyName("matchedSegmentIds")]
+    public IEnumerable<EntityIdFilter>? MatchedSegmentIds { get; set; }
 
     /// <summary>
     /// Additional properties received from the response, if any.

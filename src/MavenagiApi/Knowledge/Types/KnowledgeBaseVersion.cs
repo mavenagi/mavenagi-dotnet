@@ -14,12 +14,6 @@ public record KnowledgeBaseVersion
     public required EntityId VersionId { get; set; }
 
     /// <summary>
-    /// Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
-    /// </summary>
-    [JsonPropertyName("type")]
-    public required KnowledgeBaseVersionType Type { get; set; }
-
-    /// <summary>
     /// The status of the knowledge base version
     /// </summary>
     [JsonPropertyName("status")]
@@ -30,6 +24,12 @@ public record KnowledgeBaseVersion
     /// </summary>
     [JsonPropertyName("errorMessage")]
     public string? ErrorMessage { get; set; }
+
+    /// <summary>
+    /// Indicates whether the completed version constitutes a full or partial refresh of the knowledge base. Deleting and updating documents is only supported for partial refreshes.
+    /// </summary>
+    [JsonPropertyName("type")]
+    public required KnowledgeBaseVersionType Type { get; set; }
 
     /// <summary>
     /// Additional properties received from the response, if any.

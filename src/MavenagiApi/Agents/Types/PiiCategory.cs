@@ -34,6 +34,9 @@ public enum PiiCategory
     [EnumMember(Value = "UsDriversLicenseNumber")]
     UsDriversLicenseNumber,
 
+    [EnumMember(Value = "UsIndividualTaxpayerIdentification")]
+    UsIndividualTaxpayerIdentification,
+
     [EnumMember(Value = "Date")]
     Date,
 
@@ -174,7 +177,4 @@ public enum PiiCategory
 
     [EnumMember(Value = "UkUniqueTaxpayerNumber")]
     UkUniqueTaxpayerNumber,
-
-    [EnumMember(Value = "UsIndividualTaxpayerIdentification")]
-    UsIndividualTaxpayerIdentification,
 }

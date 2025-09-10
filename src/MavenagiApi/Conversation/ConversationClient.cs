@@ -204,6 +204,10 @@ public partial class ConversationClient
         {
             _query["appId"] = request.AppId;
         }
+        if (request.TranslationLanguage != null)
+        {
+            _query["translationLanguage"] = request.TranslationLanguage;
+        }
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
@@ -920,7 +924,7 @@ public partial class ConversationClient
     ///     new SubmitActionFormRequest
     ///     {
     ///         ActionFormId = "actionFormId",
-    ///         Parameters = new Dictionary&lt;string, object&gt;()
+    ///         Parameters = new Dictionary&lt;string, OneOf&lt;object, ActionFormAttachment&gt;&gt;()
     ///         {
     ///             {
     ///                 "parameters",

@@ -43,6 +43,19 @@ public record KnowledgeDocumentFilter
     public DateTime? CreatedBefore { get; set; }
 
     /// <summary>
+    /// Filter by app IDs
+    /// </summary>
+    [JsonPropertyName("appIds")]
+    public IEnumerable<string>? AppIds { get; set; }
+
+    /// <summary>
+    /// Filter documents within the specified knowledge base version.
+    /// If not provided all active knowledge base versions within the agent will be searched.
+    /// </summary>
+    [JsonPropertyName("knowledgeBaseVersionId")]
+    public EntityIdWithoutAgent? KnowledgeBaseVersionId { get; set; }
+
+    /// <summary>
     /// Additional properties received from the response, if any.
     /// </summary>
     /// <remarks>

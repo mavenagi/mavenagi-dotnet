@@ -17,7 +17,7 @@ public record EventFilter
     public DateTime? CreatedBefore { get; set; }
 
     [JsonPropertyName("references")]
-    public IEnumerable<EntityId>? References { get; set; }
+    public IEnumerable<ScopedEntity>? References { get; set; }
 
     [JsonPropertyName("eventTypes")]
     public IEnumerable<EventType>? EventTypes { get; set; }

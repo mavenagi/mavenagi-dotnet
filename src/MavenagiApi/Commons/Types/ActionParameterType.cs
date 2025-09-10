@@ -18,4 +18,10 @@ public enum ActionParameterType
 
     [EnumMember(Value = "SCHEMA")]
     Schema,
+
+    [EnumMember(Value = "FILE")]
+    File,
+
+    [EnumMember(Value = "OAUTH")]
+    Oauth,
 }

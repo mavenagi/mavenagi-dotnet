@@ -258,6 +258,7 @@ public partial class KnowledgeClient
                         ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
                     ),
                     Body = request,
+                    ContentType = "application/merge-patch+json",
                     Options = options,
                 },
                 cancellationToken
@@ -312,24 +313,12 @@ public partial class KnowledgeClient
     /// <example><code>
     /// await client.Knowledge.CreateKnowledgeBaseVersionAsync(
     ///     "help-center",
-    ///     new KnowledgeBaseVersion
-    ///     {
-    ///         VersionId = new EntityId
-    ///         {
-    ///             Type = EntityType.KnowledgeBaseVersion,
-    ///             ReferenceId = "versionId",
-    ///             AppId = "maven",
-    ///             OrganizationId = "acme",
-    ///             AgentId = "support",
-    ///         },
-    ///         Type = KnowledgeBaseVersionType.Full,
-    ///         Status = KnowledgeBaseVersionStatus.InProgress,
-    ///     }
+    ///     new KnowledgeBaseVersionRequest { Type = KnowledgeBaseVersionType.Full }
     /// );
     /// </code></example>
     public async Task<KnowledgeBaseVersion> CreateKnowledgeBaseVersionAsync(
         string knowledgeBaseReferenceId,
-        KnowledgeBaseVersion request,
+        KnowledgeBaseVersionRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -474,6 +463,84 @@ public partial class KnowledgeClient
     }
 
     /// <summary>
+    /// List all active versions for a knowledge base. Returns the most recent versions first.
+    /// </summary>
+    /// <example><code>
+    /// await client.Knowledge.ListKnowledgeBaseVersionsAsync(
+    ///     "knowledgeBaseReferenceId",
+    ///     new KnowledgeBaseVersionsListRequest()
+    /// );
+    /// </code></example>
+    public async Task<KnowledgeBaseVersionsListResponse> ListKnowledgeBaseVersionsAsync(
+        string knowledgeBaseReferenceId,
+        KnowledgeBaseVersionsListRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var _query = new Dictionary<string, object>();
+        if (request.AppId != null)
+        {
+            _query["appId"] = request.AppId;
+        }
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Get,
+                    Path = string.Format(
+                        "/v1/knowledge/{0}/versions",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                    ),
+                    Query = _query,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<KnowledgeBaseVersionsListResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
     /// Search knowledge documents
     /// </summary>
     /// <example><code>
@@ -540,10 +607,11 @@ public partial class KnowledgeClient
     }
 
     /// <summary>
-    /// Create knowledge document. Requires an existing knowledge base with an in progress version. Will throw an exception if the latest version is not in progress.
+    /// Create or update a knowledge document. Requires an existing knowledge base with an in progress version.
+    /// Will throw an exception if the latest version is not in progress.
     ///
     /// &lt;Tip&gt;
-    /// This API maintains document version history. If for the same reference ID neither the `title` nor `text` fields
+    /// This API maintains document version history. If for the same reference ID none of the `title`, `text`, `sourceUrl`, `metadata` fields
     /// have changed, a new document version will not be created. The existing version will be reused.
     /// &lt;/Tip&gt;
     /// </summary>
@@ -631,30 +699,28 @@ public partial class KnowledgeClient
     }
 
     /// <summary>
-    /// Not yet implemented. Update knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+    /// Delete knowledge document from a specific version.
+    /// Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the version is not in progress.
     /// </summary>
     /// <example><code>
-    /// await client.Knowledge.UpdateKnowledgeDocumentAsync(
+    /// await client.Knowledge.DeleteKnowledgeDocumentAsync(
     ///     "help-center",
-    ///     new KnowledgeDocumentRequest
+    ///     "getting-started",
+    ///     new KnowledgeDeleteRequest
     ///     {
-    ///         KnowledgeDocumentId = new EntityIdBase { ReferenceId = "getting-started" },
     ///         VersionId = new EntityIdWithoutAgent
     ///         {
     ///             Type = EntityType.KnowledgeBaseVersion,
-    ///             ReferenceId = "versionId",
     ///             AppId = "maven",
+    ///             ReferenceId = "versionId",
     ///         },
-    ///         ContentType = KnowledgeDocumentContentType.Markdown,
-    ///         Content = "## Getting started\\nThis is a getting started guide for the help center.",
-    ///         Title = "Getting started",
-    ///         Metadata = new Dictionary&lt;string, string&gt;() { { "category", "getting-started" } },
     ///     }
     /// );
     /// </code></example>
-    public async Task<KnowledgeDocumentResponse> UpdateKnowledgeDocumentAsync(
+    public async global::System.Threading.Tasks.Task DeleteKnowledgeDocumentAsync(
         string knowledgeBaseReferenceId,
-        KnowledgeDocumentRequest request,
+        string knowledgeDocumentReferenceId,
+        KnowledgeDeleteRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -664,10 +730,11 @@ public partial class KnowledgeClient
                 new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
-                    Method = HttpMethod.Put,
+                    Method = HttpMethod.Delete,
                     Path = string.Format(
-                        "/v1/knowledge/{0}/document",
-                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId)
+                        "/v1/knowledge/{0}/{1}/document",
+                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId),
+                        ValueConvert.ToPathParameterString(knowledgeDocumentReferenceId)
                     ),
                     Body = request,
                     Options = options,
@@ -677,17 +744,8 @@ public partial class KnowledgeClient
             .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
-            var responseBody = await response.Raw.Content.ReadAsStringAsync();
-            try
-            {
-                return JsonUtils.Deserialize<KnowledgeDocumentResponse>(responseBody)!;
-            }
-            catch (JsonException e)
-            {
-                throw new MavenAGIException("Failed to deserialize response", e);
-            }
+            return;
         }
-
         {
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
@@ -717,29 +775,37 @@ public partial class KnowledgeClient
     }
 
     /// <summary>
-    /// Not yet implemented. Delete knowledge document. Requires an existing knowledge base with an in progress version of type PARTIAL. Will throw an exception if the latest version is not in progress.
+    /// Get a knowledge document by its supplied version and document IDs. Response includes document content in markdown format.
     /// </summary>
     /// <example><code>
-    /// await client.Knowledge.DeleteKnowledgeDocumentAsync("help-center", "getting-started");
+    /// await client.Knowledge.GetKnowledgeDocumentAsync(
+    ///     "knowledgeBaseVersionReferenceId",
+    ///     "knowledgeDocumentReferenceId",
+    ///     new KnowledgeDocumentGetRequest { KnowledgeBaseVersionAppId = "knowledgeBaseVersionAppId" }
+    /// );
     /// </code></example>
-    public async global::System.Threading.Tasks.Task DeleteKnowledgeDocumentAsync(
-        string knowledgeBaseReferenceId,
+    public async Task<KnowledgeDocumentResponse> GetKnowledgeDocumentAsync(
+        string knowledgeBaseVersionReferenceId,
         string knowledgeDocumentReferenceId,
+        KnowledgeDocumentGetRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
+        var _query = new Dictionary<string, object>();
+        _query["knowledgeBaseVersionAppId"] = request.KnowledgeBaseVersionAppId;
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
-                    Method = HttpMethod.Delete,
+                    Method = HttpMethod.Get,
                     Path = string.Format(
-                        "/v1/knowledge/{0}/{1}/document",
-                        ValueConvert.ToPathParameterString(knowledgeBaseReferenceId),
+                        "/v1/knowledge/versions/{0}/documents/{1}",
+                        ValueConvert.ToPathParameterString(knowledgeBaseVersionReferenceId),
                         ValueConvert.ToPathParameterString(knowledgeDocumentReferenceId)
                     ),
+                    Query = _query,
                     Options = options,
                 },
                 cancellationToken
@@ -747,8 +813,17 @@ public partial class KnowledgeClient
             .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
-            return;
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<KnowledgeDocumentResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
         }
+
         {
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try

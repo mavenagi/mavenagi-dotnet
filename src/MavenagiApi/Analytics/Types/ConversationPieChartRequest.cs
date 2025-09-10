@@ -26,6 +26,14 @@ public record ConversationPieChartRequest
     public ConversationFilter? ConversationFilter { get; set; }
 
     /// <summary>
+    /// IANA timezone identifier (e.g., "America/Los_Angeles").
+    /// When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+    /// otherwise UTC is used.
+    /// </summary>
+    [JsonPropertyName("timezone")]
+    public string? Timezone { get; set; }
+
+    /// <summary>
     /// Additional properties received from the response, if any.
     /// </summary>
     /// <remarks>

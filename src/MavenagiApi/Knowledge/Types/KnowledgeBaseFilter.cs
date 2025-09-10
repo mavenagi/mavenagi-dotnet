@@ -43,6 +43,12 @@ public record KnowledgeBaseFilter
     public DateTime? CreatedBefore { get; set; }
 
     /// <summary>
+    /// Filter by app IDs
+    /// </summary>
+    [JsonPropertyName("appIds")]
+    public IEnumerable<string>? AppIds { get; set; }
+
+    /// <summary>
     /// Additional properties received from the response, if any.
     /// </summary>
     /// <remarks>

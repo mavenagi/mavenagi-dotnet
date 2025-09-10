@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
+using OneOf;
 
 namespace MavenagiApi;
 
@@ -14,7 +15,8 @@ public record SubmitActionFormRequest
     /// Map of parameter IDs to values provided by the user. All required action fields must be provided.
     /// </summary>
     [JsonPropertyName("parameters")]
-    public object Parameters { get; set; } = new Dictionary<string, object?>();
+    public Dictionary<string, OneOf<object, ActionFormAttachment>> Parameters { get; set; } =
+        new Dictionary<string, OneOf<object, ActionFormAttachment>>();
 
     /// <summary>
     /// Transient data which the Maven platform will not persist. This data will only be forwarded to actions taken. For example, one may put in user tokens as transient data.

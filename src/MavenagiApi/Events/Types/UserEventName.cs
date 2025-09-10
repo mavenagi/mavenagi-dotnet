@@ -18,4 +18,7 @@ public enum UserEventName
 
     [EnumMember(Value = "CHAT_CLOSED")]
     ChatClosed,
+
+    [EnumMember(Value = "TEXT_INSERTED")]
+    TextInserted,
 }

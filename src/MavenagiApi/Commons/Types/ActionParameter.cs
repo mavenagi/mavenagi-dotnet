@@ -32,6 +32,12 @@ public record ActionParameter
     public required bool Required { get; set; }
 
     /// <summary>
+    /// When user interaction is required, whether this parameter should be excluded from forms. Hidden parameters are not displayed to users but their values are still populated by the LLM and sent to actions. Defaults to false.
+    /// </summary>
+    [JsonPropertyName("hidden")]
+    public bool? Hidden { get; set; }
+
+    /// <summary>
     /// The parameter type. Values provided to `executeAction` will conform to this type. Defaults to `STRING`.
     /// </summary>
     [JsonPropertyName("type")]
@@ -48,6 +54,12 @@ public record ActionParameter
     /// </summary>
     [JsonPropertyName("schema")]
     public string? Schema { get; set; }
+
+    /// <summary>
+    /// OAuth configuration required to start an OAuth authorization flow when this parameter's type is `OAUTH`.
+    /// </summary>
+    [JsonPropertyName("oauthConfiguration")]
+    public ActionOAuthConfiguration? OauthConfiguration { get; set; }
 
     /// <summary>
     /// Additional properties received from the response, if any.

@@ -12,6 +12,12 @@ public record ConversationGetRequest
     [JsonIgnore]
     public string? AppId { get; set; }
 
+    /// <summary>
+    /// The language to translate the conversation analysis into
+    /// </summary>
+    [JsonIgnore]
+    public string? TranslationLanguage { get; set; }
+
     /// <inheritdoc />
     public override string ToString()
     {

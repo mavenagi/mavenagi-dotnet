@@ -30,4 +30,7 @@ public enum QualityReason
 
     [EnumMember(Value = "UNKNOWN")]
     Unknown,
+
+    [EnumMember(Value = "NO_BOT_REPLIES")]
+    NoBotReplies,
 }

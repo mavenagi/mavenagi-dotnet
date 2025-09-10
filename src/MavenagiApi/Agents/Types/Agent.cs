@@ -32,6 +32,12 @@ public record Agent
     public required AgentEnvironment Environment { get; set; }
 
     /// <summary>
+    /// The agent's default timezone. This is used when a timezone is not set on a conversation.
+    /// </summary>
+    [JsonPropertyName("defaultTimezone")]
+    public required string DefaultTimezone { get; set; }
+
+    /// <summary>
     /// The PII categories that are enabled for the agent.
     /// PII will be automatically redacted from all conversation message text.
     /// Attachments and form submissions are not affected.

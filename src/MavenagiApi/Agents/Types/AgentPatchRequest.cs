@@ -20,6 +20,12 @@ public record AgentPatchRequest
     public AgentEnvironment? Environment { get; set; }
 
     /// <summary>
+    /// The agent's default timezone. This is used when a timezone is not set on a conversation.
+    /// </summary>
+    [JsonPropertyName("defaultTimezone")]
+    public string? DefaultTimezone { get; set; }
+
+    /// <summary>
     /// The PII categories that are enabled for the agent.
     /// </summary>
     [JsonPropertyName("enabledPiiCategories")]

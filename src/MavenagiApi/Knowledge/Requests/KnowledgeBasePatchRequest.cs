@@ -1,4 +1,3 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using MavenagiApi.Core;
 
@@ -32,20 +31,26 @@ public record KnowledgeBasePatchRequest
     public LlmInclusionStatus? LlmInclusionStatus { get; set; }
 
     /// <summary>
+    /// The preconditions that must be met for a knowledge base to be relevant to a conversation. Can be used to restrict knowledge bases to certain types of users. A null value will remove the precondition from the knowledge base, it will be available on all conversations.
+    /// </summary>
+    [JsonPropertyName("precondition")]
+    public object? Precondition { get; set; }
+
+    /// <summary>
+    /// The ID of the segment that must be matched for the knowledge base to be relevant to a conversation.
+    /// A null value will remove the segment from the knowledge base, it will be available on all conversations.
+    ///
+    /// Segments are replacing inline preconditions - a knowledge base may not have both an inline precondition and a segment.
+    /// Inline precondition support will be removed in a future release.
+    /// </summary>
+    [JsonPropertyName("segmentId")]
+    public EntityId? SegmentId { get; set; }
+
+    /// <summary>
     /// How often the knowledge base should be refreshed.
     /// </summary>
     [JsonPropertyName("refreshFrequency")]
     public KnowledgeBaseRefreshFrequency? RefreshFrequency { get; set; }
-
-    /// <summary>
-    /// Additional properties received from the response, if any.
-    /// </summary>
-    /// <remarks>
-    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
-    /// </remarks>
-    [JsonExtensionData]
-    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
-        new Dictionary<string, JsonElement>();
 
     /// <inheritdoc />
     public override string ToString()

@@ -5,25 +5,19 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record ActionPatchRequest
+public record OrganizationPatchRequest
 {
     /// <summary>
-    /// The App ID of the action to patch. If not provided the ID of the calling app will be used.
+    /// The name of the organization.
     /// </summary>
-    [JsonPropertyName("appId")]
-    public string? AppId { get; set; }
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
     /// <summary>
-    /// The instructions given to the LLM when determining whether to execute the action.
+    /// The default language for the organization in ISO 639-1 code format.
     /// </summary>
-    [JsonPropertyName("instructions")]
-    public string? Instructions { get; set; }
-
-    /// <summary>
-    /// Determines whether the action is sent to the LLM as part of a conversation.
-    /// </summary>
-    [JsonPropertyName("llmInclusionStatus")]
-    public LlmInclusionStatus? LlmInclusionStatus { get; set; }
+    [JsonPropertyName("defaultLanguage")]
+    public string? DefaultLanguage { get; set; }
 
     /// <summary>
     /// Additional properties received from the response, if any.

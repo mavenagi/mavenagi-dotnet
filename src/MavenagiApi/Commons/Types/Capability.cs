@@ -21,4 +21,7 @@ public enum Capability
 
     [EnumMember(Value = "ASYNC")]
     Async,
+
+    [EnumMember(Value = "OAUTH_BUTTONS")]
+    OauthButtons,
 }
