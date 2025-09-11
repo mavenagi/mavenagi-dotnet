@@ -2566,7 +2566,7 @@ await client.Events.CreateAsync(
     {
         Id = new EntityIdBase { ReferenceId = "referenceId" },
         EventName = UserEventName.ButtonClicked,
-        UserInfo = new UserInfoBase { Id = new EntityIdBase { ReferenceId = "referenceId" } },
+        UserInfo = new EventUserInfoBase { Id = new EntityIdBase { ReferenceId = "referenceId" } },
     }
 );
 ```

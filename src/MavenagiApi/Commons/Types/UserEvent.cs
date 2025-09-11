@@ -23,7 +23,7 @@ public record UserEvent
     /// Information about the user who triggered the event
     /// </summary>
     [JsonPropertyName("userInfo")]
-    public required UserInfo UserInfo { get; set; }
+    public required EventUserInfo UserInfo { get; set; }
 
     /// <summary>
     /// Information about any feedback associated with the event

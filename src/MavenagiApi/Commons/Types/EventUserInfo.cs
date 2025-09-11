@@ -5,10 +5,10 @@ using MavenagiApi.Core;
 namespace MavenagiApi;
 
 [Serializable]
-public record UserInfoBase
+public record EventUserInfo
 {
     [JsonPropertyName("id")]
-    public required EntityIdBase Id { get; set; }
+    public EntityId? Id { get; set; }
 
     /// <summary>
     /// Additional properties received from the response, if any.

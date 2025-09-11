@@ -21,6 +21,13 @@ public record AgentUserFilter
     public IEnumerable<string>? Identifiers { get; set; }
 
     /// <summary>
+    /// Filter by anonymous users. When true, only anonymous users are returned.
+    /// When false, only non-anonymous users are returned. An anonymous user is one without any identifiers or name data.
+    /// </summary>
+    [JsonPropertyName("isAnonymous")]
+    public bool? IsAnonymous { get; set; }
+
+    /// <summary>
     /// Additional properties received from the response, if any.
     /// </summary>
     /// <remarks>

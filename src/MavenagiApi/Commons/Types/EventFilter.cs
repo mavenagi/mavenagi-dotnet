@@ -28,6 +28,9 @@ public record EventFilter
     [JsonPropertyName("systemEventNames")]
     public IEnumerable<SystemEventName>? SystemEventNames { get; set; }
 
+    [JsonPropertyName("agentUserIds")]
+    public IEnumerable<string>? AgentUserIds { get; set; }
+
     /// <summary>
     /// Additional properties received from the response, if any.
     /// </summary>

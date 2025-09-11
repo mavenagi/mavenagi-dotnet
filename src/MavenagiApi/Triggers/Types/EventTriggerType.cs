@@ -15,4 +15,7 @@ public enum EventTriggerType
 
     [EnumMember(Value = "INBOX_ITEM_CREATED")]
     InboxItemCreated,
+
+    [EnumMember(Value = "EVENT_CREATED")]
+    EventCreated,
 }
