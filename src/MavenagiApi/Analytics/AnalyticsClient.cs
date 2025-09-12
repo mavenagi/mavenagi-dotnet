@@ -275,4 +275,79 @@ public partial class AnalyticsClient
             );
         }
     }
+
+    /// <summary>
+    /// Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+    /// </summary>
+    /// <example><code>
+    /// await client.Analytics.GetAgentUserTableAsync(
+    ///     new AgentUserTableRequest
+    ///     {
+    ///         AgentUserFilter = new AgentUserFilter { Search = "john" },
+    ///         ColumnDefinitions = new List&lt;AgentUserColumnDefinition&gt;()
+    ///         {
+    ///             new AgentUserColumnDefinition { Header = "user_count", Metric = new AgentUserCount() },
+    ///         },
+    ///     }
+    /// );
+    /// </code></example>
+    public async Task<AgentUserTableResponse> GetAgentUserTableAsync(
+        AgentUserTableRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "/v1/tables/agent-users",
+                    Body = request,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<AgentUserTableResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new MavenAGIException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                    case 400:
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorMessage>(responseBody)
+                        );
+                    case 500:
+                        throw new ServerError(JsonUtils.Deserialize<ErrorMessage>(responseBody));
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new MavenAGIApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
 }

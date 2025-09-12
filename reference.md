@@ -1082,6 +1082,69 @@ await client.Analytics.GetFeedbackTableAsync(
 </dl>
 </details>
 
+<details><summary><code>client.Analytics.<a href="/src/MavenagiApi/Analytics/AnalyticsClient.cs">GetAgentUserTableAsync</a>(AgentUserTableRequest { ... }) -> AgentUserTableResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves structured agent user data formatted as a table, allowing users to group, filter,  and define specific metrics to display as columns.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Analytics.GetAgentUserTableAsync(
+    new AgentUserTableRequest
+    {
+        AgentUserFilter = new AgentUserFilter { Search = "john" },
+        ColumnDefinitions = new List<AgentUserColumnDefinition>()
+        {
+            new AgentUserColumnDefinition { Header = "user_count", Metric = new AgentUserCount() },
+        },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `AgentUserTableRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## AppSettings
 <details><summary><code>client.AppSettings.<a href="/src/MavenagiApi/AppSettings/AppSettingsClient.cs">SearchAsync</a>(SearchAppSettingsRequest { ... }) -> SearchAppSettingsResponse</code></summary>
 <dl>

@@ -1,0 +1,54 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using MavenagiApi.Core;
+
+namespace MavenagiApi;
+
+[Serializable]
+public record AgentUserTableRequest
+{
+    /// <summary>
+    /// Defines the time interval for grouping data. If specified, data is grouped accordingly based on the time they were created.
+    ///  Example: If set to "DAY," data will be aggregated by day.
+    /// </summary>
+    [JsonPropertyName("timeGrouping")]
+    public TimeInterval? TimeGrouping { get; set; }
+
+    /// <summary>
+    /// Specifies the metrics to be displayed as columns.
+    /// Only the `count` metric is supported for agent user tables, so each table will have a single column definition using `count`.
+    /// </summary>
+    [JsonPropertyName("columnDefinitions")]
+    public IEnumerable<AgentUserColumnDefinition> ColumnDefinitions { get; set; } =
+        new List<AgentUserColumnDefinition>();
+
+    /// <summary>
+    /// Optional filter applied to refine the agent user data before processing.
+    /// </summary>
+    [JsonPropertyName("agentUserFilter")]
+    public AgentUserFilter? AgentUserFilter { get; set; }
+
+    /// <summary>
+    /// IANA timezone identifier (e.g., "America/Los_Angeles").
+    /// When provided, time-based groupings (e.g., DAY) and date filters are evaluated in this timezone;
+    /// otherwise UTC is used.
+    /// </summary>
+    [JsonPropertyName("timezone")]
+    public string? Timezone { get; set; }
+
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    /// <remarks>
+    /// [EXPERIMENTAL] This API is experimental and may change in future releases.
+    /// </remarks>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
+}
